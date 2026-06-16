@@ -45,12 +45,7 @@
               <select v-model="filters.channel" class="orders-filter-control" @change="loadOrders">
                 <option value="">All Channels</option>
                 <option value="takeaway">Takeaway</option>
-                <option value="dine_in">Dine-In</option>
                 <option value="pick_up">Pick-up</option>
-                <option value="drive_thru">Drive-Thru</option>
-                <option value="pre_order">Pre-Order</option>
-                <option value="catering">Catering</option>
-                <option value="pms">PMS</option>
               </select>
 
               <select v-model="filters.status" class="orders-filter-control" @change="loadOrders">

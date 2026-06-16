@@ -79,6 +79,17 @@
                 </div>
 
                 <div class="form-grid__full">
+                  <label class="checkbox-line checkbox-line--stack">
+                    <span class="checkbox-line__main">
+                      <input v-model="form.is_loose_item" type="checkbox">
+                      <span>Loose item</span>
+                    </span>
+                    <small>Allow decimal quantity in POS for weighed or measured sales.</small>
+                  </label>
+                  <div v-if="form.errors.is_loose_item" class="error-text">{{ form.errors.is_loose_item }}</div>
+                </div>
+
+                <div class="form-grid__full">
                   <label class="field-label">Description ( English )</label>
                   <textarea v-model="form.description" rows="7"
                     class="form-control fancy-input formControl fancy-textarea"
@@ -494,6 +505,16 @@
                 </div>
 
                 <div>
+                  <label class="field-label">
+                    {{ isEdit ? 'Current Stock' : 'Opening Quantity' }} ({{ form.unit_type || 'pcs' }})
+                  </label>
+                  <input v-model="form.current_stock" type="number" min="0" step="0.001"
+                    class="form-control fancy-input formControl" :class="{ 'readonly-input': isEdit }"
+                    :readonly="isEdit" :placeholder="isEdit ? 'Current Stock' : 'Opening Quantity'">
+                  <div v-if="form.errors.current_stock" class="text-danger small mt-1">{{ form.errors.current_stock }}</div>
+                </div>
+
+                <div>
                   <label class="field-label">Reorder Level</label>
                   <input v-model="form.reorder_level" type="number" min="0" step="0.001"
                     class="form-control fancy-input formControl" placeholder="Reorder Level">
@@ -640,6 +661,7 @@ const form = useForm({
   sku: props.product?.sku ?? '',
   brand: props.product?.brand ?? '',
   unit_type: props.product?.unit_type ?? 'pcs',
+  is_loose_item: !!(props.product?.is_loose_item ?? false),
   description: props.product?.description ?? '',
 
   image: null,
@@ -648,6 +670,7 @@ const form = useForm({
   base_price: props.product?.base_price ?? '',
   secondary_price: props.product?.secondary_price ?? '',
   cost_price: props.product?.cost_price ?? '',
+  current_stock: props.product?.current_stock ?? '',
   reorder_level: props.product?.reorder_level ?? '',
 
   special_price_type: props.product?.special_price_type ?? 'fixed',
@@ -866,6 +889,7 @@ function normalizedPayload(data) {
     ...data,
     remove_image: data.remove_image ? 1 : 0,
     is_active: data.is_active ? 1 : 0,
+    is_loose_item: data.is_loose_item ? 1 : 0,
 
     category_ids: (data.category_ids || []).map((id) => Number(id)),
     tax_ids: (data.tax_ids || []).map((id) => Number(id)),
@@ -873,6 +897,7 @@ function normalizedPayload(data) {
     base_price: (data.base_price === '' || data.base_price === null) ? null : data.base_price,
     secondary_price: hasSecondaryCurrency.value ? (data.secondary_price || null) : null,
     cost_price: data.cost_price || 0,
+    current_stock: data.current_stock || 0,
     reorder_level: data.reorder_level || 0,
 
     base_special_price: data.base_special_price || null,
@@ -1062,6 +1087,11 @@ function submit() {
   box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
 }
 
+.readonly-input {
+  background: #f8fafc;
+  color: #64748b;
+  cursor: not-allowed;
+}
 
 .fancy-textarea {
   min-height: 160px;
@@ -1074,6 +1104,28 @@ function submit() {
   gap: 10px;
   font-weight: 600;
   color: #475569;
+}
+
+.checkbox-line--stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.checkbox-line__main {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-line--stack small {
+  color: #64748b;
+  font-weight: 500;
 }
 
 .picker-box {

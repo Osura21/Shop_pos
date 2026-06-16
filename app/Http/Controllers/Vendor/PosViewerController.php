@@ -1416,7 +1416,7 @@ private function restoreLoyaltyRedemptionFromOrder($order, string $reason): void
             'categories',
             fn ($categoryQuery) => $categoryQuery->where('categories.id', $categoryId)
         ))
-        ->select('id', 'menu_id', 'name', 'sku', 'brand', 'unit_type', 'base_price', 'secondary_price', 'cost_price', 'current_stock', 'reorder_level', 'special_price_type', 'base_special_price', 'secondary_special_price', 'special_price_start', 'special_price_end', 'image_path')
+        ->select('id', 'menu_id', 'name', 'sku', 'brand', 'unit_type', 'is_loose_item', 'base_price', 'secondary_price', 'cost_price', 'current_stock', 'reorder_level', 'special_price_type', 'base_special_price', 'secondary_special_price', 'special_price_start', 'special_price_end', 'image_path')
         ->orderBy('name')
         ->paginate($perPage);
 
@@ -1432,6 +1432,7 @@ private function restoreLoyaltyRedemptionFromOrder($order, string $reason): void
                 'sku' => $product->sku,
                 'brand' => $product->brand,
                 'unit_type' => $product->unit_type ?: 'pcs',
+                'is_loose_item' => (bool) $product->is_loose_item,
                 'base_price' => (float) ($product->base_price ?? 0),
                 'secondary_price' => (float) ($product->secondary_price ?? $product->base_price ?? 0),
                 'cost_price' => (float) ($product->cost_price ?? 0),

@@ -248,12 +248,12 @@
                                 }">
                                 Categories
                             </Link>
-                            <Link v-if="can('options.view')" :href="route('vendor.options.index')" class="admin-sidebar__subitem"
+                            <!-- <Link v-if="can('options.view')" :href="route('vendor.options.index')" class="admin-sidebar__subitem"
                                 :class="{
                                     'admin-sidebar__subitem--active': isOptions,
                                 }">
                                 Options
-                            </Link>
+                            </Link> -->
                             <Link v-if="can('products.view')" :href="route('vendor.products.index')"
                                 class="admin-sidebar__subitem" :class="{
                                     'admin-sidebar__subitem--active':

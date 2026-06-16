@@ -18,6 +18,7 @@ class Product extends Model
         'sku',
         'brand',
         'unit_type',
+        'is_loose_item',
         'description',
         'image_path',
         'base_price',
@@ -47,6 +48,7 @@ class Product extends Model
         'special_price_end' => 'datetime',
         'new_from' => 'datetime',
         'new_to' => 'datetime',
+        'is_loose_item' => 'boolean',
         'is_active' => 'boolean',
     ];
 

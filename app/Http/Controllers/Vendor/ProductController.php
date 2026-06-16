@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Models\ProductOption;
 use App\Models\ProductOptionRow;
+use App\Models\ProductStockMovement;
 use App\Models\OptionTemplate;
 use App\Models\Tax;
 use Exception;
@@ -140,6 +141,7 @@ class ProductController extends Controller
 
             $this->fillProduct($product, $validated, $request);
             $product->save();
+            $this->recordOpeningProductStock($product);
 
             $this->syncCategories($product, $validated['category_ids'] ?? []);
             $this->syncTaxes($product, $validated['tax_ids'] ?? []);
@@ -312,11 +314,15 @@ class ProductController extends Controller
         $product->sku = $validated['sku'];
         $product->brand = $validated['brand'] ?? null;
         $product->unit_type = $validated['unit_type'] ?? 'pcs';
+        $product->is_loose_item = (bool) ($validated['is_loose_item'] ?? false);
         $product->description = $validated['description'] ?? null;
 
         $product->base_price = $validated['base_price'] ?? 0;
         $product->secondary_price = $validated['secondary_price'] ?? null;
         $product->cost_price = $validated['cost_price'] ?? 0;
+        if (! $product->exists) {
+            $product->current_stock = $validated['current_stock'] ?? 0;
+        }
         $product->reorder_level = $validated['reorder_level'] ?? 0;
 
         $product->special_price_type = $validated['special_price_type'] ?? 'fixed';
@@ -342,6 +348,26 @@ class ProductController extends Controller
             ->all();
 
         $product->categories()->sync($ids);
+    }
+
+    private function recordOpeningProductStock(Product $product): void
+    {
+        $quantity = (float) ($product->current_stock ?? 0);
+
+        if ($quantity <= 0) {
+            return;
+        }
+
+        ProductStockMovement::create([
+            'tenant_id' => $this->tenantId(),
+            'branch_id' => null,
+            'product_id' => $product->id,
+            'type' => 'in',
+            'quantity' => $quantity,
+            'stock_before' => 0,
+            'stock_after' => $quantity,
+            'note' => 'Opening stock from product create',
+        ]);
     }
 
     private function syncTaxes(Product $product, array $taxIds): void
@@ -423,6 +449,7 @@ class ProductController extends Controller
             'sku' => $product->sku,
             'brand' => $product->brand,
             'unit_type' => $product->unit_type,
+            'is_loose_item' => (bool) $product->is_loose_item,
             'description' => $product->description,
             'image_url' => $product->image_url,
             'base_price' => $product->base_price,
@@ -489,6 +516,7 @@ class ProductController extends Controller
             'sku' => $product->sku,
             'brand' => $product->brand,
             'unit_type' => $product->unit_type,
+            'is_loose_item' => (bool) $product->is_loose_item,
             'description' => $product->description,
             'image_url' => $product->image_url,
             'base_price' => $this->moneyValue($product->base_price),
@@ -610,10 +638,12 @@ class ProductController extends Controller
             'remove_image' => ['nullable', 'boolean'],
             'brand' => ['nullable', 'string', 'max:255'],
             'unit_type' => ['required', Rule::in(['pcs', 'kg', 'g', 'l', 'ml', 'pack', 'box'])],
+            'is_loose_item' => ['nullable', 'boolean'],
 
             'base_price' => ['required', 'numeric', 'min:0'],
             'secondary_price' => ['nullable', 'numeric', 'min:0'],
             'cost_price' => ['nullable', 'numeric', 'min:0'],
+            'current_stock' => ['nullable', 'numeric', 'min:0'],
             'reorder_level' => ['nullable', 'numeric', 'min:0'],
 
             'special_price_type' => ['nullable', Rule::in(array_keys(self::PRICE_TYPES))],

@@ -130,19 +130,33 @@
 
         <div class="pos-modal__footer">
           <div class="pos-modal__qty-wrap">
-            <button type="button" class="qty-btn" :disabled="form.qty <= 1" @click="decreaseQty">
+            <button type="button" class="qty-btn" :disabled="!qtyEditable || form.qty <= minQty" @click="decreaseQty">
               <i class="bi bi-dash-lg"></i>
             </button>
             <input
               type="number"
               v-model.number="form.qty"
-              min="1"
+              :min="minQty"
               :max="maxStock || undefined"
+              :step="inputStep"
               class="qty-input"
               @blur="normalizeQty"
+              :readonly="!qtyEditable"
+              :disabled="!qtyEditable"
             />
-            <button type="button" class="qty-btn" :disabled="form.qty >= maxStock" @click="increaseQty">
+            <button type="button" class="qty-btn" :disabled="!qtyEditable || form.qty >= maxStock" @click="increaseQty">
               <i class="bi bi-plus-lg"></i>
+            </button>
+          </div>
+          <div v-if="isLooseItem && qtyEditable" class="loose-qty-presets">
+            <button
+              v-for="preset in looseQtyPresets"
+              :key="preset.label"
+              type="button"
+              :disabled="maxStock > 0 && preset.value > maxStock"
+              @click="setPresetQty(preset.value)"
+            >
+              {{ preset.label }}
             </button>
           </div>
           <div v-if="qtyError" class="pos-modal__qty-error">{{ qtyError }}</div>
@@ -175,6 +189,7 @@ export default {
     currencyMode: { type: String, default: 'base' },
     submitting: { type: Boolean, default: false },
     initialQty: { type: Number, default: 1 },
+    qtyEditable: { type: Boolean, default: true },
   },
   data() {
     return {
@@ -211,11 +226,76 @@ export default {
     maxStock() {
       return Math.max(0, this.toNumber(this.product?.current_stock))
     },
+    isLooseItem() {
+      return !!this.product?.is_loose_item
+    },
+    minQty() {
+      return this.isLooseItem ? 0.001 : 1
+    },
+    inputStep() {
+      return this.isLooseItem ? 0.001 : 1
+    },
+    buttonStep() {
+      if (!this.isLooseItem) return 1
+
+      const unit = this.product?.unit_type || ''
+
+      if (unit === 'kg' || unit === 'l') return 0.05
+      if (unit === 'g' || unit === 'ml') return 50
+
+      return 0.001
+    },
+    looseQtyPresets() {
+      const unit = this.product?.unit_type || 'kg'
+
+      if (unit === 'kg') {
+        return [
+          { label: '100g', value: 0.1 },
+          { label: '250g', value: 0.25 },
+          { label: '500g', value: 0.5 },
+          { label: '1kg', value: 1 },
+        ]
+      }
+
+      if (unit === 'g') {
+        return [
+          { label: '100g', value: 100 },
+          { label: '250g', value: 250 },
+          { label: '500g', value: 500 },
+          { label: '1kg', value: 1000 },
+        ]
+      }
+
+      if (unit === 'l') {
+        return [
+          { label: '100ml', value: 0.1 },
+          { label: '250ml', value: 0.25 },
+          { label: '500ml', value: 0.5 },
+          { label: '1l', value: 1 },
+        ]
+      }
+
+      if (unit === 'ml') {
+        return [
+          { label: '100ml', value: 100 },
+          { label: '250ml', value: 250 },
+          { label: '500ml', value: 500 },
+          { label: '1l', value: 1000 },
+        ]
+      }
+
+      return [
+        { label: '0.100', value: 0.1 },
+        { label: '0.250', value: 0.25 },
+        { label: '0.500', value: 0.5 },
+        { label: '1.000', value: 1 },
+      ]
+    },
     qtyError() {
       const qty = this.toNumber(this.form.qty)
 
       if (qty <= 0) {
-        return 'Quantity must be at least 1.'
+        return `Quantity must be at least ${this.trimQty(this.minQty)}.`
       }
 
       if (this.maxStock > 0 && qty > this.maxStock) {
@@ -263,22 +343,26 @@ export default {
       this.$emit('close')
     },
     clampQty(value) {
-      const qty = Math.max(1, this.toNumber(value) || 1)
+      const qty = Math.max(this.minQty, this.toNumber(value) || this.minQty)
+      const normalized = this.isLooseItem ? Number(qty.toFixed(3)) : Math.round(qty)
 
       if (this.maxStock > 0) {
-        return Math.min(qty, this.maxStock)
+        return Math.min(normalized, this.maxStock)
       }
 
-      return qty
+      return normalized
     },
     normalizeQty() {
       this.form.qty = this.clampQty(this.form.qty)
     },
     decreaseQty() {
-      this.form.qty = this.clampQty(this.toNumber(this.form.qty) - 1)
+      this.form.qty = this.clampQty(this.toNumber(this.form.qty) - this.buttonStep)
     },
     increaseQty() {
-      this.form.qty = this.clampQty(this.toNumber(this.form.qty) + 1)
+      this.form.qty = this.clampQty(this.toNumber(this.form.qty) + this.buttonStep)
+    },
+    setPresetQty(value) {
+      this.form.qty = this.clampQty(value)
     },
     isSpecialPriceActive() {
       if (!this.product) return false
@@ -425,7 +509,7 @@ export default {
 
       this.$emit('confirm', {
         product_id: this.product.id,
-        qty: this.form.qty || 1,
+        qty: this.clampQty(this.form.qty),
         notes: this.form.notes || '',
         selected_options: selectedOptions,
       })
@@ -619,6 +703,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 14px;
   padding: 16px 24px 22px;
 }
@@ -677,6 +762,33 @@ export default {
   color: #dc2626;
   font-size: 12px;
   font-weight: 700;
+}
+
+.loose-qty-presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 300px);
+}
+
+.loose-qty-presets button {
+  min-height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.loose-qty-presets button:hover:not(:disabled) {
+  border-color: #f97316;
+  color: #f97316;
+}
+
+.loose-qty-presets button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .qty-input::-webkit-outer-spin-button,

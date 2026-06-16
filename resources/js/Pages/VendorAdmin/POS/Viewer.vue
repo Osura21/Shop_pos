@@ -178,19 +178,13 @@
                         <div v-if="false" class="channel-strip-wrap">
                             <!-- Shop POS: restaurant order channels are hidden. -->
                             <div class="channel-strip" ref="channelStrip">
-                                <button v-for="type in orderTypes" :key="type.key" type="button" class="channel-chip"
+                                <button v-for="type in visibleOrderTypes" :key="type.key" type="button" class="channel-chip"
                                     :class="[
                                         channelChipClass(type.key),
                                         { 'channel-chip--active': metaForm.channel === type.key }
                                     ]" @click="setChannel(type.key)">
                                     <i :class="channelIcon(type.key)"></i>
                                     <span>{{ type.label }}</span>
-                                </button>
-
-                                <button v-if="can('pms.view')" type="button" class="channel-chip channel-chip--pms"
-                                    :class="{ 'channel-chip--active': metaForm.channel === 'pms' || showPmsGuests }" @click="openPmsGuests">
-                                    <i class="bi bi-building-check"></i>
-                                    <span>PMS</span>
                                 </button>
                             </div>
 
@@ -301,11 +295,11 @@
                                             </h3>
                                             <div class="order-item-card__meta">
                                                 <div class="order-item-qty-control">
-                                                    <button type="button" @click="updateItemQty(item, Number(item.qty) - 1)" :disabled="actionLoading.updatingItemId === item.id || item.qty <= 1">
+                                                    <button type="button" @click="updateItemQty(item, Number(item.qty) - cartQtyStep(item))" :disabled="actionLoading.updatingItemId === item.id || Number(item.qty) <= minCartQty(item)">
                                                         <i class="bi bi-dash"></i>
                                                     </button>
                                                     <span>{{ trimQty(item.qty) }}</span>
-                                                    <button type="button" @click="updateItemQty(item, Number(item.qty) + 1)" :disabled="actionLoading.updatingItemId === item.id || !canIncreaseCartItem(item)">
+                                                    <button type="button" @click="updateItemQty(item, Number(item.qty) + cartQtyStep(item))" :disabled="actionLoading.updatingItemId === item.id || !canIncreaseCartItem(item)">
                                                         <i class="bi bi-plus"></i>
                                                     </button>
                                                 </div>
@@ -1173,6 +1167,14 @@ promotionDiscountTotal() {
         },
         isScheduledChannel() {
             return false
+        },
+        visibleOrderTypes() {
+            const allowed = ['takeaway', 'pick_up']
+            const visible = Array.isArray(this.orderTypes)
+                ? this.orderTypes.filter((type) => allowed.includes(type.key))
+                : []
+
+            return visible.length ? visible : this.orderTypes
         },
         canUseLoyaltyActions() {
             return this.metaForm.channel !== 'pms' && !!this.metaForm.customer_id
@@ -2552,7 +2554,35 @@ handleTableCreateOrder(table) {
                 return true
             }
 
-            return stock > 0 && Number(item?.qty ?? 0) + 0.0001 < stock
+            const nextQty = Number(item?.qty ?? 0) + this.cartQtyStep(item)
+
+            return stock > 0 && nextQty <= stock + 0.0001
+        },
+        isLooseItem(product) {
+            return !!product?.is_loose_item
+        },
+        minCartQty(item) {
+            return this.isLooseItem(item?.product) ? 0.001 : 1
+        },
+        cartQtyStep(item) {
+            if (!this.isLooseItem(item?.product)) {
+                return 1
+            }
+
+            const unit = item?.product?.unit_type || ''
+
+            if (unit === 'kg' || unit === 'l') return 0.05
+            if (unit === 'g' || unit === 'ml') return 50
+
+            return 0.001
+        },
+        normalizeCartQty(item, qty) {
+            const min = this.minCartQty(item)
+            const normalized = Math.max(min, Number(qty || min))
+
+            return this.isLooseItem(item?.product)
+                ? Number(normalized.toFixed(3))
+                : Math.round(normalized)
         },
         productRecipeStockLabel(product) {
             const stock = product?.recipe_stock
@@ -2783,10 +2813,11 @@ handleTableCreateOrder(table) {
         },
         updateItemQty(item, newQty) {
             if (!this.session?.id || this.actionLoading.updatingItemId) return
-            if (newQty < 1) return
+            const qty = this.normalizeCartQty(item, newQty)
+            if (qty < this.minCartQty(item)) return
 
             this.actionLoading.updatingItemId = item.id
-            router.patch(route('vendor.pos.update-item-qty', { session: this.session.id, itemId: item.id }), { qty: newQty }, {
+            router.patch(route('vendor.pos.update-item-qty', { session: this.session.id, itemId: item.id }), { qty }, {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.loadPromotionPresets()
