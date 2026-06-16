@@ -314,14 +314,31 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('keydown', this.handleEscape)
+    window.addEventListener('keydown', this.handleModalKeydown)
   },
   beforeUnmount() {
-    window.removeEventListener('keydown', this.handleEscape)
+    window.removeEventListener('keydown', this.handleModalKeydown)
   },
   methods: {
-    handleEscape(event) {
-      if (event.key === 'Escape' && this.show) this.close()
+    handleModalKeydown(event) {
+      if (!this.show || event.defaultPrevented) return
+
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        this.close()
+        return
+      }
+
+      if (event.key !== 'Enter') return
+
+      const target = event.target
+      const tagName = String(target?.tagName || '').toLowerCase()
+      const isTyping = ['input', 'textarea', 'select'].includes(tagName)
+
+      if (isTyping) return
+
+      event.preventDefault()
+      this.confirmAdd()
     },
     resetForm() {
       this.form.qty = this.clampQty(this.initialQty)

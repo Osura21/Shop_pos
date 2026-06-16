@@ -135,7 +135,7 @@
                                 Reasons
                             </Link>
                         </div>
-                        <button v-if="
+                        <!-- <button v-if="
                             can('floors.view') ||
                             can('zones.view') ||
                             can('tables.view') ||
@@ -163,8 +163,8 @@
                                     openMenu === 'seating-plan',
                             }" />
                             <span v-if="collapsed" class="admin-sidebar__tooltip">Seating Plan</span>
-                        </button>
-
+                        </button> -->
+<!-- 
                         <div class="admin-sidebar__submenu" :class="{
                             'admin-sidebar__submenu--open':
                                 !collapsed && openMenu === 'seating-plan',
@@ -197,7 +197,7 @@
                                 }">
                                 Table Merges
                             </Link>
-                        </div>
+                        </div> -->
 
                         <button v-if="
                             can('menus.view') ||
@@ -765,7 +765,7 @@
                         </div>
 
                         <!-- SEATING PLAN -->
-                        <button
+                        <!-- <button
                             v-if="can('floors.view') || can('zones.view') || can('tables.view') || can('table-merges.view')"
                             class="admin-sidebar__item admin-sidebar__item--button"
                             :class="{ 'admin-sidebar__item--active': isSeatingPlanMenu }" type="button"
@@ -778,9 +778,9 @@
 
                             <i class="bi bi-chevron-down admin-sidebar__chevron"
                                 :class="{ 'admin-sidebar__chevron--open': openMenu === 'seating-plan' }" />
-                        </button>
+                        </button> -->
 
-                        <div class="admin-sidebar__submenu"
+                        <!-- <div class="admin-sidebar__submenu"
                             :class="{ 'admin-sidebar__submenu--open': openMenu === 'seating-plan' }">
 
                             <Link v-if="can('floors.view')" :href="route('vendor.floors.index')" class="admin-sidebar__subitem"
@@ -803,7 +803,7 @@
                                 :class="{ 'admin-sidebar__subitem--active': isTableMerges }">
                                 Table Merges
                             </Link>
-                        </div>
+                        </div> -->
 
                         <!-- MENUS -->
                         <button
@@ -1842,14 +1842,14 @@ const flyoutMenus = {
         ],
     },
 
-    "seating-plan": {
-        items: [
-            { label: "Floors", view: "floors.view", href: route('vendor.floors.index'), active: () => isFloors.value },
-            { label: "Zones", view: "zones.view", href: route('vendor.zones.index'), active: () => isZones.value },
-            { label: "Tables", view: "tables.view", href: route('vendor.tables.index'), active: () => isTables.value },
-            { label: "Table Merges", view: "table-merges.view", href: route('vendor.table-merges.index'), active: () => isTableMerges.value },
-        ],
-    },
+    // "seating-plan": {
+    //     items: [
+    //         { label: "Floors", view: "floors.view", href: route('vendor.floors.index'), active: () => isFloors.value },
+    //         { label: "Zones", view: "zones.view", href: route('vendor.zones.index'), active: () => isZones.value },
+    //         { label: "Tables", view: "tables.view", href: route('vendor.tables.index'), active: () => isTables.value },
+    //         { label: "Table Merges", view: "table-merges.view", href: route('vendor.table-merges.index'), active: () => isTableMerges.value },
+    //     ],
+    // },
 
     menus: {
         items: [
