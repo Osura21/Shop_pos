@@ -65,6 +65,13 @@
             <div class="pos-grid">
                 <section class="catalog-panel pos-card">
                     <div class="catalog-toolbar">
+                        <div class="barcode-box" :class="{ 'barcode-box--loading': scannerLoading }">
+                            <i class="bi bi-upc-scan"></i>
+                            <input ref="barcodeInput" v-model="barcodeInput" type="text" class="barcode-box__input"
+                                placeholder="Scan barcode..." autocomplete="off" @keyup.enter="handleBarcodeScan" />
+                            <span v-if="scannerLoading" class="barcode-box__status">Scanning</span>
+                        </div>
+
                         <div class="search-box">
                             <i class="bi bi-search"></i>
                             <input v-model="searchQuery" type="text" class="search-box__input"
@@ -135,11 +142,11 @@
                                             </strong>
                                         </template>
                                     </div>
-                                    <p v-if="product.recipe_stock?.can_make !== null && product.recipe_stock?.can_make !== undefined && product.recipe_stock?.can_make <= 50" class="product-card__stock-note">
-                                        {{ product.recipe_stock.can_make }} available
+                                    <p v-if="product.sku" class="product-card__stock-note">
+                                        Barcode: {{ product.sku }}
                                     </p>
-                                    <p v-if="product.recipe_stock?.limiting_ingredient" class="product-card__stock-note">
-                                        Limited by {{ product.recipe_stock.limiting_ingredient }}
+                                    <p class="product-card__stock-note" :class="{ 'product-card__stock-note--low': isShopStockLow(product) }">
+                                        Stock: {{ trimQty(product.current_stock) }} {{ product.unit_type || 'pcs' }}
                                     </p>
                                 </div>
                                 <span v-if="addingProductId === product.id"
@@ -298,7 +305,7 @@
                                                         <i class="bi bi-dash"></i>
                                                     </button>
                                                     <span>{{ trimQty(item.qty) }}</span>
-                                                    <button type="button" @click="updateItemQty(item, Number(item.qty) + 1)" :disabled="actionLoading.updatingItemId === item.id || (item.recipe_stock?.tracked && item.recipe_stock?.can_make <= 0)">
+                                                    <button type="button" @click="updateItemQty(item, Number(item.qty) + 1)" :disabled="actionLoading.updatingItemId === item.id || !canIncreaseCartItem(item)">
                                                         <i class="bi bi-plus"></i>
                                                     </button>
                                                 </div>
@@ -993,6 +1000,8 @@ export default {
     data() {
         return {
             searchQuery: '',
+            barcodeInput: '',
+            scannerLoading: false,
             selectedCategoryId: null,
             selectedProduct: null,
             modalOpen: false,
@@ -1449,6 +1458,7 @@ promotionDiscountTotal() {
 
         this.$nextTick(() => {
             this.checkChannelArrow()
+            this.focusBarcodeInput()
 
             const el = this.$refs.channelStrip
             if (el) {
@@ -2229,6 +2239,60 @@ handleTableCreateOrder(table) {
                 menu_id: this.metaForm.menu_id || undefined,
             }
         },
+        focusBarcodeInput() {
+            this.$refs.barcodeInput?.focus()
+        },
+        async handleBarcodeScan() {
+            const barcode = String(this.barcodeInput || '').trim()
+            if (!barcode || !this.session?.id || this.scannerLoading || this.addItemForm.processing) return
+
+            this.scannerLoading = true
+
+            try {
+                const product = this.loadedProducts.find((row) => String(row.sku || '').trim() === barcode)
+                    || await this.fetchProductByBarcode(barcode)
+
+                if (!product) {
+                    this.toastError(`No product found for barcode ${barcode}.`)
+                    return
+                }
+
+                this.addScannedProduct(product)
+            } catch (error) {
+                this.toastError('Unable to scan product.')
+            } finally {
+                this.barcodeInput = ''
+                this.scannerLoading = false
+                this.$nextTick(() => this.focusBarcodeInput())
+            }
+        },
+        async fetchProductByBarcode(barcode) {
+            const { data } = await axios.get(route('vendor.pos.products', this.session.id), {
+                params: {
+                    page: 1,
+                    per_page: 1,
+                    barcode,
+                    menu_id: this.metaForm.menu_id || undefined,
+                },
+            })
+
+            return Array.isArray(data.products) ? (data.products[0] || null) : null
+        },
+        addScannedProduct(product) {
+            if (this.isProductUnavailable(product)) {
+                this.toastError(`${product.name} is out of stock.`)
+                return
+            }
+
+            this.selectedProduct = null
+            this.addToCart({
+                product_id: product.id,
+                product_name: product.name,
+                qty: 1,
+                notes: '',
+                selected_options: [],
+            })
+        },
         async loadProducts({ page = 1, append = false } = {}) {
             if (!this.session?.id) return
             if (append && (!this.productsHasMore || this.productsLoadingMore)) return
@@ -2473,7 +2537,26 @@ handleTableCreateOrder(table) {
             return normalPrice;
         },
         isProductUnavailable(product) {
-            return product?.recipe_stock?.tracked && product.recipe_stock.status === 'unavailable'
+            return Number(product?.current_stock ?? 0) <= 0
+        },
+        isShopStockLow(product) {
+            const stock = Number(product?.current_stock ?? 0)
+            const reorderLevel = Number(product?.reorder_level ?? 0)
+
+            return reorderLevel > 0 && stock <= reorderLevel
+        },
+        canIncreaseCartItem(item) {
+            if (!item?.product) {
+                return true
+            }
+
+            const stock = Number(item.product.current_stock ?? 0)
+
+            if (!Number.isFinite(stock)) {
+                return true
+            }
+
+            return stock > 0 && Number(item?.qty ?? 0) + 0.0001 < stock
         },
         productRecipeStockLabel(product) {
             const stock = product?.recipe_stock
@@ -2622,7 +2705,12 @@ handleTableCreateOrder(table) {
         },
         openProduct(product) {
             if (this.isProductUnavailable(product)) {
-                this.toastError(`${product.name} is unavailable from recipe stock.`)
+                this.toastError(`${product.name} is out of stock.`)
+                return
+            }
+
+            if (!product.has_options) {
+                this.addScannedProduct(product)
                 return
             }
 
@@ -2922,11 +3010,13 @@ handleTableCreateOrder(table) {
     margin-bottom: 12px;
 }
 
-.search-box {
+.search-box,
+.barcode-box {
     position: relative;
 }
 
-.search-box i {
+.search-box i,
+.barcode-box i {
     position: absolute;
     top: 50%;
     left: 14px;
@@ -2936,6 +3026,7 @@ handleTableCreateOrder(table) {
 }
 
 .search-box__input,
+.barcode-box__input,
 .field-control {
     width: 100%;
     min-height: 42px;
@@ -2954,10 +3045,33 @@ handleTableCreateOrder(table) {
     padding-left: 38px;
 }
 
+.barcode-box__input {
+    border-color: #f59e0b;
+    padding-left: 42px;
+    padding-right: 88px;
+    font-weight: 800;
+}
+
 .search-box__input:focus,
+.barcode-box__input:focus,
 .field-control:focus {
     border-color: #f59e0b;
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+}
+
+.barcode-box__status {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    color: #f59e0b;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.barcode-box--loading .barcode-box__input {
+    background: #fff7ed;
 }
 
 .field-control--textarea {
@@ -3168,6 +3282,10 @@ handleTableCreateOrder(table) {
     font-size: 11px;
     font-weight: 800;
     line-height: 1.25;
+}
+
+.product-card__stock-note--low {
+    color: #dc2626;
 }
 
 .product-card__badge {

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\FoodCategory;
 use App\Models\Menu;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -51,7 +50,6 @@ class CategoryController extends Controller
 
         return Inertia::render('VendorAdmin/Menu/Category/Index', [
             'menus' => $menus,
-            'foodCategories' => $this->foodCategories(),
             'currentMenuId' => $currentMenuId,
             'tree' => $this->buildTree($categories),
             'selectedCategoryId' => $selectedCategoryId,
@@ -219,12 +217,7 @@ class CategoryController extends Controller
     {
         $category->menu_id = (int) $validated['menu_id'];
         $category->parent_id = $validated['parent_id'] ?? null;
-        $category->food_category_id = $category->parent_id
-            ? Category::query()
-                ->where('tenant_id', $this->tenantId())
-                ->whereKey($category->parent_id)
-                ->value('food_category_id')
-            : ($validated['food_category_id'] ?? null);
+        $category->food_category_id = null;
         $category->name = $validated['name'];
         $category->slug = Str::slug($validated['slug']);
         $category->sort_order = (int) ($validated['sort_order'] ?? 0);
@@ -244,12 +237,7 @@ class CategoryController extends Controller
                 'integer',
                 Rule::exists('categories', 'id')->where(fn ($query) => $query->where('tenant_id', $this->tenantId())),
             ],
-            'food_category_id' => [
-                'nullable',
-                Rule::requiredIf(fn () => blank(request('parent_id'))),
-                'integer',
-                Rule::exists('food_categories', 'id')->where(fn ($query) => $query->where('is_active', true)),
-            ],
+            'food_category_id' => ['nullable'],
             'name' => [
                 'required', 
                 'string', 
@@ -278,7 +266,6 @@ class CategoryController extends Controller
         return [
             'menu_id.required' => 'Please select a menu.',
             'menu_id.exists' => 'Selected menu is invalid.',
-            'food_category_id.required' => 'Please select a food type for root categories.',
             'name.required' => 'Category name is required.',
             'name.unique' => 'This name is already used.',
             'slug.required' => 'Slug is required.',
@@ -309,16 +296,6 @@ class CategoryController extends Controller
                 ];
             })
             ->all();
-    }
-
-    private function foodCategories()
-    {
-        return FoodCategory::query()
-            ->where('is_active', true)
-            ->select('id', 'name', 'slug', 'sort_order')
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->get();
     }
 
     private function tenantId(): int

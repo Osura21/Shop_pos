@@ -58,9 +58,24 @@
                 </div>
 
                 <div class="form-grid__full">
-                  <label class="field-label">SKU</label>
-                  <input v-model="form.sku" type="text" class="form-control fancy-input formControl" placeholder="SKU">
+                  <label class="field-label">Barcode / SKU</label>
+                  <input v-model="form.sku" type="text" class="form-control fancy-input formControl"
+                    placeholder="Scan or enter barcode">
                   <div v-if="form.errors.sku" class="error-text">{{ form.errors.sku }}</div>
+                </div>
+
+                <div class="form-grid__half">
+                  <label class="field-label">Brand</label>
+                  <input v-model="form.brand" type="text" class="form-control fancy-input formControl"
+                    placeholder="Brand">
+                  <div v-if="form.errors.brand" class="error-text">{{ form.errors.brand }}</div>
+                </div>
+
+                <div class="form-grid__half">
+                  <label class="field-label">Unit Type</label>
+                  <SelectInput id="unit_type" v-model="form.unit_type" :options="unitTypeOptions"
+                    valueKey="value" labelKey="label" placeholder="Select Unit" />
+                  <div v-if="form.errors.unit_type" class="error-text">{{ form.errors.unit_type }}</div>
                 </div>
 
                 <div class="form-grid__full">
@@ -128,7 +143,8 @@
             </div>
           </div>
 
-          <div class="form-card">
+          <div v-if="false" class="form-card">
+            <!-- Shop POS: recipe ingredients are hidden for Food City products. -->
             <div class="card-accent-line"></div>
             <div class="d-flex align-items-center gap-2 card-header">
 
@@ -212,7 +228,8 @@
             </div>
           </div>
 
-          <div class="form-card">
+          <div v-if="false" class="form-card">
+            <!-- Shop POS: restaurant product options are hidden for Food City products. -->
             <div class="card-accent-line"></div>
             <div class="d-flex align-items-center gap-2 card-header">
               <i class="bi bi-boxes"></i>
@@ -470,6 +487,27 @@
                 </div>
 
                 <div>
+                  <label class="field-label">Cost Price ({{ baseCurrencyCode }})</label>
+                  <input v-model="form.cost_price" type="number" min="0" step="0.001"
+                    class="form-control fancy-input formControl" placeholder="Cost Price">
+                  <div v-if="form.errors.cost_price" class="text-danger small mt-1">{{ form.errors.cost_price }}</div>
+                </div>
+
+                <div>
+                  <label class="field-label">Current Stock</label>
+                  <input v-model="form.current_stock" type="number" min="0" step="0.001"
+                    class="form-control fancy-input formControl" placeholder="Current Stock">
+                  <div v-if="form.errors.current_stock" class="text-danger small mt-1">{{ form.errors.current_stock }}</div>
+                </div>
+
+                <div>
+                  <label class="field-label">Reorder Level</label>
+                  <input v-model="form.reorder_level" type="number" min="0" step="0.001"
+                    class="form-control fancy-input formControl" placeholder="Reorder Level">
+                  <div v-if="form.errors.reorder_level" class="text-danger small mt-1">{{ form.errors.reorder_level }}</div>
+                </div>
+
+                <div>
                   <label class="field-label">Special Price Type</label>
 
                   <SelectInput id="type.id" v-model="form.special_price_type" :options="Object.entries(priceTypes).map(([value, label]) => ({
@@ -594,10 +632,21 @@ const secondaryCurrency = computed(() => page.props.currencySettings?.secondary_
 const hasSecondaryCurrency = computed(() => !!secondaryCurrency.value)
 const baseCurrencyCode = computed(() => baseCurrency.value?.code || 'Base Currency')
 const secondaryCurrencyCode = computed(() => secondaryCurrency.value?.code || 'Secondary Currency')
+const unitTypeOptions = [
+  { value: 'pcs', label: 'Pieces' },
+  { value: 'kg', label: 'Kilograms' },
+  { value: 'g', label: 'Grams' },
+  { value: 'l', label: 'Liters' },
+  { value: 'ml', label: 'Milliliters' },
+  { value: 'pack', label: 'Pack' },
+  { value: 'box', label: 'Box' },
+]
 
 const form = useForm({
   name: props.product?.name ?? '',
   sku: props.product?.sku ?? '',
+  brand: props.product?.brand ?? '',
+  unit_type: props.product?.unit_type ?? 'pcs',
   description: props.product?.description ?? '',
 
   image: null,
@@ -605,6 +654,9 @@ const form = useForm({
 
   base_price: props.product?.base_price ?? '',
   secondary_price: props.product?.secondary_price ?? '',
+  cost_price: props.product?.cost_price ?? '',
+  current_stock: props.product?.current_stock ?? '',
+  reorder_level: props.product?.reorder_level ?? '',
 
   special_price_type: props.product?.special_price_type ?? 'fixed',
   base_special_price: props.product?.base_special_price ?? '',
@@ -828,6 +880,9 @@ function normalizedPayload(data) {
 
     base_price: (data.base_price === '' || data.base_price === null) ? null : data.base_price,
     secondary_price: hasSecondaryCurrency.value ? (data.secondary_price || null) : null,
+    cost_price: data.cost_price || 0,
+    current_stock: data.current_stock || 0,
+    reorder_level: data.reorder_level || 0,
 
     base_special_price: data.base_special_price || null,
     secondary_special_price: hasSecondaryCurrency.value && data.special_price_type === 'fixed'

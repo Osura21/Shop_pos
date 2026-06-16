@@ -109,17 +109,6 @@
               <!-- LEFT SIDE -->
               <div class="col-12 col-lg-6 d-flex flex-column gap-3">
 
-                <div v-if="isRootCategoryMode">
-                  <label class="form-label formLabel">Food Type</label>
-                  <select v-model="form.food_category_id" class="form-control formControl">
-                    <option value="">Select Food Type</option>
-                    <option v-for="foodCategory in foodCategories" :key="foodCategory.id" :value="foodCategory.id">
-                      {{ foodCategory.name }}
-                    </option>
-                  </select>
-                  <div v-if="form.errors.food_category_id" class="error-text">{{ form.errors.food_category_id }}</div>
-                </div>
-
                 <div>
                   <label class="form-label formLabel">Name (English)</label>
                   <input v-model="form.name" type="text" class="form-control formControl" placeholder="Category name">
@@ -192,11 +181,6 @@
                   </div>
 
                   <div class="info-panel__row">
-                    <span class="info-panel__label">Food Type</span>
-                    <span class="info-panel__value">{{ selectedFoodCategoryName }}</span>
-                  </div>
-
-                  <div class="info-panel__row">
                     <span class="info-panel__label">Sort Order</span>
                     <input v-model="form.sort_order" type="number" min="0" class="form-control mt-2 formControl"
                       placeholder="0">
@@ -234,7 +218,6 @@ const page = usePage()
 
 const props = defineProps({
   menus: { type: Array, default: () => [] },
-  foodCategories: { type: Array, default: () => [] },
   currentMenuId: { type: [Number, String, null], default: null },
   tree: { type: Array, default: () => [] },
   selectedCategoryId: { type: [Number, String, null], default: null },
@@ -278,7 +261,6 @@ const currentMenuName = computed(() =>
 
 const isEditMode = computed(() => mode.value === 'edit')
 const isCreateMode = computed(() => mode.value !== 'edit')
-const isRootCategoryMode = computed(() => mode.value === 'create-root' || (isEditMode.value && !form.parent_id))
 
 const panelTitle = computed(() => {
   if (mode.value === 'create-sub') return 'Create Sub Category'
@@ -307,11 +289,6 @@ const parentCategoryName = computed(() => {
     return parent?.name || '-'
   }
   return 'Root Category'
-})
-
-const selectedFoodCategoryName = computed(() => {
-  const id = form.food_category_id || selectedCategory.value?.food_category_id
-  return props.foodCategories.find((item) => Number(item.id) === Number(id))?.name || '-'
 })
 
 function flattenTree(nodes, level = 0, result = []) {
@@ -379,6 +356,18 @@ watch(() => form.name, (value) => {
   if (!slugTouched.value) {
     form.slug = slugify(value)
   }
+})
+
+watch(() => currentMenuId.value, (value, oldValue) => {
+  if (!value || Number(value) === Number(oldValue)) return
+
+  router.get(route('vendor.categories.index'), {
+    menu_id: value,
+  }, {
+    preserveScroll: true,
+    preserveState: false,
+    replace: true,
+  })
 })
 
 watch(
@@ -504,7 +493,7 @@ function normalizedPayload(data) {
     ...data,
     menu_id: currentMenuId.value || data.menu_id,
     parent_id: data.parent_id || null,
-    food_category_id: data.parent_id ? null : (data.food_category_id || null),
+    food_category_id: null,
     slug: slugify(data.slug || data.name),
     sort_order: Number(data.sort_order || 0),
     is_active: data.is_active ? 1 : 0,

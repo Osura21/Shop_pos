@@ -310,10 +310,15 @@ class ProductController extends Controller
         $product->menu_id = $firstCategory?->menu_id;
         $product->name = $validated['name'];
         $product->sku = $validated['sku'];
+        $product->brand = $validated['brand'] ?? null;
+        $product->unit_type = $validated['unit_type'] ?? 'pcs';
         $product->description = $validated['description'] ?? null;
 
         $product->base_price = $validated['base_price'] ?? 0;
         $product->secondary_price = $validated['secondary_price'] ?? null;
+        $product->cost_price = $validated['cost_price'] ?? 0;
+        $product->current_stock = $validated['current_stock'] ?? 0;
+        $product->reorder_level = $validated['reorder_level'] ?? 0;
 
         $product->special_price_type = $validated['special_price_type'] ?? 'fixed';
         $product->base_special_price = $validated['base_special_price'] ?? null;
@@ -417,10 +422,15 @@ class ProductController extends Controller
             'id' => $product->id,
             'name' => $product->name,
             'sku' => $product->sku,
+            'brand' => $product->brand,
+            'unit_type' => $product->unit_type,
             'description' => $product->description,
             'image_url' => $product->image_url,
             'base_price' => $product->base_price,
             'secondary_price' => $product->secondary_price,
+            'cost_price' => $product->cost_price,
+            'current_stock' => $product->current_stock,
+            'reorder_level' => $product->reorder_level,
             'special_price_type' => $product->special_price_type,
             'base_special_price' => $product->base_special_price,
             'secondary_special_price' => $product->secondary_special_price,
@@ -478,10 +488,15 @@ class ProductController extends Controller
             'id' => $product->id,
             'name' => $product->name,
             'sku' => $product->sku,
+            'brand' => $product->brand,
+            'unit_type' => $product->unit_type,
             'description' => $product->description,
             'image_url' => $product->image_url,
             'base_price' => $this->moneyValue($product->base_price),
             'secondary_price' => $product->secondary_price === null ? null : $this->moneyValue($product->secondary_price),
+            'cost_price' => $this->moneyValue($product->cost_price ?? 0),
+            'current_stock' => $this->moneyValue($product->current_stock ?? 0),
+            'reorder_level' => $this->moneyValue($product->reorder_level ?? 0),
             'special_price_type' => $product->special_price_type,
             'base_special_price' => $product->base_special_price === null ? null : $this->moneyValue($product->base_special_price),
             'secondary_special_price' => $product->secondary_special_price === null ? null : $this->moneyValue($product->secondary_special_price),
@@ -592,11 +607,16 @@ class ProductController extends Controller
                     ->ignore($productId),
             ],
             'description' => ['nullable', 'string'],
-            'image' => [$productId ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
+            'brand' => ['nullable', 'string', 'max:255'],
+            'unit_type' => ['required', Rule::in(['pcs', 'kg', 'g', 'l', 'ml', 'pack', 'box'])],
 
             'base_price' => ['required', 'numeric', 'min:0'],
             'secondary_price' => ['nullable', 'numeric', 'min:0'],
+            'cost_price' => ['nullable', 'numeric', 'min:0'],
+            'current_stock' => ['nullable', 'numeric', 'min:0'],
+            'reorder_level' => ['nullable', 'numeric', 'min:0'],
 
             'special_price_type' => ['nullable', Rule::in(array_keys(self::PRICE_TYPES))],
             'base_special_price' => ['nullable', 'numeric', 'min:0'],
@@ -650,10 +670,9 @@ class ProductController extends Controller
     {
         return [
             'name.required' => 'Product name is required.',
-            'sku.required' => 'SKU is required.',
-            'sku.unique' => 'This SKU already exists.',
+            'sku.required' => 'Barcode / SKU is required.',
+            'sku.unique' => 'This barcode / SKU already exists.',
             'base_price.required' => 'Base Price is required.',
-            'image.required' => 'Product image is required.',
         ];
     }
 

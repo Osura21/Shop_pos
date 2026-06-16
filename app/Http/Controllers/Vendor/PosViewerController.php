@@ -162,6 +162,7 @@ if ($selectedCurrencyMode === 'secondary' && !$this->secondaryCurrencyCode()) {
             'page' => ['nullable', 'integer', 'min:1'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:60'],
             'search' => ['nullable', 'string', 'max:120'],
+            'barcode' => ['nullable', 'string', 'max:255'],
             'category_id' => ['nullable', 'integer'],
             'menu_id' => ['nullable', 'integer'],
         ]);
@@ -174,7 +175,8 @@ if ($selectedCurrencyMode === 'secondary' && !$this->secondaryCurrencyCode()) {
             $validated['menu_id'] ?? ($session->menu_id ?: null),
             $validated['per_page'] ?? 18,
             $session->branch_id,
-            $cartIngredientUsage
+            $cartIngredientUsage,
+            $validated['barcode'] ?? null
         );
 
         return response()->json([
@@ -440,6 +442,7 @@ if ($selectedCurrencyMode === 'secondary' && !$this->secondaryCurrencyCode()) {
                 ->where('product_id', $product->id)
                 ->sum('qty');
             $requestedRecipeQty = $existingQty + $qty;
+            $this->ensureProductStockAvailable($product, $requestedRecipeQty, 'product_id');
 
             if (
                 $recipeAvailability['tracked'] &&
@@ -645,6 +648,7 @@ if ($selectedCurrencyMode === 'secondary' && !$this->secondaryCurrencyCode()) {
                 ->where('product_id', $product->id)
                 ->sum('qty');
             $requestedRecipeQty = $existingQty + $qtyDiff;
+            $this->ensureProductStockAvailable($product, $requestedRecipeQty, 'qty');
 
             if (
                 $recipeAvailability['tracked'] &&
@@ -677,6 +681,47 @@ if ($selectedCurrencyMode === 'secondary' && !$this->secondaryCurrencyCode()) {
         $this->refreshSessionTotals($session->fresh());
 
         return back();
+    }
+
+    private function ensureProductStockAvailable(Product $product, float $requestedQty, string $field = 'product_id'): void
+    {
+        $currentStock = (float) ($product->current_stock ?? 0);
+
+        if ($currentStock + 0.0001 >= $requestedQty) {
+            return;
+        }
+
+        $unit = $product->unit_type ?: 'pcs';
+        $available = rtrim(rtrim(number_format($currentStock, 3, '.', ''), '0'), '.');
+
+        throw ValidationException::withMessages([
+            $field => "Only {$available} {$unit} of {$product->name} is available in stock.",
+        ]);
+    }
+
+    private function deductProductStockForSession(PosSession $session): void
+    {
+        $items = $session->items()
+            ->select('product_id', DB::raw('SUM(qty) as qty'))
+            ->whereNotNull('product_id')
+            ->groupBy('product_id')
+            ->get();
+
+        foreach ($items as $item) {
+            $product = Product::query()
+                ->where('tenant_id', $this->tenantId())
+                ->lockForUpdate()
+                ->find($item->product_id);
+
+            if (!$product) {
+                continue;
+            }
+
+            $qty = (float) $item->qty;
+            $this->ensureProductStockAvailable($product, $qty, 'payments');
+            $product->current_stock = max(0, (float) ($product->current_stock ?? 0) - $qty);
+            $product->save();
+        }
     }
 
     public function applyDiscount(Request $request, PosSession $session)
@@ -1260,7 +1305,7 @@ private function restoreLoyaltyRedemptionFromOrder($order, string $reason): void
             ->values();
     }
 
-    private function products(?string $search = null, ?int $categoryId = null, ?int $menuId = null, int $perPage = 18, ?int $branchId = null, array $cartIngredientUsage = [])
+    private function products(?string $search = null, ?int $categoryId = null, ?int $menuId = null, int $perPage = 18, ?int $branchId = null, array $cartIngredientUsage = [], ?string $barcode = null)
 {
     $products = Product::query()
         ->with([
@@ -1272,12 +1317,16 @@ private function restoreLoyaltyRedemptionFromOrder($order, string $reason): void
         ->where('tenant_id', $this->tenantId())
         ->where('is_active', true)
         ->when($menuId, fn ($query) => $query->where('menu_id', $menuId))
-        ->when($search, fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
+        ->when($barcode, fn ($query) => $query->where('sku', trim($barcode)))
+        ->when(!$barcode && $search, fn ($query) => $query->where(function ($searchQuery) use ($search) {
+            $searchQuery->where('name', 'like', '%' . $search . '%')
+                ->orWhere('sku', 'like', '%' . $search . '%');
+        }))
         ->when($categoryId, fn ($query) => $query->whereHas(
             'categories',
             fn ($categoryQuery) => $categoryQuery->where('categories.id', $categoryId)
         ))
-        ->select('id', 'menu_id', 'name', 'base_price', 'secondary_price', 'special_price_type', 'base_special_price', 'secondary_special_price', 'special_price_start', 'special_price_end', 'image_path')
+        ->select('id', 'menu_id', 'name', 'sku', 'brand', 'unit_type', 'base_price', 'secondary_price', 'cost_price', 'current_stock', 'reorder_level', 'special_price_type', 'base_special_price', 'secondary_special_price', 'special_price_start', 'special_price_end', 'image_path')
         ->orderBy('name')
         ->paginate($perPage);
 
@@ -1290,8 +1339,14 @@ private function restoreLoyaltyRedemptionFromOrder($order, string $reason): void
                 'category_ids' => $product->categories->pluck('id')->values()->all(),
                 'food_category_ids' => $product->categories->pluck('food_category_id')->filter()->unique()->values()->all(),
                 'name' => $product->name,
+                'sku' => $product->sku,
+                'brand' => $product->brand,
+                'unit_type' => $product->unit_type ?: 'pcs',
                 'base_price' => (float) ($product->base_price ?? 0),
                 'secondary_price' => (float) ($product->secondary_price ?? $product->base_price ?? 0),
+                'cost_price' => (float) ($product->cost_price ?? 0),
+                'current_stock' => (float) ($product->current_stock ?? 0),
+                'reorder_level' => (float) ($product->reorder_level ?? 0),
                 'special_price_type' => $product->special_price_type,
                 'base_special_price' => $product->base_special_price !== null ? (float) $product->base_special_price : null,
                 'secondary_special_price' => $product->secondary_special_price !== null ? (float) $product->secondary_special_price : null,
@@ -2765,6 +2820,8 @@ public function finalizePayment(Request $request, PosSession $session)
                 })->values()->all(),
             ]);
         }
+
+        $this->deductProductStockForSession($session);
 
         $this->resetSessionForNextOrder($session->fresh());
 
