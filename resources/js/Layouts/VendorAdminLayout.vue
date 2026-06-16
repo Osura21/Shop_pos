@@ -1166,7 +1166,8 @@
                         'admin-topbar--stuck': isTopbarStuck && !isPosViewer,
                     }">
                         <div class="admin-topbar__left">
-                            <template v-if="isPosMenu">
+                            <template v-if="false && isPosMenu">
+                                <!-- Shop POS: restaurant branch/menu/register/currency filters are hidden from the viewer header. -->
                                 <div class="admin-posbar admin-posbar--desktop">
                                     <div class="admin-posbar__item">
                                         <span class="admin-posbar__label">Branch</span>
@@ -4196,11 +4197,15 @@ input:-webkit-autofill:focus {
 .admin-topbar--pos {
     position: static;
     top: auto;
-    min-height: 74px;
-    margin: 1rem 1.5rem 0.5rem;
-    padding: 10px 18px;
+    min-height: 58px;
+    margin: 0.75rem 1.5rem 0.5rem;
+    padding: 8px 18px;
     border: 1px solid rgba(15, 23, 42, 0.06);
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+}
+
+.admin-root--pos .admin-topbar__left {
+    min-width: 0;
 }
 
 .admin-topbar--pos.admin-topbar--stuck {

@@ -168,7 +168,8 @@
 
                 <section class="order-panel pos-card">
                     <div class="order-toolbar">
-                        <div class="channel-strip-wrap">
+                        <div v-if="false" class="channel-strip-wrap">
+                            <!-- Shop POS: restaurant order channels are hidden. -->
                             <div class="channel-strip" ref="channelStrip">
                                 <button v-for="type in orderTypes" :key="type.key" type="button" class="channel-chip"
                                     :class="[
@@ -198,7 +199,8 @@
                         </div>
 
                         <div class="order-meta-row">
-                            <div class="field-wrap field-wrap--meta">
+                            <div v-if="false" class="field-wrap field-wrap--meta">
+                                <!-- Shop POS: waiter selection is hidden. -->
                                 <SelectInput v-model="metaForm.waiter_name" label="Waiter" :options="waiterOptions"
                                     labelKey="label" valueKey="value" placeholder="Select Waiter"
                                     @update:modelValue="saveMeta" />
@@ -333,7 +335,8 @@
 
                 <aside class="summary-panel pos-card">
                     <div class="summary-utility-grid">
-                        <button type="button" class="summary-utility-card" @click="openTableViewer">
+                        <button v-if="false" type="button" class="summary-utility-card" @click="openTableViewer">
+                        <!-- Shop POS: table viewer shortcut is hidden. -->
                         <i class="bi bi-grid-3x3-gap"></i>
                         <span>Table Viewer</span>
                         </button>
@@ -349,7 +352,7 @@
 
                        <div class="summary-form">
     <div
-        v-if="isDineIn && selectedOrderTable"
+        v-if="false && isDineIn && selectedOrderTable"
         class="selected-table-strip"
     >
         <button
@@ -374,7 +377,7 @@
     </div>
 
     <button
-        v-else-if="isDineIn"
+        v-else-if="false && isDineIn"
         type="button"
         class="selected-table-strip selected-table-strip--empty"
         @click="openTableViewer"
@@ -387,17 +390,17 @@
         <i class="bi bi-plus-lg"></i>
     </button>
 
-    <div v-if="isDriveThru" class="field-wrap">
+    <div v-if="false && isDriveThru" class="field-wrap">
         <input v-model="metaForm.car_plate" type="text" class="field-control"
             placeholder="Car Plate" @blur="saveMeta" />
     </div>
 
-                        <div v-if="isDriveThru" class="field-wrap">
+                        <div v-if="false && isDriveThru" class="field-wrap">
                             <input v-model="metaForm.car_description" type="text" class="field-control"
                                 placeholder="Car Description" @blur="saveMeta" />
                         </div>
 
-                        <div v-if="isScheduledChannel" class="field-wrap">
+                        <div v-if="false && isScheduledChannel" class="field-wrap">
                             <!-- <input v-model="metaForm.scheduled_at" type="datetime-local" class="field-control"
                                 @change="saveMeta" /> -->
                                 <DatePicker v-model="metaForm.scheduled_at" timeEnabled />
@@ -408,7 +411,7 @@
                                 placeholder="Notes" @blur="saveMeta"></textarea>
                         </div>
 
-                        <div v-if="isDineIn" class="field-wrap">
+                        <div v-if="false && isDineIn" class="field-wrap">
                             <input v-model="metaForm.guest_count" type="number" min="1" class="field-control"
                                 placeholder="Guest count" @blur="saveMeta" />
                         </div>
@@ -1151,12 +1154,16 @@ promotionDiscountTotal() {
 
             return this.baseCurrencyCode
         },
-        isDriveThru() { return this.metaForm.channel === 'drive_thru' },
+        isDriveThru() {
+            return false
+        },
 
         isDineIn() {
-    return this.metaForm.channel === 'dine_in'
-},
-        isScheduledChannel() { return ['pre_order', 'catering'].includes(this.metaForm.channel) },
+            return false
+        },
+        isScheduledChannel() {
+            return false
+        },
         canUseLoyaltyActions() {
             return this.metaForm.channel !== 'pms' && !!this.metaForm.customer_id
         },
@@ -3205,6 +3212,14 @@ handleTableCreateOrder(table) {
     grid-column: span 2;
 }
 
+.order-toolbar {
+    gap: 10px;
+}
+
+.summary-utility-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .order-stage {
     flex: 1;
     min-height: 0;
@@ -3784,7 +3799,7 @@ handleTableCreateOrder(table) {
 
 .order-meta-row {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 10px;
     align-items: end;
 }
