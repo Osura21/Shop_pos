@@ -1,0 +1,97 @@
+<script setup>
+import { useForm } from '@inertiajs/vue3'
+import SuperAdminLayout from '@/Layouts/SuperAdminLayout.vue'
+
+defineOptions({ layout: SuperAdminLayout })
+
+const props = defineProps({
+  superPermissions: Array,
+  vendorPermissions: Array,
+})
+
+const form = useForm({
+  name: '',
+  guard_name: '',
+  permissions: [],
+})
+
+const availablePermissions = () => {
+  if (form.guard_name === 'superadmin') {
+    return props.superPermissions
+  }
+
+  if (form.guard_name === 'vendor') {
+    return props.vendorPermissions
+  }
+
+  return []
+}
+
+const submit = () => {
+  form.post(route('settings.roles.store'))
+}
+</script>
+
+<template>
+  <div class="max-w-3xl">
+
+    <h1 class="text-2xl font-bold mb-6">Create Role</h1>
+
+    <form @submit.prevent="submit">
+
+      <!-- Role Name -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Role Name</label>
+        <input
+          v-model="form.name"
+          class="border p-2 w-full rounded"
+          placeholder="e.g. system_admin / vendor_admin"
+        />
+      </div>
+
+      <!-- Role Type -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-1">Role Type</label>
+        <select
+          v-model="form.guard_name"
+          class="border p-2 w-full rounded"
+        >
+          <option value="" disabled>Select role type</option>
+          <option value="superadmin">Super Admin Role</option>
+          <option value="vendor">Vendor Capability Role</option>
+        </select>
+      </div>
+
+      <!-- Permissions -->
+      <div v-if="form.guard_name" class="mb-6">
+        <label class="block text-sm font-medium mb-2">
+          Permissions
+        </label>
+
+        <div class="grid grid-cols-2 gap-2">
+          <label
+            v-for="p in availablePermissions()"
+            :key="p.id"
+            class="flex items-center gap-2 text-sm"
+          >
+            <input
+              type="checkbox"
+              :value="p.name"
+              v-model="form.permissions"
+            />
+            {{ p.name }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button
+        class="bg-black text-white px-5 py-2 rounded"
+        :disabled="form.processing"
+      >
+        Create Role
+      </button>
+
+    </form>
+  </div>
+</template>

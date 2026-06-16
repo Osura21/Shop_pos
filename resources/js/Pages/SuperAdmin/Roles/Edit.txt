@@ -1,0 +1,63 @@
+<script setup>
+import { useForm } from '@inertiajs/vue3'
+import SuperAdminLayout from '@/Layouts/SuperAdminLayout.vue'
+
+defineOptions({ layout: SuperAdminLayout })
+
+const props = defineProps({
+    role: Object,
+    superPermissions: Array,
+    vendorPermissions: Array,
+})
+
+const form = useForm({
+    id: props.role.id,
+    name: props.role.name,
+    permissions: props.role.permissions.map(p => p.name),
+})
+
+const availablePermissions = () => {
+    return props.role.guard_name === 'superadmin'
+        ? props.superPermissions
+        : props.vendorPermissions
+}
+
+const submit = () => {
+    form.put(route('settings.roles.update', props.role.id))
+}
+</script>
+
+<template>
+    <div class="max-w-3xl">
+        <h1 class="text-2xl font-bold mb-6">
+            Edit Role — {{ role.name }}
+        </h1>
+
+        <form @submit.prevent="submit">
+
+            <!-- Role Name -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Role Name</label>
+                <input v-model="form.name" class="border p-2 w-full rounded" />
+            </div>
+
+            <!-- Permissions -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2">
+                    Permissions
+                </label>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <label v-for="p in availablePermissions()" :key="p.id" class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" :value="p.name" v-model="form.permissions" />
+                        {{ p.name }}
+                    </label>
+                </div>
+            </div>
+
+            <button class="bg-black text-white px-5 py-2 rounded">
+                Update Role
+            </button>
+        </form>
+    </div>
+</template>

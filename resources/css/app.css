@@ -1,0 +1,409 @@
+.form-check-input {
+  background-color: #e5e7eb !important;
+  border-color: #9ca3af !important;
+}
+
+#nprogress .bar {
+  z-index: 2000 !important;
+  height: 3px !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #df1f2d, 0 0 5px #df1f2d !important;
+}
+
+.form-check-input:checked {
+  background-color: #f28c00 !important;
+  border-color: #f28c00 !important;
+}
+
+.form-switch .form-check-input {
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%236b7280'/%3e%3c/svg%3e");
+}
+
+.form-switch .form-check-input:focus {
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%236b7280'/%3e%3c/svg%3e");
+
+  border-color: #f28c00 !important;
+  box-shadow: 0 0 0 0.1rem rgba(242, 140, 0, 0.25) !important;
+}
+
+.form-switch .form-check-input:checked {
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+
+  background-color: #f28c00 !important;
+  border-color: #f28c00 !important;
+}
+
+.form-switch .form-check-input:checked:focus {
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+
+  box-shadow: 0 0 0 0.1rem rgba(242, 140, 0, 0.25) !important;
+}
+
+.form-switch .form-check-input::after {
+  content: none !important;
+  display: none !important;
+}
+
+
+/* Style all checkboxes */
+input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #f28c00;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+/* Checked state */
+input[type="checkbox"]:checked {
+  background-color: #f28c00;
+  border-color: #f28c00;
+}
+
+input[type="checkbox"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.form-check-input {
+  background-color: rgb(255, 255, 255) !important;
+  border-color: #c8d0df !important;
+}
+
+/* Altered the bootsrtap BUTTONS styles */
+
+.btn-primary-modern {
+  background: linear-gradient(135deg, #f28c00 0%, #f5a623 100%);
+  color: #ffffff;
+  padding: 11px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary-modern:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.page-container {
+  --primary: #f28c00;
+  --primary-soft: rgba(242, 140, 0, 0.08);
+  --primary-hover: #d97d00;
+  --slate-900: #1a202c;
+  --slate-600: #4b5563;
+  --slate-400: #94a3b8;
+  --slate-200: #e2e8f0;
+  --slate-50: #f8fafc;
+  padding: 0.5rem;
+}
+
+
+
+/* when sidebar collapsed */
+/* .admin-sidebar--collapsed .table-container-modern {
+    max-width: calc(100vw - 120px) !important;
+} */
+
+.card-modern {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--slate-200);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 10px 20px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-modern-header {
+  padding: 1.75rem 2rem;
+  border-bottom: 1px solid var(--slate-50);
+  background: rgba(242, 140, 0, 0.02);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.header-title {
+  font-weight: 800;
+  color: var(--slate-900);
+  letter-spacing: -0.02em;
+  font-size: 2rem;
+  margin: 0 0 2px 0;
+}
+
+.header-subtitle {
+  color: var(--slate-600);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.formControl {
+  min-height: 42px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.formControl:focus {
+  border-color: #f28c00;
+  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.6);
+  color: #4a5568;
+  padding: 11px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.37);
+  color: #000000;
+}
+
+
+/* ICON BUTTONS */
+.btn-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--slate-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  color: #374151;
+}
+
+.btn-circle:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.btn-circle-danger:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+}
+
+/*create update file css*/
+
+.form-container {
+  position: relative;
+  min-height: 100vh;
+  padding: 20px 24px;
+}
+
+.gradientOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(242, 140, 0, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.formLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+
+.formWrapper {
+  position: relative;
+  z-index: 9;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.formHeader {
+  margin-bottom: 48px;
+  text-align: left;
+}
+
+/* Form Cards */
+.form-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(242, 140, 0, 0.15);
+  border-radius: 16px;
+  /* backdrop-filter: blur(10px); */
+  overflow: visible;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.form-card:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(242, 140, 0, 0.25);
+  /* box-shadow: 0 8px 32px rgba(242, 140, 0, 0.12); */
+}
+
+.card-header {
+  padding: 24px;
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid rgba(242, 140, 0, 0.12);
+  background: rgba(242, 140, 0, 0.02);
+}
+
+.card-header i {
+  color: #f28c00;
+}
+
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.formCardBody {
+  padding: 24px;
+}
+
+/* Labels & Inputs */
+.formLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+
+@media (max-width: 915px) {
+  .create-text {
+    display: none;
+  }
+}
+
+/*  Mobile */
+@media (max-width: 768px) {
+
+  .header-title {
+    font-size: 1.65rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .btn-primary-modern {
+    width: min-content;
+    text-wrap: nowrap;
+    justify-content: center;
+  }
+
+  /* Table */
+  .table-container-modern {
+    max-width: none !important;
+    width: 100%;
+    padding: 0 0.5rem 1rem;
+  }
+  
+
+  :deep(thead th) {
+    font-size: 0.65rem !important;
+  }
+
+  :deep(tbody td) {
+    font-size: 0.8rem;
+  }
+
+  /* Preview */
+  .preview-card-modern {
+    left: 50% !important;
+    transform: translateX(-50%);
+    top: auto !important;
+    bottom: 20px;
+  }
+
+  /* Modal */
+  .modal-dialog {
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .formCardBody {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .header-content {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .btn-primary-modern,
+  .btn-ghost {
+    align-self: center;
+  }
+
+  .header-title {
+    font-size: 2.5rem;
+  }
+
+  .btn-primary-modern,
+  .btn-ghost {
+    padding: 0.55rem;
+    font-size: 0.85rem;
+  }
+
+  :deep(.btn-circle) {
+    width: 28px;
+    height: 28px;
+  }
+
+}

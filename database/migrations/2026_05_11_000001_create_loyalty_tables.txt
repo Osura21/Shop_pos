@@ -1,0 +1,209 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('loyalty_programs', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->string('name');
+            $table->decimal('earning_rate', 14, 6)->default(0);
+            $table->unsignedInteger('points_expire_after_days')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index(['tenant_id', 'is_active']);
+        });
+
+        Schema::create('loyalty_tiers', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->foreignId('loyalty_program_id')->constrained('loyalty_programs')->cascadeOnDelete();
+            $table->string('name');
+            $table->text('benefits')->nullable();
+            $table->decimal('minimum_spend', 14, 3)->default(0);
+            $table->decimal('secondary_minimum_spend', 14, 3)->nullable();
+            $table->decimal('multiplier', 8, 3)->default(1);
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->string('icon_path')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index(['tenant_id', 'loyalty_program_id', 'is_active']);
+        });
+
+        Schema::create('loyalty_rewards', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->foreignId('loyalty_program_id')->constrained('loyalty_programs')->cascadeOnDelete();
+            $table->foreignId('loyalty_tier_id')->nullable()->constrained('loyalty_tiers')->nullOnDelete();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('type', 40)->default('discount');
+            $table->unsignedInteger('points_cost')->default(0);
+            $table->string('icon_path')->nullable();
+            $table->string('value_type', 30)->nullable();
+            $table->decimal('value', 14, 3)->nullable();
+            $table->decimal('secondary_value', 14, 3)->nullable();
+            $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
+            $table->decimal('quantity', 14, 3)->nullable();
+            $table->foreignId('target_tier_id')->nullable()->constrained('loyalty_tiers')->nullOnDelete();
+            $table->string('code_prefix', 30)->nullable();
+            $table->unsignedInteger('expires_in_days')->nullable();
+            $table->decimal('minimum_order_total', 14, 3)->nullable();
+            $table->decimal('secondary_minimum_order_total', 14, 3)->nullable();
+            $table->decimal('maximum_order_total', 14, 3)->nullable();
+            $table->decimal('secondary_maximum_order_total', 14, 3)->nullable();
+            $table->decimal('minimum_spend', 14, 3)->nullable();
+            $table->decimal('secondary_minimum_spend', 14, 3)->nullable();
+            $table->json('branch_ids')->nullable();
+            $table->json('available_days')->nullable();
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
+            $table->unsignedInteger('max_redemptions_per_order')->nullable();
+            $table->unsignedInteger('usage_limit')->nullable();
+            $table->unsignedInteger('per_customer_limit')->nullable();
+            $table->unsignedInteger('redeemed_count')->default(0);
+            $table->unsignedInteger('customers_count')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index(['tenant_id', 'loyalty_program_id', 'type', 'is_active']);
+        });
+
+        Schema::create('loyalty_promotions', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->foreignId('loyalty_program_id')->constrained('loyalty_programs')->cascadeOnDelete();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('type', 40)->default('bonus_points');
+            $table->decimal('multiplier', 8, 3)->nullable();
+            $table->unsignedInteger('bonus_points')->nullable();
+            $table->decimal('minimum_spend', 14, 3)->nullable();
+            $table->decimal('secondary_minimum_spend', 14, 3)->nullable();
+            $table->json('branch_ids')->nullable();
+            $table->json('available_days')->nullable();
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
+            $table->unsignedInteger('usage_limit')->nullable();
+            $table->unsignedInteger('per_customer_limit')->nullable();
+            $table->unsignedInteger('used_count')->default(0);
+            $table->unsignedInteger('customers_count')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index(['tenant_id', 'loyalty_program_id', 'type', 'is_active']);
+        });
+
+        Schema::create('loyalty_customers', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+            $table->foreignId('loyalty_program_id')->constrained('loyalty_programs')->cascadeOnDelete();
+            $table->foreignId('loyalty_tier_id')->nullable()->constrained('loyalty_tiers')->nullOnDelete();
+            $table->integer('points_balance')->default(0);
+            $table->integer('lifetime_points')->default(0);
+            $table->decimal('lifetime_spend', 14, 3)->default(0);
+            $table->decimal('secondary_lifetime_spend', 14, 3)->default(0);
+            $table->timestamp('last_earned_at')->nullable();
+            $table->timestamp('last_redeemed_at')->nullable();
+            $table->timestamps();
+            $table->unique(['tenant_id', 'customer_id', 'loyalty_program_id'], 'lc_unique_customer_program');
+        });
+
+        Schema::create('loyalty_gifts', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+            $table->foreignId('loyalty_program_id')->constrained('loyalty_programs')->cascadeOnDelete();
+            $table->foreignId('loyalty_reward_id')->constrained('loyalty_rewards')->cascadeOnDelete();
+            $table->foreignId('pos_transaction_id')->nullable()->constrained('pos_transactions')->nullOnDelete();
+            $table->string('status', 30)->default('available');
+            $table->string('type', 40);
+            $table->unsignedInteger('points_spent')->default(0);
+            $table->string('code', 80)->nullable()->index();
+            $table->json('payload')->nullable();
+            $table->timestamp('valid_until')->nullable();
+            $table->timestamp('used_at')->nullable();
+            $table->timestamps();
+            $table->index(['tenant_id', 'customer_id', 'status']);
+        });
+
+        Schema::create('loyalty_transactions', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+            $table->foreignId('loyalty_program_id')->constrained('loyalty_programs')->cascadeOnDelete();
+            $table->foreignId('loyalty_reward_id')->nullable()->constrained('loyalty_rewards')->nullOnDelete();
+            $table->foreignId('loyalty_gift_id')->nullable()->constrained('loyalty_gifts')->nullOnDelete();
+            $table->foreignId('pos_transaction_id')->nullable()->constrained('pos_transactions')->nullOnDelete();
+            $table->string('type', 30);
+            $table->string('description')->nullable();
+            $table->integer('points')->default(0);
+            $table->integer('balance_before')->default(0);
+            $table->integer('balance_after')->default(0);
+            $table->decimal('amount', 14, 3)->nullable();
+            $table->string('currency_mode', 20)->nullable();
+            $table->string('currency_code', 10)->nullable();
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamps();
+            $table->index(['tenant_id', 'customer_id', 'type']);
+        });
+
+        Schema::table('pos_sessions', function (Blueprint $table) {
+            $table->foreignId('loyalty_reward_id')->nullable()->after('promotion_code')->constrained('loyalty_rewards')->nullOnDelete();
+            $table->unsignedInteger('loyalty_points_redeemed')->default(0)->after('loyalty_reward_id');
+            $table->decimal('loyalty_discount_total', 14, 3)->default(0)->after('loyalty_points_redeemed');
+        });
+
+        Schema::table('pos_transactions', function (Blueprint $table) {
+            $table->foreignId('customer_id')->nullable()->after('branch_id')->constrained('customers')->nullOnDelete();
+            $table->foreignId('loyalty_reward_id')->nullable()->after('promotion_code')->constrained('loyalty_rewards')->nullOnDelete();
+            $table->unsignedInteger('loyalty_points_redeemed')->default(0)->after('loyalty_reward_id');
+            $table->decimal('loyalty_discount_total', 14, 3)->default(0)->after('loyalty_points_redeemed');
+            $table->unsignedInteger('loyalty_points_earned')->default(0)->after('loyalty_discount_total');
+        });
+
+        Schema::table('pos_invoices', function (Blueprint $table) {
+            $table->foreignId('loyalty_reward_id')->nullable()->after('promotion_code')->constrained('loyalty_rewards')->nullOnDelete();
+            $table->unsignedInteger('loyalty_points_redeemed')->default(0)->after('loyalty_reward_id');
+            $table->decimal('loyalty_discount_total', 14, 3)->default(0)->after('loyalty_points_redeemed');
+            $table->unsignedInteger('loyalty_points_earned')->default(0)->after('loyalty_discount_total');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('pos_invoices', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('loyalty_reward_id');
+            $table->dropColumn(['loyalty_points_redeemed', 'loyalty_discount_total', 'loyalty_points_earned']);
+        });
+
+        Schema::table('pos_transactions', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('customer_id');
+            $table->dropConstrainedForeignId('loyalty_reward_id');
+            $table->dropColumn(['loyalty_points_redeemed', 'loyalty_discount_total', 'loyalty_points_earned']);
+        });
+
+        Schema::table('pos_sessions', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('loyalty_reward_id');
+            $table->dropColumn(['loyalty_points_redeemed', 'loyalty_discount_total']);
+        });
+
+        Schema::dropIfExists('loyalty_transactions');
+        Schema::dropIfExists('loyalty_gifts');
+        Schema::dropIfExists('loyalty_customers');
+        Schema::dropIfExists('loyalty_promotions');
+        Schema::dropIfExists('loyalty_rewards');
+        Schema::dropIfExists('loyalty_tiers');
+        Schema::dropIfExists('loyalty_programs');
+    }
+};
