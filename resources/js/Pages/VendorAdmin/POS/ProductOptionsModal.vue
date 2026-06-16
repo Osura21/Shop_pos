@@ -134,6 +134,7 @@
               <i class="bi bi-dash-lg"></i>
             </button>
             <input
+              ref="qtyInput"
               type="number"
               v-model.number="form.qty"
               :min="minQty"
@@ -141,6 +142,8 @@
               :step="inputStep"
               class="qty-input"
               @blur="normalizeQty"
+              @focus="selectQtyInput"
+              @keydown.enter.prevent="confirmAdd"
               :readonly="!qtyEditable"
               :disabled="!qtyEditable"
             />
@@ -354,6 +357,10 @@ export default {
         this.form.radios[option.key] = ''
         this.form.inputs[option.key] = ''
       })
+
+      this.$nextTick(() => {
+        this.focusQtyInput()
+      })
     },
     close() {
       if (this.submitting) return
@@ -371,6 +378,15 @@ export default {
     },
     normalizeQty() {
       this.form.qty = this.clampQty(this.form.qty)
+    },
+    focusQtyInput() {
+      if (!this.qtyEditable) return
+      this.$refs.qtyInput?.focus()
+      this.selectQtyInput()
+    },
+    selectQtyInput() {
+      if (!this.qtyEditable) return
+      this.$refs.qtyInput?.select?.()
     },
     decreaseQty() {
       this.form.qty = this.clampQty(this.toNumber(this.form.qty) - this.buttonStep)
