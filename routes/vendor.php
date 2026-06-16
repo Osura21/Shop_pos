@@ -110,6 +110,7 @@ Route::prefix('vendor-admin')->name('vendor.')->group(function () {
             ->group(function () {
                 Route::get('/', [CustomerController::class, 'index'])->name('index');
                 Route::get('/getdata', [CustomerController::class, 'getData'])->name('getdata');
+                Route::get('/{customer}/view', [CustomerController::class, 'view'])->name('view');
                 Route::get('/create', [CustomerController::class, 'create'])->name('create');
                 Route::post('/', [CustomerController::class, 'store'])->name('store');
                 Route::get('/{customer}/edit', [CustomerController::class, 'edit'])->name('edit');
@@ -357,6 +358,8 @@ Route::prefix('vendor-admin')->name('vendor.')->group(function () {
             Route::get('/sessions/{session}/loyalty/gifts', [PosLoyaltyController::class, 'gifts'])->name('loyalty.gifts');
             Route::post('/sessions/{session}/loyalty/gifts/{gift}/apply', [PosLoyaltyController::class, 'applyGift'])->name('loyalty.gifts.apply');
             Route::get('/sessions/{session}/products', [PosViewerController::class, 'fetchProducts'])->name('products');
+            Route::get('/sessions/{session}/customers/{customer}', [PosViewerController::class, 'customerDetails'])->name('customers.details');
+            Route::post('/sessions/{session}/customers/{customer}/credit-payments', [PosViewerController::class, 'storeCustomerCreditPayment'])->name('customers.credit-payments.store');
             Route::post('/sessions/{session}/items', [PosViewerController::class, 'addItem'])->name('add-item');
             Route::patch('/sessions/{session}/items/{itemId}/qty', [PosViewerController::class, 'updateItemQty'])->name('update-item-qty');
             Route::delete('/sessions/{session}/items/{itemId}', [PosViewerController::class, 'removeItem'])->name('remove-item');
@@ -383,6 +386,8 @@ Route::prefix('vendor-admin')->name('vendor.')->group(function () {
     ->name('orders.waiter');
             Route::post('/sessions/{session}/finalize-payment', [PosViewerController::class, 'finalizePayment'])
                 ->name('finalize-payment');
+            Route::get('/customer-credit-payments/{payment}/print', [PosViewerController::class, 'printCustomerCreditPayment'])
+                ->name('customer-credit-payments.print');
             Route::prefix('kitchen')->name('kitchen.')->group(function () {
                 Route::get('/', [KitchenViewerController::class, 'index'])->name('index');
                 Route::patch('/items/{item}/start-preparing', [KitchenViewerController::class, 'startItemPreparing'])->name('items.start-preparing');

@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\CustomerCreditPayment;
+use App\Models\PosInvoice;
+use App\Models\PosTransaction;
+use App\Models\PosTransactionPayment;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -173,6 +177,128 @@ class CustomerController extends Controller
             'customer' => $customer,
             'customerTypeOptions' => self::CUSTOMER_TYPE_OPTIONS,
             'genderOptions' => self::GENDER_OPTIONS,
+        ]);
+    }
+
+    public function view(Customer $customer)
+    {
+        abort_unless((int) $customer->tenant_id === (int) $this->tenantId(), 404);
+
+        $customer->loadMissing('loyaltyAccounts.tier');
+
+        $transactionsQuery = PosTransaction::query()
+            ->where('tenant_id', $this->tenantId())
+            ->where('customer_id', $customer->id);
+
+        $creditSalesQuery = PosTransactionPayment::query()
+            ->where('payment_method', 'credit')
+            ->whereHas('transaction', function ($query) use ($customer) {
+                $query->where('tenant_id', $this->tenantId())
+                    ->where('customer_id', $customer->id);
+            });
+
+        $creditPaymentsQuery = CustomerCreditPayment::query()
+            ->where('tenant_id', $this->tenantId())
+            ->where('customer_id', $customer->id);
+
+        $receiptsQuery = PosInvoice::query()
+            ->where('tenant_id', $this->tenantId())
+            ->where('customer_id', $customer->id);
+
+        $creditSalesTotal = (float) (clone $creditSalesQuery)->sum('amount');
+        $creditPaymentsTotal = (float) (clone $creditPaymentsQuery)->sum('amount');
+        $outstandingCredit = max(0, $creditSalesTotal - $creditPaymentsTotal);
+
+        $recentCreditSales = (clone $creditSalesQuery)
+            ->with(['transaction.register.branch'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $invoiceMap = PosInvoice::query()
+            ->where('tenant_id', $this->tenantId())
+            ->whereIn('pos_transaction_id', $recentCreditSales->pluck('pos_transaction_id')->filter()->all())
+            ->get()
+            ->keyBy('pos_transaction_id');
+
+        $recentCreditPayments = (clone $creditPaymentsQuery)
+            ->latest('received_at')
+            ->take(10)
+            ->get();
+
+        $receipts = (clone $receiptsQuery)
+            ->latest('issued_at')
+            ->take(12)
+            ->get();
+
+        $loyaltyAccount = $customer->loyaltyAccounts->sortByDesc('points_balance')->first();
+
+        return response()->json([
+            'customer' => [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'phone' => $customer->phone,
+                'email' => $customer->email,
+                'username' => $customer->username,
+                'customer_type' => $customer->customer_type,
+                'birthdate' => optional($customer->birthdate)->format('Y-m-d'),
+                'gender' => $customer->gender,
+                'note' => $customer->note,
+                'registration_number' => $customer->registration_number,
+                'vat_tin' => $customer->vat_tin,
+                'avatar_url' => $customer->avatar_url,
+                'is_active' => (bool) $customer->is_active,
+                'created_at' => optional($customer->created_at)->format('Y-m-d h:i A'),
+                'edit_url' => route('vendor.customers.edit', $customer->id),
+            ],
+            'stats' => [
+                'lifetime_sales_total' => (float) (clone $transactionsQuery)->sum('grand_total'),
+                'orders_count' => (int) (clone $transactionsQuery)->count(),
+                'receipts_count' => (int) (clone $receiptsQuery)->count(),
+                'credit_sales_total' => $creditSalesTotal,
+                'credit_payments_total' => $creditPaymentsTotal,
+                'outstanding_credit' => $outstandingCredit,
+                'last_sale_at' => optional((clone $transactionsQuery)->latest('paid_at')->first()?->paid_at)->format('Y-m-d h:i A'),
+                'loyalty_points' => (int) ($loyaltyAccount?->points_balance ?? 0),
+                'loyalty_tier' => $loyaltyAccount?->tier?->name ?: null,
+            ],
+            'credit_sales' => $recentCreditSales->map(function ($payment) use ($invoiceMap) {
+                $transaction = $payment->transaction;
+                $invoice = $invoiceMap->get($payment->pos_transaction_id);
+
+                return [
+                    'id' => $payment->id,
+                    'amount' => (float) $payment->amount,
+                    'transaction_id' => $transaction?->id,
+                    'transaction_uuid' => $transaction?->uuid,
+                    'invoice_id' => $invoice?->id,
+                    'invoice_no' => $invoice?->invoice_no,
+                    'branch_name' => $transaction?->register?->branch?->name,
+                    'paid_at' => optional($transaction?->paid_at)->format('Y-m-d h:i A'),
+                ];
+            })->values(),
+            'credit_payments' => $recentCreditPayments->map(function ($payment) {
+                return [
+                    'id' => $payment->id,
+                    'receipt_no' => $payment->receipt_no,
+                    'amount' => (float) $payment->amount,
+                    'payment_method' => $payment->payment_method,
+                    'reference' => $payment->reference,
+                    'notes' => $payment->notes,
+                    'received_at' => optional($payment->received_at)->format('Y-m-d h:i A'),
+                    'print_url' => route('vendor.pos.customer-credit-payments.print', ['payment' => $payment->id, 'print' => 1]),
+                ];
+            })->values(),
+            'receipts' => $receipts->map(function ($invoice) {
+                return [
+                    'id' => $invoice->id,
+                    'invoice_no' => $invoice->invoice_no,
+                    'total' => (float) $invoice->total,
+                    'status' => $invoice->status,
+                    'issued_at' => optional($invoice->issued_at)->format('Y-m-d h:i A'),
+                    'print_url' => route('vendor.sales.invoices.print', $invoice->id),
+                ];
+            })->values(),
         ]);
     }
 

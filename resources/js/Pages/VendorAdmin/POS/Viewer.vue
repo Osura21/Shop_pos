@@ -208,6 +208,17 @@
                                     @update:modelValue="saveMeta" />
                             </div>
 
+                            <button
+                                v-if="metaForm.channel !== 'pms'"
+                                type="button"
+                                class="pos-customer-view-btn"
+                                title="View customer details"
+                                :disabled="!metaForm.customer_id"
+                                @click="openCustomerDetails"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </button>
+
                             <button v-if="metaForm.channel !== 'pms'" type="button" class="pos-add-customer-btn"
                                 title="Add customer" @click="openQuickCustomerModal">
                                 <i class="bi bi-person-plus"></i>
@@ -527,6 +538,15 @@
 
         <CashMovementOffcanvas :show="showCashMovement" :session-id="session?.id" :currency-code="activeCurrencyCode"
             @close="showCashMovement = false" />
+        <CustomerDetailsOffcanvas
+            :show="showCustomerDetails"
+            :customer-id="metaForm.customer_id"
+            :session-id="session?.id"
+            :currency-code="activeCurrencyCode"
+            @close="closeCustomerDetails"
+            @toast="handleCustomerDrawerToast"
+            @updated="refreshSessionSnapshot"
+        />
         <OrdersOffcanvas ref="ordersOffcanvasRef" :show="showOrders" :session-id="session?.id"
             :register-id="selectedRegister?.id" :branch-id="metaForm.branch_id" @close="showOrders = false"
             @pay-order="restoreOrderAndOpenPayment" @edit-order="editExistingOrder" @view-order="openOrderDetails" />
@@ -935,6 +955,7 @@ import VendorAdminLayout from '@/Layouts/VendorAdminLayout.vue'
 import ProductOptionsModal from './ProductOptionsModal.vue'
 import SelectInput from '@/Components/SelectInput.vue'
 import CashMovementOffcanvas from './CashMovement/CashMovementOffcanvas.vue'
+import CustomerDetailsOffcanvas from './CustomerDetailsOffcanvas.vue'
 import OrdersOffcanvas from './OrdersOffcanvas.vue'
 import DatePicker from '@/Components/DatePicker.vue'
 import PhoneInput from '@/Components/PhoneInput.vue'
@@ -948,7 +969,7 @@ import axios from 'axios'
 export default {
     name: 'PosViewer',
     layout: VendorAdminLayout,
-    components: { Head, Link, ProductOptionsModal, DatePicker, SelectInput, PhoneInput, CashMovementOffcanvas, OrdersOffcanvas, FinalizePaymentModal, TableDetailsOffcanvas },
+    components: { Head, Link, ProductOptionsModal, DatePicker, SelectInput, PhoneInput, CashMovementOffcanvas, CustomerDetailsOffcanvas, OrdersOffcanvas, FinalizePaymentModal, TableDetailsOffcanvas },
     props: {
         session: { type: Object, default: null },
         selectedRegister: { type: Object, default: null },
@@ -1017,6 +1038,7 @@ export default {
             selectedPmsGuest: this.session?.pms_guest_snapshot ?? null,
             showFinalizePayment: false,
             selectedPaymentMethod: 'cash',
+            showCustomerDetails: false,
             paymentSessionOverride: null,
             showLoyaltyMenu: false,
             showLoyaltySummary: false,
@@ -1380,6 +1402,7 @@ promotionDiscountTotal() {
         'metaForm.customer_id'(value) {
             if (!value) {
                 this.showLoyaltyMenu = false
+                this.showCustomerDetails = false
             }
         },
         'metaForm.channel'(value) {
@@ -1924,6 +1947,33 @@ handleTableCreateOrder(table) {
             this.$nextTick(() => {
                 this.showFinalizePayment = true
                 this.actionLoading.openPayment = false
+            })
+        },
+        openCustomerDetails() {
+            if (!this.metaForm.customer_id || !this.session?.id) return
+            this.showCustomerDetails = true
+        },
+        closeCustomerDetails() {
+            this.showCustomerDetails = false
+        },
+        handleCustomerDrawerToast(payload) {
+            if (payload?.type === 'success') {
+                this.toastSuccess(payload.message || 'Action completed successfully.')
+                return
+            }
+
+            if (payload?.type === 'error') {
+                this.toastError(payload.message || 'Unable to complete customer action.')
+            }
+        },
+        refreshSessionSnapshot() {
+            router.reload({
+                only: ['session'],
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    this.reloadProducts()
+                },
             })
         },
         toggleLoyaltyMenu() {
@@ -3993,6 +4043,33 @@ handleTableCreateOrder(table) {
     transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 
+.pos-customer-view-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #dbe4f0;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #64748b;
+    display: inline-grid;
+    place-items: center;
+    align-self: end;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.pos-customer-view-btn:hover:not(:disabled) {
+    background: #fff7ed;
+    border-color: #fdba74;
+    color: #ea580c;
+    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.08);
+}
+
+.pos-customer-view-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 .pos-add-customer-btn:hover {
     background: #ffedd5;
     border-color: #fb923c;
@@ -4137,11 +4214,13 @@ handleTableCreateOrder(table) {
 
     .pos-actions-wrap,
     .pos-actions-btn,
+    .pos-customer-view-btn,
     .pos-add-customer-btn {
         width: 100%;
     }
 
     .pos-actions-btn,
+    .pos-customer-view-btn,
     .pos-add-customer-btn {
         justify-content: center;
     }

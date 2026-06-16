@@ -9,6 +9,7 @@ use App\Http\Controllers\Concerns\ResolvesTenantContext;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\CustomerCreditPayment;
 use App\Models\DiningTable;
 use App\Models\Menu;
 use App\Models\PosRegister;
@@ -3144,6 +3145,255 @@ private function broadcastKitchenOrderPlaced(?int $ticketId): void
             ]);
         }
     }
+}
+
+public function customerDetails(PosSession $session, Customer $customer)
+{
+    abort_unless((int) $session->tenant_id === (int) $this->tenantId(), 404);
+    abort_unless((int) $customer->tenant_id === (int) $this->tenantId(), 404);
+
+    $customer->loadMissing('loyaltyAccounts.tier');
+
+    $transactionsQuery = PosTransaction::query()
+        ->where('tenant_id', $this->tenantId())
+        ->where('customer_id', $customer->id);
+
+    $creditSalesQuery = PosTransactionPayment::query()
+        ->where('payment_method', 'credit')
+        ->whereHas('transaction', function ($query) use ($customer) {
+            $query->where('tenant_id', $this->tenantId())
+                ->where('customer_id', $customer->id);
+        });
+
+    $creditPaymentsQuery = CustomerCreditPayment::query()
+        ->where('tenant_id', $this->tenantId())
+        ->where('customer_id', $customer->id);
+
+    $creditSalesTotal = (float) (clone $creditSalesQuery)->sum('amount');
+    $creditPaymentsTotal = (float) (clone $creditPaymentsQuery)->sum('amount');
+    $outstandingCredit = max(0, $creditSalesTotal - $creditPaymentsTotal);
+
+    $recentCreditSales = (clone $creditSalesQuery)
+        ->with(['transaction.register.branch'])
+        ->latest()
+        ->take(10)
+        ->get();
+
+    $invoiceMap = PosInvoice::query()
+        ->where('tenant_id', $this->tenantId())
+        ->whereIn('pos_transaction_id', $recentCreditSales->pluck('pos_transaction_id')->filter()->all())
+        ->get()
+        ->keyBy('pos_transaction_id');
+
+    $recentCreditPayments = (clone $creditPaymentsQuery)
+        ->latest('received_at')
+        ->take(10)
+        ->get();
+
+    $receiptsQuery = PosInvoice::query()
+        ->where('tenant_id', $this->tenantId())
+        ->where('customer_id', $customer->id);
+
+    $receipts = (clone $receiptsQuery)
+        ->latest('issued_at')
+        ->take(12)
+        ->get();
+
+    $loyaltyAccount = $customer->loyaltyAccounts->sortByDesc('points_balance')->first();
+
+    return response()->json([
+        'customer' => [
+            'id' => $customer->id,
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'email' => $customer->email,
+            'username' => $customer->username,
+            'customer_type' => $customer->customer_type,
+            'birthdate' => optional($customer->birthdate)->format('Y-m-d'),
+            'gender' => $customer->gender,
+            'note' => $customer->note,
+            'registration_number' => $customer->registration_number,
+            'vat_tin' => $customer->vat_tin,
+            'avatar_url' => $customer->avatar_url,
+            'is_active' => (bool) $customer->is_active,
+            'created_at' => optional($customer->created_at)->format('Y-m-d h:i A'),
+            'edit_url' => route('vendor.customers.edit', $customer->id),
+        ],
+        'stats' => [
+            'lifetime_sales_total' => (float) (clone $transactionsQuery)->sum('grand_total'),
+            'orders_count' => (int) (clone $transactionsQuery)->count(),
+            'receipts_count' => (int) (clone $receiptsQuery)->count(),
+            'credit_sales_total' => $creditSalesTotal,
+            'credit_payments_total' => $creditPaymentsTotal,
+            'outstanding_credit' => $outstandingCredit,
+            'last_sale_at' => optional((clone $transactionsQuery)->latest('paid_at')->first()?->paid_at)->format('Y-m-d h:i A'),
+            'loyalty_points' => (int) ($loyaltyAccount?->points_balance ?? 0),
+            'loyalty_tier' => $loyaltyAccount?->tier?->name ?: null,
+        ],
+        'credit_sales' => $recentCreditSales->map(function ($payment) use ($invoiceMap) {
+            $transaction = $payment->transaction;
+            $invoice = $invoiceMap->get($payment->pos_transaction_id);
+
+            return [
+                'id' => $payment->id,
+                'amount' => (float) $payment->amount,
+                'transaction_id' => $transaction?->id,
+                'transaction_uuid' => $transaction?->uuid,
+                'invoice_id' => $invoice?->id,
+                'invoice_no' => $invoice?->invoice_no,
+                'branch_name' => $transaction?->register?->branch?->name,
+                'paid_at' => optional($transaction?->paid_at)->format('Y-m-d h:i A'),
+            ];
+        })->values(),
+        'credit_payments' => $recentCreditPayments->map(function ($payment) {
+            return [
+                'id' => $payment->id,
+                'receipt_no' => $payment->receipt_no,
+                'amount' => (float) $payment->amount,
+                'payment_method' => $payment->payment_method,
+                'reference' => $payment->reference,
+                'notes' => $payment->notes,
+                'received_at' => optional($payment->received_at)->format('Y-m-d h:i A'),
+                'print_url' => route('vendor.pos.customer-credit-payments.print', ['payment' => $payment->id, 'print' => 1]),
+            ];
+        })->values(),
+        'receipts' => $receipts->map(function ($invoice) {
+            return [
+                'id' => $invoice->id,
+                'invoice_no' => $invoice->invoice_no,
+                'total' => (float) $invoice->total,
+                'status' => $invoice->status,
+                'issued_at' => optional($invoice->issued_at)->format('Y-m-d h:i A'),
+                'print_url' => route('vendor.sales.invoices.print', $invoice->id),
+            ];
+        })->values(),
+        'payment_methods' => [
+            ['label' => 'Cash', 'value' => 'cash'],
+            ['label' => 'Card', 'value' => 'card'],
+            ['label' => 'Mobile Wallet', 'value' => 'mobile_wallet'],
+            ['label' => 'Bank Transfer', 'value' => 'bank_transfer'],
+        ],
+    ]);
+}
+
+public function storeCustomerCreditPayment(Request $request, PosSession $session, Customer $customer)
+{
+    abort_unless((int) $session->tenant_id === (int) $this->tenantId(), 404);
+    abort_unless((int) $customer->tenant_id === (int) $this->tenantId(), 404);
+
+    $validated = $request->validate([
+        'amount' => ['required', 'numeric', 'min:0.01'],
+        'payment_method' => ['required', Rule::in(['cash', 'card', 'mobile_wallet', 'bank_transfer'])],
+        'reference' => ['nullable', 'string', 'max:80'],
+        'notes' => ['nullable', 'string'],
+        'print_receipt' => ['nullable', 'boolean'],
+    ]);
+
+    $outstandingCredit = $this->customerOutstandingCredit($customer->id);
+
+    if ($outstandingCredit <= 0) {
+        throw ValidationException::withMessages([
+            'amount' => 'This customer does not have any outstanding credit.',
+        ]);
+    }
+
+    $amount = min((float) $validated['amount'], $outstandingCredit);
+
+    if ($amount <= 0) {
+        throw ValidationException::withMessages([
+            'amount' => 'Enter a valid payment amount.',
+        ]);
+    }
+
+    $payment = null;
+
+    DB::transaction(function () use ($session, $customer, $validated, $amount, &$payment) {
+        $payment = CustomerCreditPayment::create([
+            'uuid' => (string) Str::uuid(),
+            'tenant_id' => $this->tenantId(),
+            'customer_id' => $customer->id,
+            'branch_id' => $session->branch_id,
+            'pos_register_id' => $session->pos_register_id,
+            'pos_session_id' => $session->id,
+            'user_id' => auth('vendor')->id(),
+            'currency_code' => $session->currency_code,
+            'amount' => $amount,
+            'payment_method' => $validated['payment_method'],
+            'receipt_no' => 'CRP-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(4)),
+            'reference' => $validated['reference'] ?? null,
+            'notes' => $validated['notes'] ?? null,
+            'received_at' => now(),
+        ]);
+
+        if ($validated['payment_method'] === 'cash') {
+            $before = (float) $session->current_balance;
+            $after = $before + $amount;
+
+            PosCashMovement::create([
+                'uuid' => (string) Str::uuid(),
+                'tenant_id' => $this->tenantId(),
+                'branch_id' => $session->branch_id,
+                'pos_register_id' => $session->pos_register_id,
+                'pos_session_id' => $session->id,
+                'user_id' => auth('vendor')->id(),
+                'direction' => 'in',
+                'reason' => 'pay_in',
+                'amount' => $amount,
+                'balance_before' => $before,
+                'balance_after' => $after,
+                'reference' => $payment->receipt_no,
+                'notes' => 'Customer credit payment received',
+                'currency_mode' => $session->currency_mode,
+                'currency_code' => $session->currency_code,
+                'occurred_at' => now(),
+            ]);
+
+            $session->update([
+                'current_balance' => $after,
+            ]);
+        }
+    });
+
+    return response()->json([
+        'message' => 'Customer credit payment recorded successfully.',
+        'payment' => [
+            'id' => $payment->id,
+            'receipt_no' => $payment->receipt_no,
+            'amount' => (float) $payment->amount,
+        ],
+        'outstanding_credit' => $this->customerOutstandingCredit($customer->id),
+        'print_url' => route('vendor.pos.customer-credit-payments.print', ['payment' => $payment->id, 'print' => (int) ($validated['print_receipt'] ?? true)]),
+    ]);
+}
+
+public function printCustomerCreditPayment(CustomerCreditPayment $payment)
+{
+    abort_unless((int) $payment->tenant_id === (int) $this->tenantId(), 404);
+
+    $payment->load(['customer', 'branch', 'register']);
+
+    return response()->view('vendor.pos.prints.customer-credit-payment', [
+        'payment' => $payment,
+        'autoPrint' => request()->boolean('print'),
+    ]);
+}
+
+private function customerOutstandingCredit(int $customerId): float
+{
+    $creditSalesTotal = (float) PosTransactionPayment::query()
+        ->where('payment_method', 'credit')
+        ->whereHas('transaction', function ($query) use ($customerId) {
+            $query->where('tenant_id', $this->tenantId())
+                ->where('customer_id', $customerId);
+        })
+        ->sum('amount');
+
+    $creditPaymentsTotal = (float) CustomerCreditPayment::query()
+        ->where('tenant_id', $this->tenantId())
+        ->where('customer_id', $customerId)
+        ->sum('amount');
+
+    return max(0, $creditSalesTotal - $creditPaymentsTotal);
 }
 
 public function confirmKitchenOrder(PosKitchenTicket $ticket)

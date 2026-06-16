@@ -43,6 +43,14 @@
     :loading="deleting" title="Delete this customer?" cancel-label="Keep Customer" confirm-label="Delete Customer"
     @confirm="confirmDelete" @closed="onModalClosed" />
 
+  <CustomerDetailsOffcanvas
+    :show="showCustomerDrawer"
+    :customer-id="selectedCustomerId"
+    mode="customer-page"
+    currency-code="LKR"
+    @close="closeCustomerDrawer"
+  />
+
 </template>
 
 <script setup>
@@ -51,6 +59,7 @@ import { Head, router, usePage } from '@inertiajs/vue3'
 import VendorAdminLayout from '@/Layouts/VendorAdminLayout.vue'
 import DataTable from '@/Components/Datatable.vue'
 import DeleteModal from '@/Components/DeleteModal.vue'
+import CustomerDetailsOffcanvas from '@/Pages/VendorAdmin/POS/CustomerDetailsOffcanvas.vue'
 import { error as alertError, success as alertSuccess } from "@/Utils/modernAlert";
 import { usePermission } from "@/composables/usePermission";
 
@@ -138,6 +147,9 @@ const columns = computed(() => ([
       const name = escapeHtml(row?.name || '')
       return `
   <div class="d-flex gap-2 justify-content-end">
+    <button type="button" class="btn-circle js-view" data-id="${data}">
+      <i class="bi bi-eye"></i>
+    </button>
     ${can('customers.edit')
           ? `<button type="button" class="btn-circle js-edit" data-id="${data}">
             <i class="bi bi-pencil-fill"></i>
@@ -170,6 +182,19 @@ function goCreate() {
 
 function goEdit(id) {
   router.visit(route('vendor.customers.edit', id))
+}
+
+const showCustomerDrawer = ref(false)
+const selectedCustomerId = ref(null)
+
+function openCustomerDrawer(id) {
+  selectedCustomerId.value = id
+  showCustomerDrawer.value = true
+}
+
+function closeCustomerDrawer() {
+  showCustomerDrawer.value = false
+  selectedCustomerId.value = null
 }
 
 const showDeleteModal = ref(false)
@@ -211,6 +236,10 @@ function bindActions() {
     const id = e.currentTarget?.dataset?.id
     if (id) goEdit(id)
   })
+  $(document).on('click', `${selector} .js-view`, (e) => {
+    const id = e.currentTarget?.dataset?.id
+    if (id) openCustomerDrawer(id)
+  })
   $(document).on('click', `${selector} .js-delete`, (e) => {
     const id = e.currentTarget?.dataset?.id
     const name = e.currentTarget?.dataset?.name || ''
@@ -223,6 +252,7 @@ function unbindActions() {
   if (!$) return
   const selector = `#${tableId}`
   $(document).off('click', `${selector} .js-edit`)
+  $(document).off('click', `${selector} .js-view`)
   $(document).off('click', `${selector} .js-delete`)
 }
 
