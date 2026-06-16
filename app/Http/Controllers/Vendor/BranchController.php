@@ -27,6 +27,7 @@ class BranchController extends Controller
     private const PAYMENT_METHOD_OPTIONS = [
         'cash'          => 'Cash',
         'card'          => 'Card',
+        'credit'        => 'Credit',
         'bank_transfer' => 'Bank Transfer',
         'mobile_wallet' => 'Mobile Wallet',
         'gift_card'     => 'Gift Card',

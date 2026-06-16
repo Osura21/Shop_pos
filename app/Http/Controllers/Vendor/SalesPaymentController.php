@@ -100,6 +100,7 @@ class SalesPaymentController extends Controller
         return match ((string) $method) {
             'cash' => 'success',
             'card' => 'info',
+            'credit' => 'purple',
             'split' => 'purple',
             'gift_card' => 'orange',
             'bank_transfer' => 'teal',

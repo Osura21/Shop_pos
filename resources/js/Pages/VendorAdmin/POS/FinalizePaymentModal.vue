@@ -303,6 +303,7 @@ export default {
         fireAfterPayment: { type: Boolean, default: false },
         firePayload: { type: Object, default: () => ({}) },
         selectedPmsGuest: { type: Object, default: null },
+        initialPaymentMethod: { type: String, default: 'cash' },
     },
 
     emits: ['close', 'paid'],
@@ -318,6 +319,7 @@ export default {
                 { label: 'Cash', value: 'cash' },
                 { label: 'Mobile Wallet', value: 'mobile_wallet' },
                 { label: 'Card', value: 'card' },
+                { label: 'Credit', value: 'credit' },
                 { label: 'Bank Transfer', value: 'bank_transfer' },
                 { label: 'Gift Card', value: 'gift_card' },
                 { label: 'Charge to Room', value: 'room_charge' },
@@ -450,15 +452,25 @@ export default {
         },
     },
 
+    mounted() {
+        window.addEventListener('keydown', this.handlePaymentShortcut)
+    },
+
+    beforeUnmount() {
+        window.removeEventListener('keydown', this.handlePaymentShortcut)
+    },
+
     methods: {
         resetModal() {
-            const defaultMethod = this.selectedPmsGuest ? 'room_charge' : 'cash'
+            const requestedMethod = String(this.initialPaymentMethod || 'cash')
+            const allowedMethods = this.paymentMethods.map((method) => method.value)
+            const defaultMethod = this.selectedPmsGuest ? 'room_charge' : (allowedMethods.includes(requestedMethod) ? requestedMethod : 'cash')
             this.paymentMode = 'full'
             this.payments = [this.makePaymentRow(defaultMethod, this.money(this.grandTotal))]
-            this.activeInput = { type: 'payment', index: 0 }
+            this.activeInput = { type: 'customer', index: null }
             this.customerGivenInput = this.money(this.grandTotal)
             this.submitting = false
-            this.showCalculator = false
+            this.showCalculator = true
             this.calculatorExpression = ''
             this.selectedGuestKey = ''
             this.pmsError = ''
@@ -531,6 +543,91 @@ export default {
                     row.amount = this.money(this.grandTotal)
                 }
             }
+        },
+
+        handlePaymentShortcut(event) {
+            if (!this.show || event.defaultPrevented) return
+
+            const key = String(event.key || '').toLowerCase()
+
+            if (key === 'escape') {
+                event.preventDefault()
+                if (this.showCalculator) {
+                    this.closeCalculator()
+                } else {
+                    this.close()
+                }
+                return
+            }
+
+            if (key === 'f4') {
+                event.preventDefault()
+                this.setCustomerGivenActive()
+                this.openCalculator()
+                return
+            }
+
+            if (this.showCalculator && this.handleCalculatorKeyboard(event)) {
+                return
+            }
+
+            if (key === 'enter' && event.ctrlKey) {
+                event.preventDefault()
+                this.submit(false)
+                return
+            }
+
+            if (key === 'enter' && this.showCalculator) {
+                event.preventDefault()
+                if (this.calculatorExpression) {
+                    this.applyCalculatorResult()
+                } else {
+                    this.closeCalculator()
+                    this.submit(true)
+                }
+                return
+            }
+
+            if (key === 'enter' && !this.showCalculator) {
+                event.preventDefault()
+                this.submit(true)
+            }
+        },
+
+        handleCalculatorKeyboard(event) {
+            const key = String(event.key || '')
+            const operatorMap = {
+                '/': '÷',
+                '*': '×',
+                '-': '−',
+                '+': '+',
+            }
+
+            if (/^\d$/.test(key) || key === '.') {
+                event.preventDefault()
+                this.pressCalculatorKey(key)
+                return true
+            }
+
+            if (operatorMap[key]) {
+                event.preventDefault()
+                this.pressCalculatorKey(operatorMap[key])
+                return true
+            }
+
+            if (key === 'Backspace') {
+                event.preventDefault()
+                this.calculatorExpression = this.calculatorExpression.slice(0, -1)
+                return true
+            }
+
+            if (key === 'Delete' || key.toLowerCase() === 'c') {
+                event.preventDefault()
+                this.calculatorExpression = ''
+                return true
+            }
+
+            return false
         },
 
         async lookupAndApplyGiftCard(row, index) {
@@ -759,7 +856,7 @@ export default {
 
             if (parts.length <= 1) return cleaned
 
-            return `${parts[0]}.${parts.slice(1).join('').slice(0, 3)}`
+            return `${parts[0]}.${parts.slice(1).join('').slice(0, 2)}`
         },
 
         toNumber(value) {
@@ -767,7 +864,7 @@ export default {
         },
 
         money(value) {
-            return Number(value || 0).toFixed(3)
+            return Number(value || 0).toFixed(2)
         },
         currencySymbol,
         stripCurrency(value) {

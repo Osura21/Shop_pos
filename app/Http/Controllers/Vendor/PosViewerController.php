@@ -2527,7 +2527,7 @@ public function finalizePayment(Request $request, PosSession $session)
         'notes' => ['nullable', 'string'],
         'guest_count' => ['nullable', 'integer', 'min:1'],
         'payments' => ['required', 'array', 'min:1'],
-        'payments.*.payment_method' => ['required', Rule::in(['cash', 'mobile_wallet', 'card', 'bank_transfer', 'gift_card', 'room_charge'])],
+        'payments.*.payment_method' => ['required', Rule::in(['cash', 'mobile_wallet', 'card', 'credit', 'bank_transfer', 'gift_card', 'room_charge'])],
         'payments.*.amount' => ['required', 'numeric', 'min:0.001'],
         'payments.*.transaction_id' => ['nullable', 'string', 'max:255'],
         'payments.*.gift_card_code' => ['nullable', 'string', 'max:80'],
@@ -2592,9 +2592,16 @@ public function finalizePayment(Request $request, PosSession $session)
         ->sum('amount');
 
     $usesRoomCharge = $payments->contains(fn ($payment) => $payment['payment_method'] === 'room_charge');
+    $usesCredit = $payments->contains(fn ($payment) => $payment['payment_method'] === 'credit');
     $roomChargeAmount = (float) $payments
         ->where('payment_method', 'room_charge')
         ->sum('amount');
+
+    if ($usesCredit && !$session->customer_id) {
+        return back()->withErrors([
+            'payments' => 'Select a customer before using credit payment.',
+        ]);
+    }
 
     if ($usesRoomCharge && empty($validated['room_charge'])) {
         return back()->withErrors([

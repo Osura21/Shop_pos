@@ -307,11 +307,11 @@
                         <i class="bi bi-grid-3x3-gap"></i>
                         <span>Table Viewer</span>
                         </button>
-                        <button type="button" class="summary-utility-card" @click="showOrders = true">
+                        <button v-if="false" type="button" class="summary-utility-card" @click="showOrders = true">
                             <i class="bi bi-basket"></i>
                             <span>Orders</span>
                         </button>
-                        <button type="button" class="summary-utility-card" @click="showCashMovement = true">
+                        <button v-if="false" type="button" class="summary-utility-card" @click="showCashMovement = true">
                             <i class="bi bi-cash-stack"></i>
                             <span>Cash Movement</span>
                         </button>
@@ -461,25 +461,38 @@
                  <div class="summary-actions" :class="{ 'summary-actions--dine-in': isDineIn }">
     <button
         type="button"
-        class="summary-action summary-action--kitchen"
-        :disabled="!hasOrderItems || actionLoading.sendToKitchen"
-        :class="{ 'summary-action--disabled': !hasOrderItems || actionLoading.sendToKitchen }"
-        @click="sendToKitchen"
+        class="summary-action summary-action--cash"
+        :disabled="!hasOrderItems || actionLoading.openPayment"
+        :class="{ 'summary-action--disabled': !hasOrderItems || actionLoading.openPayment }"
+        title="Cash payment (F11)"
+        @click="openFinalizePayment('cash')"
     >
-        <i class="bi bi-send-check"></i>
-        <span>{{ actionLoading.sendToKitchen ? 'Sending...' : 'Send To Kitchen' }}</span>
+        <i class="bi bi-cash-stack"></i>
+        <span>{{ actionLoading.openPayment ? 'Opening...' : 'Cash F11' }}</span>
     </button>
 
     <button
-        v-if="!isDineIn"
         type="button"
-        class="summary-action summary-action--pay"
+        class="summary-action summary-action--card"
         :disabled="!hasOrderItems || actionLoading.openPayment"
         :class="{ 'summary-action--disabled': !hasOrderItems || actionLoading.openPayment }"
-        @click="openFinalizePayment"
+        title="Card payment (F10)"
+        @click="openFinalizePayment('card')"
     >
-        <i class="bi bi-fire"></i>
-        <span>{{ actionLoading.openPayment ? 'Opening...' : 'Pay & Fire' }}</span>
+        <i class="bi bi-credit-card-2-front"></i>
+        <span>{{ actionLoading.openPayment ? 'Opening...' : 'Card F10' }}</span>
+    </button>
+
+    <button
+        type="button"
+        class="summary-action summary-action--credit"
+        :disabled="!hasOrderItems || actionLoading.openPayment"
+        :class="{ 'summary-action--disabled': !hasOrderItems || actionLoading.openPayment }"
+        title="Customer credit payment (F9)"
+        @click="openFinalizePayment('credit')"
+    >
+        <i class="bi bi-person-vcard"></i>
+        <span>{{ actionLoading.openPayment ? 'Opening...' : 'Credit F9' }}</span>
     </button>
 
     <button
@@ -493,7 +506,7 @@
         <span>{{ actionLoading.cancel ? 'Cancelling...' : 'Cancel Order' }}</span>
     </button>
 
-    <button
+    <!-- <button
         type="button"
         class="summary-action summary-action--hold"
         :disabled="!hasOrderItems || actionLoading.hold"
@@ -502,7 +515,7 @@
     >
         <i class="bi bi-pause-circle"></i>
         <span>{{ actionLoading.hold ? 'Holding...' : 'Hold Order' }}</span>
-    </button>
+    </button> -->
 </div>
                 </aside>
             </div>
@@ -788,7 +801,7 @@
     </div>
     <FinalizePaymentModal :show="showFinalizePayment" :session="paymentSessionOverride || session" :currency-code="activeCurrencyCode"
         :fire-after-payment="finalizeShouldFireToKitchen" :fire-payload="paymentFirePayload"
-        :selected-pms-guest="selectedPmsGuest"
+        :selected-pms-guest="selectedPmsGuest" :initial-payment-method="selectedPaymentMethod"
         @close="closeFinalizePayment" @paid="onPaymentFinished" />
 
     <div v-if="showLoyaltySummary" class="loyalty-modal-backdrop" @click.self="showLoyaltySummary = false">
@@ -1003,6 +1016,7 @@ export default {
             pmsGuestSearch: '',
             selectedPmsGuest: this.session?.pms_guest_snapshot ?? null,
             showFinalizePayment: false,
+            selectedPaymentMethod: 'cash',
             paymentSessionOverride: null,
             showLoyaltyMenu: false,
             showLoyaltySummary: false,
@@ -1441,6 +1455,7 @@ promotionDiscountTotal() {
         })
 
         window.addEventListener('resize', this.checkChannelArrow)
+        window.addEventListener('keydown', this.handlePosShortcut)
     },
     beforeUnmount() {
         const el = this.$refs.channelStrip
@@ -1450,8 +1465,29 @@ promotionDiscountTotal() {
 
         clearTimeout(this.productSearchTimer)
         window.removeEventListener('resize', this.checkChannelArrow)
+        window.removeEventListener('keydown', this.handlePosShortcut)
     },
     methods: {
+  handlePosShortcut(event) {
+    if (event.defaultPrevented || this.showFinalizePayment) return
+
+    const key = String(event.key || '').toLowerCase()
+    const target = event.target
+    const isTyping = target && ['input', 'textarea', 'select'].includes(String(target.tagName || '').toLowerCase())
+
+    if (isTyping && !['f9', 'f10', 'f11'].includes(key)) return
+
+    const shortcuts = {
+        f11: 'cash',
+        f10: 'card',
+        f9: 'credit',
+    }
+
+    if (!shortcuts[key]) return
+
+    event.preventDefault()
+    this.openFinalizePayment(shortcuts[key])
+},
   clearSelectedDiningTable() {
     this.metaForm.dining_table_id = ''
     this.metaForm.channel = 'takeaway'
@@ -1674,6 +1710,7 @@ handleTableCreateOrder(table) {
 },
         async onPaymentFinished() {
             this.showFinalizePayment = false
+            this.selectedPaymentMethod = 'cash'
             this.paymentSessionOverride = null
             this.showOrders = true
             this.resetPosDetailsOnly()
@@ -1690,6 +1727,7 @@ handleTableCreateOrder(table) {
         },
         closeFinalizePayment() {
             this.showFinalizePayment = false
+            this.selectedPaymentMethod = 'cash'
             this.paymentSessionOverride = null
         },
         async openPmsGuests() {
@@ -1843,6 +1881,7 @@ handleTableCreateOrder(table) {
         })
 
         this.paymentSessionOverride = data?.session || this.session
+        this.selectedPaymentMethod = 'cash'
         this.showOrders = false
 
         this.$nextTick(() => {
@@ -1855,8 +1894,12 @@ handleTableCreateOrder(table) {
         if (typeof done === 'function') done()
     }
 },
-        openFinalizePayment() {
+        openFinalizePayment(method = 'cash') {
             if (!this.session?.id || !this.hasOrderItems || this.actionLoading.openPayment) return
+            if (method === 'credit' && !this.metaForm.customer_id) {
+                this.toastError('Select a customer before using credit payment.')
+                return
+            }
             if (this.isDriveThru && (!this.metaForm.car_plate?.trim() || !this.metaForm.car_description?.trim())) {
                 this.toastError('Car plate and car description are required for Drive Thru orders.')
                 return
@@ -1876,6 +1919,7 @@ handleTableCreateOrder(table) {
                     return
                 }   
             }
+            this.selectedPaymentMethod = method
             this.actionLoading.openPayment = true
             this.$nextTick(() => {
                 this.showFinalizePayment = true
@@ -2454,7 +2498,7 @@ handleTableCreateOrder(table) {
         },
         money(value) {
             const numeric = Number(value || 0)
-            return numeric.toFixed(3)
+            return numeric.toFixed(2)
         },
         toNumber(value) {
             return Number(value || 0)
@@ -3805,13 +3849,18 @@ handleTableCreateOrder(table) {
     font-size: 18px;
 }
 
-.summary-action--kitchen {
-    background: #f59e0b;
+.summary-action--cash {
+    background: #16a34a;
     color: #ffffff;
 }
 
-.summary-action--pay {
-    background: #16a34a;
+.summary-action--card {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.summary-action--credit {
+    background: #7c3aed;
     color: #ffffff;
 }
 
@@ -6370,12 +6419,6 @@ handleTableCreateOrder(table) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-}
-
-.summary-actions--dine-in .summary-action--kitchen {
-    grid-column: 1 / -1;
-    background: #f58200;
-    color: #ffffff;
 }
 
 .summary-actions--dine-in .summary-action--cancel {
