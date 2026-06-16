@@ -233,13 +233,6 @@
                             'admin-sidebar__submenu--open':
                                 !collapsed && openMenu === 'menus',
                         }">
-                            <Link v-if="can('menus.view')" :href="route('vendor.menus.index')" class="admin-sidebar__subitem"
-                                :class="{
-                                    'admin-sidebar__subitem--active': isMenus,
-                                }">
-                                All Menus
-                            </Link>
-
                             <Link v-if="can('online-menus.view')" :href="route('vendor.online-menus.index')"
                                 class="admin-sidebar__subitem" :class="{
                                     'admin-sidebar__subitem--active':
@@ -856,11 +849,6 @@
 
                         <div class="admin-sidebar__submenu"
                             :class="{ 'admin-sidebar__submenu--open': openMenu === 'menus' }">
-
-                            <Link v-if="can('menus.view')" :href="route('vendor.menus.index')" class="admin-sidebar__subitem"
-                                :class="{ 'admin-sidebar__subitem--active': isMenus }">
-                                All Menus
-                            </Link>
 
                             <Link v-if="can('online-menus.view')" :href="route('vendor.online-menus.index')"
                                 class="admin-sidebar__subitem"
@@ -1652,8 +1640,10 @@ const posMetaForm = useForm({
 const posFilteredMenus = computed(() => {
     return posMenus.value.filter(menu => {
         return (
-            posMetaForm.branch_id &&
-            menu.branch_ids?.includes(Number(posMetaForm.branch_id))
+            !posMetaForm.branch_id ||
+            !Array.isArray(menu.branch_ids) ||
+            !menu.branch_ids.length ||
+            menu.branch_ids.map(Number).includes(Number(posMetaForm.branch_id))
         );
     });
 });
@@ -1909,7 +1899,6 @@ const flyoutMenus = {
 
     menus: {
         items: [
-            { label: "All Menus", view: "menus.view", href: route('vendor.menus.index'), active: () => isMenus.value },
             { label: "Online Menus", view: "online-menus.view", href: route('vendor.online-menus.index'), active: () => isOnlineMenus.value },
             { label: "Categories", view: "categories.view", href: route('vendor.categories.index'), active: () => isCategories.value },
             { label: "Options", view: "options.view", href: route('vendor.options.index'), active: () => isOptions.value },
@@ -2043,8 +2032,10 @@ const openPosSheet = () => {
 const posSheetFilteredMenus = computed(() => {
     return posMenus.value.filter((menu) => {
         return (
-            posSheetForm.branch_id &&
-            menu.branch_ids?.includes(Number(posSheetForm.branch_id))
+            !posSheetForm.branch_id ||
+            !Array.isArray(menu.branch_ids) ||
+            !menu.branch_ids.length ||
+            menu.branch_ids.map(Number).includes(Number(posSheetForm.branch_id))
         );
     })
 })

@@ -88,14 +88,19 @@ class PosViewerController extends Controller
 );
 
 $branchRegisters = $registers->where('branch_id', $selectedBranchId)->values();
-$branchMenus = $menus->where('branch_id', $selectedBranchId)->values();
+$branchMenus = $menus->filter(function ($menu) use ($selectedBranchId) {
+    $branchIds = array_filter(array_map('intval', $menu->branch_ids ?? []));
+
+    return !$branchIds || in_array($selectedBranchId, $branchIds, true);
+})->values();
 
 if (!$register || (int) $register->branch_id !== $selectedBranchId) {
     $register = $branchRegisters->first() ?: $registers->first();
 }
 
-$selectedMenuId = $request->input('menu_id')
-    ?: optional($branchMenus->first())->id;
+$requestedMenuId = $request->input('menu_id');
+$selectedMenuId = $requestedMenuId
+    ?: $this->preferredMenuId($branchMenus->pluck('id')->map(fn ($id) => (int) $id)->all());
 
         $session = null;
 $selectedCurrencyMode = $request->input('currency_mode', 'base');
@@ -113,6 +118,16 @@ if ($selectedCurrencyMode === 'secondary' && !$this->secondaryCurrencyCode()) {
                 ->first();
 
             if ($session) {
+                if (
+                    !$requestedMenuId &&
+                    $selectedMenuId &&
+                    (int) $session->menu_id !== (int) $selectedMenuId &&
+                    !$session->items()->exists()
+                ) {
+                    $session->update(['menu_id' => $selectedMenuId]);
+                    $session->refresh();
+                }
+
                 $session->loadMissing('items.product.ingredients.ingredient:id,tenant_id,branch_ids,name,current_stock,alert_quantity,is_active');
                 $cartIngredientUsage = $this->calculateCartIngredientUsage($session);
                 foreach ($session->items as $item) {
@@ -1282,6 +1297,25 @@ private function restoreLoyaltyRedemptionFromOrder($order, string $reason): void
             ->select('id', 'name', 'branch_ids')
             ->orderBy('name')
             ->get();
+    }
+
+    private function preferredMenuId(array $menuIds = []): ?int
+    {
+        $menuIds = array_values(array_filter(array_map('intval', $menuIds)));
+
+        $productMenuId = Product::query()
+            ->where('tenant_id', $this->tenantId())
+            ->where('is_active', true)
+            ->whereNotNull('menu_id')
+            ->when($menuIds, fn ($query) => $query->whereIn('menu_id', $menuIds))
+            ->orderBy('menu_id')
+            ->value('menu_id');
+
+        if ($productMenuId) {
+            return (int) $productMenuId;
+        }
+
+        return $menuIds[0] ?? null;
     }
 
     private function categories()

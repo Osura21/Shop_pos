@@ -14,15 +14,8 @@
               Categories
             </h1>
             <p class="header-subtitle">
-              Create and manage category trees for your menus.
+              Create and manage product category trees for the shop POS.
             </p>
-          </div>
-
-          <div class="d-flex gap-2">
-            <div class="header-select">
-              <SelectInput id="menu.id" v-model="currentMenuId" :options="menus" valueKey="id" labelKey="name"
-                placeholder="Select Menu" />
-            </div>
           </div>
         </div>
       </div>
@@ -31,16 +24,7 @@
         {{ form.errors.general }}
       </div>
 
-      <div v-if="!menus.length" class="empty-state">
-        <div class="empty-state__icon">
-          <i class="bi bi-list-ul"></i>
-        </div>
-        <h5 class="mb-2">No menus found</h5>
-        <p class="text-muted mb-3">Create a menu first, then create categories under that menu.</p>
-        <button class="btn btn-primary-modern" @click="goMenus">Go to Menus</button>
-      </div>
-
-      <div v-else class="category-layout">
+      <div class="category-layout">
         <!-- Tree Section -->
         <section class="form-card category-tree-card">
           <div class="category-tree-card__top">
@@ -171,11 +155,6 @@
               <div class="d-flex flex-column gap-3">
                 <div class="info-panel">
                   <div class="info-panel__row">
-                    <span class="info-panel__label">Selected Menu</span>
-                    <span class="info-panel__value">{{ currentMenuName || '-' }}</span>
-                  </div>
-
-                  <div class="info-panel__row">
                     <span class="info-panel__label">Parent Category</span>
                     <span class="info-panel__value">{{ parentCategoryName }}</span>
                   </div>
@@ -206,7 +185,6 @@ import { Head, router, usePage, useForm } from '@inertiajs/vue3'
 import { error as alertError, success as alertSuccess } from "@/Utils/modernAlert";
 import VendorAdminLayout from '@/Layouts/VendorAdminLayout.vue'
 import CategoryTreeNode from './CategoryTreeNode.vue'
-import SelectInput from '@/Components/SelectInput.vue'
 import DeleteModal from '@/Components/DeleteModal.vue'
 import { usePermission } from "@/composables/usePermission";
 
@@ -217,7 +195,6 @@ defineOptions({ layout: VendorAdminLayout })
 const page = usePage()
 
 const props = defineProps({
-  menus: { type: Array, default: () => [] },
   currentMenuId: { type: [Number, String, null], default: null },
   tree: { type: Array, default: () => [] },
   selectedCategoryId: { type: [Number, String, null], default: null },
@@ -255,10 +232,6 @@ const selectedCategory = computed(() =>
   flatTree.value.find((item) => item.id === selectedCategoryId.value) || null
 )
 
-const currentMenuName = computed(() =>
-  props.menus.find((menu) => Number(menu.id) === Number(currentMenuId.value))?.name || ''
-)
-
 const isEditMode = computed(() => mode.value === 'edit')
 const isCreateMode = computed(() => mode.value !== 'edit')
 
@@ -275,7 +248,7 @@ const panelSubtitle = computed(() => {
       : 'Create a child category.'
   }
   if (mode.value === 'create-root') {
-    return 'Create a root category in the selected menu.'
+    return 'Create a root category for shop products.'
   }
   return 'Update category information and logo.'
 })
@@ -356,18 +329,6 @@ watch(() => form.name, (value) => {
   if (!slugTouched.value) {
     form.slug = slugify(value)
   }
-})
-
-watch(() => currentMenuId.value, (value, oldValue) => {
-  if (!value || Number(value) === Number(oldValue)) return
-
-  router.get(route('vendor.categories.index'), {
-    menu_id: value,
-  }, {
-    preserveScroll: true,
-    preserveState: false,
-    replace: true,
-  })
 })
 
 watch(
@@ -550,9 +511,6 @@ function confirmDelete() {
   })
 }
 
-function goMenus() {
-  router.visit(route('vendor.menus.index'))
-}
 </script>
 
 <style scoped>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Vendor;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\Product;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -19,17 +20,15 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
+        $this->ensureDefaultMenu();
+
         $menus = Menu::query()
             ->where('tenant_id', $this->tenantId())
             ->select('id', 'name')
             ->orderBy('name')
             ->get();
 
-        $currentMenuId = $request->integer('menu_id');
-
-        if (!$currentMenuId && $menus->isNotEmpty()) {
-            $currentMenuId = (int) $menus->first()->id;
-        }
+        $currentMenuId = $this->defaultMenuId($menus);
 
         $categories = collect();
 
@@ -49,7 +48,6 @@ class CategoryController extends Controller
         }
 
         return Inertia::render('VendorAdmin/Menu/Category/Index', [
-            'menus' => $menus,
             'currentMenuId' => $currentMenuId,
             'tree' => $this->buildTree($categories),
             'selectedCategoryId' => $selectedCategoryId,
@@ -296,6 +294,39 @@ class CategoryController extends Controller
                 ];
             })
             ->all();
+    }
+
+    private function ensureDefaultMenu(): void
+    {
+        Menu::query()->firstOrCreate(
+            [
+                'tenant_id' => $this->tenantId(),
+                'name' => 'Food City Menu',
+            ],
+            [
+                'branch_ids' => null,
+                'description' => 'Default shop POS menu.',
+                'is_active' => true,
+            ]
+        );
+    }
+
+    private function defaultMenuId(Collection $menus): ?int
+    {
+        $productMenuId = Product::query()
+            ->where('tenant_id', $this->tenantId())
+            ->where('is_active', true)
+            ->whereNotNull('menu_id')
+            ->orderBy('menu_id')
+            ->value('menu_id');
+
+        if ($productMenuId) {
+            return (int) $productMenuId;
+        }
+
+        $foodCityMenu = $menus->firstWhere('name', 'Food City Menu');
+
+        return $foodCityMenu ? (int) $foodCityMenu->id : (int) optional($menus->first())->id;
     }
 
     private function tenantId(): int

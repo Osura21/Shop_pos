@@ -1312,7 +1312,9 @@ promotionDiscountTotal() {
         filteredMenus() {
             return this.menus.filter(menu =>
                 !this.metaForm.branch_id ||
-                menu.branch_ids?.includes(Number(this.metaForm.branch_id))
+                !Array.isArray(menu.branch_ids) ||
+                !menu.branch_ids.length ||
+                menu.branch_ids.map(Number).includes(Number(this.metaForm.branch_id))
             );
         },
         filteredCategories() {
