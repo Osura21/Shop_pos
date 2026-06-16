@@ -301,12 +301,9 @@
                         </div>
                         <button v-if="
                             can('inventory.view') ||
-                            can('inventory-analytics.view') ||
+                            can('products.view') ||
                             can('units.view') ||
-                            can('suppliers.view') ||
-                            can('ingredients.view') ||
-                            can('stock-movements.view') ||
-                            can('purchases.view')
+                            can('suppliers.view')
                         " class="admin-sidebar__item admin-sidebar__item--button"
                             :class="{
                                 'admin-sidebar__item--active': isInventoryMenu,
@@ -336,12 +333,12 @@
                             'admin-sidebar__submenu--open':
                                 !collapsed && openMenu === 'inventory',
                         }">
-                            <Link v-if="can('inventory-analytics.view')" :href="route('vendor.inventory-analytics.index')"
+                            <Link v-if="can('products.view')" :href="route('vendor.stock-management.index')"
                                 class="admin-sidebar__subitem" :class="{
                                     'admin-sidebar__subitem--active':
-                                        isInventoryAnalytics,
+                                        isStockManagement,
                                 }">
-                                Analytics
+                                Stock Management
                             </Link>
 
                             <Link v-if="can('units.view')" :href="route('vendor.units.index')" class="admin-sidebar__subitem"
@@ -359,29 +356,6 @@
                                 Suppliers
                             </Link>
 
-                            <Link v-if="can('ingredients.view')" :href="route('vendor.ingredients.index')"
-                                class="admin-sidebar__subitem" :class="{
-                                    'admin-sidebar__subitem--active':
-                                        isIngredients,
-                                }">
-                                Ingredients
-                            </Link>
-
-                            <Link v-if="can('stock-movements.view')" :href="route('vendor.stock-movements.index')"
-                                class="admin-sidebar__subitem" :class="{
-                                    'admin-sidebar__subitem--active':
-                                        isStockMovements,
-                                }">
-                                Stock Movements
-                            </Link>
-
-                            <Link v-if="can('purchases.view')" :href="route('vendor.purchases.index')"
-                                class="admin-sidebar__subitem" :class="{
-                                    'admin-sidebar__subitem--active':
-                                        isPurchases,
-                                }">
-                                Purchases
-                            </Link>
                         </div>
                         <button
                             v-if="can('promotions.view') || can('promotion-discounts.view') || can('promotion-vouchers.view')"
@@ -915,12 +889,9 @@
                         <!-- INVENTORY -->
                         <button v-if="
                             can('inventory.view') ||
-                            can('inventory-analytics.view') ||
+                            can('products.view') ||
                             can('units.view') ||
-                            can('suppliers.view') ||
-                            can('ingredients.view') ||
-                            can('stock-movements.view') ||
-                            can('purchases.view')
+                            can('suppliers.view')
                         " class="admin-sidebar__item admin-sidebar__item--button"
                             :class="{ 'admin-sidebar__item--active': isInventoryMenu }" type="button"
                             @click="toggleMenu('inventory')">
@@ -937,10 +908,10 @@
                         <div class="admin-sidebar__submenu"
                             :class="{ 'admin-sidebar__submenu--open': openMenu === 'inventory' }">
 
-                            <Link v-if="can('inventory-analytics.view')" :href="route('vendor.inventory-analytics.index')"
+                            <Link v-if="can('products.view')" :href="route('vendor.stock-management.index')"
                                 class="admin-sidebar__subitem"
-                                :class="{ 'admin-sidebar__subitem--active': isInventoryAnalytics }">
-                                Analytics
+                                :class="{ 'admin-sidebar__subitem--active': isStockManagement }">
+                                Stock Management
                             </Link>
 
                             <Link v-if="can('units.view')" :href="route('vendor.units.index')" class="admin-sidebar__subitem"
@@ -954,23 +925,6 @@
                                 Suppliers
                             </Link>
 
-                            <Link v-if="can('ingredients.view')" :href="route('vendor.ingredients.index')"
-                                class="admin-sidebar__subitem"
-                                :class="{ 'admin-sidebar__subitem--active': isIngredients }">
-                                Ingredients
-                            </Link>
-
-                            <Link v-if="can('stock-movements.view')" :href="route('vendor.stock-movements.index')"
-                                class="admin-sidebar__subitem"
-                                :class="{ 'admin-sidebar__subitem--active': isStockMovements }">
-                                Stock Movements
-                            </Link>
-
-                            <Link v-if="can('purchases.view')" :href="route('vendor.purchases.index')"
-                                class="admin-sidebar__subitem"
-                                :class="{ 'admin-sidebar__subitem--active': isPurchases }">
-                                Purchases
-                            </Link>
                         </div>
 
                         <!-- GIFT CARDS -->
@@ -1916,12 +1870,9 @@ const flyoutMenus = {
 
     inventory: {
         items: [
-            { label: "Analytics", view: "inventory-analytics.view", href: route('vendor.inventory-analytics.index'), active: () => isInventoryAnalytics.value },
+            { label: "Stock Management", view: "products.view", href: route('vendor.stock-management.index'), active: () => isStockManagement.value },
             { label: "Units", view: "units.view", href: route('vendor.units.index'), active: () => isUnits.value },
             { label: "Suppliers", view: "suppliers.view", href: route('vendor.suppliers.index'), active: () => isSuppliers.value },
-            { label: "Ingredients", view: "ingredients.view", href: route('vendor.ingredients.index'), active: () => isIngredients.value },
-            { label: "Stock Movements", view: "stock-movements.view", href: route('vendor.stock-movements.index'), active: () => isStockMovements.value },
-            { label: "Purchases", view: "purchases.view", href: route('vendor.purchases.index'), active: () => isPurchases.value },
         ],
     },
 
@@ -2219,6 +2170,9 @@ const posSelectedMenuId = computed(() => page.props.selectedMenuId ?? '')
 const isStockMovements = computed(() =>
     pageStartsWithRoute('vendor.stock-movements.index'),
 );
+const isStockManagement = computed(() =>
+    pageStartsWithRoute('vendor.stock-management.index'),
+);
 const isPurchases = computed(() => pageStartsWithRoute('vendor.purchases.index'));
 const isInventoryAnalytics = computed(() =>
     pageStartsWithRoute('vendor.inventory-analytics.index'),
@@ -2354,12 +2308,9 @@ const mobileSettingsOpen = ref(false);
 
 const isInventoryMenu = computed(
     () =>
-        isInventoryAnalytics.value ||
+        isStockManagement.value ||
         isUnits.value ||
-        isSuppliers.value ||
-        isIngredients.value ||
-        isStockMovements.value ||
-        isPurchases.value,
+        isSuppliers.value,
 );
 
 const mobileInventoryOpen = ref(false);

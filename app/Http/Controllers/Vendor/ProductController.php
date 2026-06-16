@@ -317,7 +317,6 @@ class ProductController extends Controller
         $product->base_price = $validated['base_price'] ?? 0;
         $product->secondary_price = $validated['secondary_price'] ?? null;
         $product->cost_price = $validated['cost_price'] ?? 0;
-        $product->current_stock = $validated['current_stock'] ?? 0;
         $product->reorder_level = $validated['reorder_level'] ?? 0;
 
         $product->special_price_type = $validated['special_price_type'] ?? 'fixed';
@@ -615,7 +614,6 @@ class ProductController extends Controller
             'base_price' => ['required', 'numeric', 'min:0'],
             'secondary_price' => ['nullable', 'numeric', 'min:0'],
             'cost_price' => ['nullable', 'numeric', 'min:0'],
-            'current_stock' => ['nullable', 'numeric', 'min:0'],
             'reorder_level' => ['nullable', 'numeric', 'min:0'],
 
             'special_price_type' => ['nullable', Rule::in(array_keys(self::PRICE_TYPES))],

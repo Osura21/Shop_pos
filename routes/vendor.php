@@ -15,6 +15,7 @@ use App\Http\Controllers\Vendor\UnitController;
 use App\Http\Controllers\Vendor\SupplierController;
 use App\Http\Controllers\Vendor\IngredientController;
 use App\Http\Controllers\Vendor\StockMovementController;
+use App\Http\Controllers\Vendor\StockManagementController;
 use App\Http\Controllers\Vendor\PurchaseController;
 use App\Http\Controllers\Vendor\InventoryAnalyticsController;
 use App\Http\Controllers\Vendor\SettingController;
@@ -195,6 +196,15 @@ Route::prefix('vendor-admin')->name('vendor.')->group(function () {
                 Route::put('/{stockMovement}', [StockMovementController::class, 'update'])->name('update');
                 Route::delete('/{stockMovement}', [StockMovementController::class, 'destroy'])->name('destroy');
             });
+
+        Route::prefix('stock-management')
+            ->name('stock-management.')
+            ->group(function () {
+                Route::get('/', [StockManagementController::class, 'index'])->name('index');
+                Route::get('/getdata', [StockManagementController::class, 'getData'])->name('getdata');
+                Route::post('/movements', [StockManagementController::class, 'store'])->name('store');
+            });
+
         Route::prefix('purchases')
             ->name('purchases.')
             ->group(function () {

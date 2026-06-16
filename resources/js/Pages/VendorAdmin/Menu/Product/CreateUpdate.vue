@@ -494,13 +494,6 @@
                 </div>
 
                 <div>
-                  <label class="field-label">Current Stock</label>
-                  <input v-model="form.current_stock" type="number" min="0" step="0.001"
-                    class="form-control fancy-input formControl" placeholder="Current Stock">
-                  <div v-if="form.errors.current_stock" class="text-danger small mt-1">{{ form.errors.current_stock }}</div>
-                </div>
-
-                <div>
                   <label class="field-label">Reorder Level</label>
                   <input v-model="form.reorder_level" type="number" min="0" step="0.001"
                     class="form-control fancy-input formControl" placeholder="Reorder Level">
@@ -655,7 +648,6 @@ const form = useForm({
   base_price: props.product?.base_price ?? '',
   secondary_price: props.product?.secondary_price ?? '',
   cost_price: props.product?.cost_price ?? '',
-  current_stock: props.product?.current_stock ?? '',
   reorder_level: props.product?.reorder_level ?? '',
 
   special_price_type: props.product?.special_price_type ?? 'fixed',
@@ -881,7 +873,6 @@ function normalizedPayload(data) {
     base_price: (data.base_price === '' || data.base_price === null) ? null : data.base_price,
     secondary_price: hasSecondaryCurrency.value ? (data.secondary_price || null) : null,
     cost_price: data.cost_price || 0,
-    current_stock: data.current_stock || 0,
     reorder_level: data.reorder_level || 0,
 
     base_special_price: data.base_special_price || null,
