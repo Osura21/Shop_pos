@@ -26,6 +26,7 @@ use App\Models\PosTransactionPayment;
 use App\Models\PosCashMovement;
 use App\Models\PosInvoice;
 use App\Models\PosInvoiceItem;    
+use App\Models\ProductStockMovement;
 use App\Models\GiftCard;
 use App\Models\GiftCardTransaction;
 use App\Models\TableMerge;
@@ -733,10 +734,65 @@ if ($selectedCurrencyMode === 'secondary' && !$this->secondaryCurrencyCode()) {
             }
 
             $qty = (float) $item->qty;
-            $this->ensureProductStockAvailable($product, $qty, 'payments');
-            $product->current_stock = max(0, (float) ($product->current_stock ?? 0) - $qty);
-            $product->save();
+            $this->recordProductStockOut(
+                $product,
+                $qty,
+                $session->branch_id,
+                'POS sale from session #' . $session->id,
+                'payments'
+            );
         }
+    }
+
+    private function deductProductStockForTicket(PosKitchenTicket $ticket): void
+    {
+        $items = $ticket->items()
+            ->select('product_id', DB::raw('SUM(qty) as qty'))
+            ->whereNotNull('product_id')
+            ->groupBy('product_id')
+            ->get();
+
+        foreach ($items as $item) {
+            $product = Product::query()
+                ->where('tenant_id', $this->tenantId())
+                ->lockForUpdate()
+                ->find($item->product_id);
+
+            if (!$product) {
+                continue;
+            }
+
+            $qty = (float) $item->qty;
+            $this->recordProductStockOut(
+                $product,
+                $qty,
+                $ticket->branch_id,
+                'POS order #' . $ticket->id,
+                'payments'
+            );
+        }
+    }
+
+    private function recordProductStockOut(Product $product, float $qty, ?int $branchId, string $note, string $field = 'payments'): void
+    {
+        $this->ensureProductStockAvailable($product, $qty, $field);
+
+        $before = (float) ($product->current_stock ?? 0);
+        $after = max(0, $before - $qty);
+
+        ProductStockMovement::create([
+            'tenant_id' => $this->tenantId(),
+            'branch_id' => $branchId,
+            'product_id' => $product->id,
+            'type' => 'out',
+            'quantity' => $qty,
+            'stock_before' => $before,
+            'stock_after' => $after,
+            'note' => $note,
+        ]);
+
+        $product->current_stock = $after;
+        $product->save();
     }
 
     public function applyDiscount(Request $request, PosSession $session)
@@ -2308,13 +2364,26 @@ public function payKitchenOrder(PosKitchenTicket $ticket)
 
     $pmsGuestSnapshot = $this->normalizePmsGuestSnapshot($ticket->pms_guest_snapshot);
 
-    $ticket->update([
-        'payment_status' => 'paid',
-        'paid_amount' => $ticket->grand_total,
-        'pms_booking_id' => $ticket->pms_booking_id ?: ($pmsGuestSnapshot['booking_id'] ?? null),
-        'pms_room_key_id' => $ticket->pms_room_key_id ?: ($pmsGuestSnapshot['room_key_id'] ?? null),
-        'pms_posting_status' => $pmsGuestSnapshot ? 'pending' : $ticket->pms_posting_status,
-    ]);
+    DB::transaction(function () use ($ticket, $pmsGuestSnapshot) {
+        $ticket = PosKitchenTicket::query()
+            ->where('tenant_id', $this->tenantId())
+            ->lockForUpdate()
+            ->findOrFail($ticket->id);
+
+        $wasPaid = $ticket->payment_status === 'paid';
+
+        if (!$wasPaid) {
+            $this->deductProductStockForTicket($ticket);
+        }
+
+        $ticket->update([
+            'payment_status' => 'paid',
+            'paid_amount' => $ticket->grand_total,
+            'pms_booking_id' => $ticket->pms_booking_id ?: ($pmsGuestSnapshot['booking_id'] ?? null),
+            'pms_room_key_id' => $ticket->pms_room_key_id ?: ($pmsGuestSnapshot['room_key_id'] ?? null),
+            'pms_posting_status' => $pmsGuestSnapshot ? 'pending' : $ticket->pms_posting_status,
+        ]);
+    });
 
     $this->postPmsOrder($ticket->fresh(['items.options', 'customer', 'register.branch', 'table']));
 

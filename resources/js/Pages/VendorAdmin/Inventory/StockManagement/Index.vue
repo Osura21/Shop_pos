@@ -52,31 +52,33 @@
       </div>
 
       <div class="stock-modal__grid">
-        <label>
-          <span>Branch</span>
-          <select v-model="movementForm.branch_id" class="form-control formControl">
-            <option value="">All branches</option>
-            <option v-for="branch in branches" :key="branch.id" :value="branch.id">{{ branch.name }}</option>
-          </select>
-        </label>
+        <SelectInput
+          id="stock-branch"
+          v-model="movementForm.branch_id"
+          label="Branch"
+          :options="branchOptions"
+          placeholder="All branches"
+        />
 
-        <label>
-          <span>Product</span>
-          <select v-model="movementForm.product_id" class="form-control formControl">
-            <option value="">Select product</option>
-            <option v-for="product in products" :key="product.id" :value="product.id">
-              {{ product.name }} - {{ product.sku }} (Stock: {{ trimQty(product.current_stock) }} {{ product.unit_type }})
-            </option>
-          </select>
-        </label>
+        <SelectInput
+          id="stock-product"
+          v-model="movementForm.product_id"
+          label="Product"
+          :options="productOptions"
+          placeholder="Select product"
+          :clearable="false"
+        />
 
-        <label>
-          <span>Movement Type</span>
-          <select v-model="movementForm.type" class="form-control formControl">
-            <option value="">Select type</option>
-            <option v-for="(label, value) in typeOptions" :key="value" :value="value">{{ label }}</option>
-          </select>
-        </label>
+        <SelectInput
+          id="stock-type"
+          v-model="movementForm.type"
+          label="Movement Type"
+          :options="movementTypeOptions"
+          value-key="value"
+          label-key="label"
+          placeholder="Select type"
+          :clearable="false"
+        />
 
         <label>
           <span>Quantity</span>
@@ -107,6 +109,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import VendorAdminLayout from '@/Layouts/VendorAdminLayout.vue'
 import DataTable from '@/Components/Datatable.vue'
+import SelectInput from '@/Components/SelectInput.vue'
 import { error as alertError, success as alertSuccess } from '@/Utils/modernAlert'
 import { usePermission } from '@/composables/usePermission'
 
@@ -135,6 +138,18 @@ const movementForm = reactive({
 })
 
 const datatableUrl = computed(() => route('vendor.stock-management.getdata'))
+const branchOptions = computed(() => props.branches.map(branch => ({
+  id: branch.id,
+  name: branch.name,
+})))
+const productOptions = computed(() => props.products.map(product => ({
+  id: product.id,
+  label: `${product.name}${product.sku ? ` - ${product.sku}` : ''} (Stock: ${trimQty(product.current_stock)} ${product.unit_type})`,
+})))
+const movementTypeOptions = computed(() => Object.entries(props.typeOptions).map(([value, label]) => ({
+  value,
+  label,
+})))
 
 const columns = computed(() => ([
   { data: 'branch_name', name: 'branch_id', orderable: false, searchable: false },

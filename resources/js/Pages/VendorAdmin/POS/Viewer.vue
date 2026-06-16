@@ -550,7 +550,7 @@
 
         <ProductOptionsModal :show="modalOpen" :product="selectedProduct" :currency-code="activeCurrencyCode"
             :currency-mode="metaForm.currency_mode" :submitting="addItemForm.processing" @close="closeModal"
-            @confirm="addToCart" />
+            :initial-qty="selectedProductInitialQty" @confirm="addToCart" />
 
         <CashMovementOffcanvas :show="showCashMovement" :session-id="session?.id" :currency-code="activeCurrencyCode"
             @close="showCashMovement = false" />
@@ -1004,6 +1004,7 @@ export default {
             scannerLoading: false,
             selectedCategoryId: null,
             selectedProduct: null,
+            selectedProductInitialQty: 1,
             modalOpen: false,
             discountPresetIndex: '',
             localDiscountPresets: [...(this.discountPresets || [])],
@@ -2286,14 +2287,7 @@ handleTableCreateOrder(table) {
                 return
             }
 
-            this.selectedProduct = null
-            this.addToCart({
-                product_id: product.id,
-                product_name: product.name,
-                qty: 1,
-                notes: '',
-                selected_options: [],
-            })
+            this.openProduct(product)
         },
         async loadProducts({ page = 1, append = false } = {}) {
             if (!this.session?.id) return
@@ -2711,10 +2705,8 @@ handleTableCreateOrder(table) {
                 return
             }
 
-            if (!product.has_options) {
-                this.addScannedProduct(product)
-                return
-            }
+            const stock = Number(product?.current_stock ?? 0)
+            this.selectedProductInitialQty = 1
 
             this.selectedProduct = product
             this.modalOpen = true
@@ -2722,10 +2714,19 @@ handleTableCreateOrder(table) {
         closeModal() {
             this.modalOpen = false
             this.selectedProduct = null
+            this.selectedProductInitialQty = 1
         },
         addToCart(payload) {
             if (!this.session?.id || this.addItemForm.processing) return
             const productName = payload.product_name || this.selectedProduct?.name || this.productNameById(payload.product_id)
+            const product = this.selectedProduct || this.loadedProducts.find((row) => Number(row.id) === Number(payload.product_id))
+            const stock = Number(product?.current_stock ?? 0)
+
+            if (Number.isFinite(stock) && stock > 0 && Number(payload.qty || 0) > stock) {
+                this.toastError(`Only ${this.trimQty(stock)} ${product?.unit_type || 'pcs'} of ${productName || 'this item'} available.`)
+                return
+            }
+
             this.addingProductId = payload.product_id
             this.addItemForm.product_id = payload.product_id
             this.addItemForm.qty = payload.qty

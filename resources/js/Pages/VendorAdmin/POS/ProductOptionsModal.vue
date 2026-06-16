@@ -32,6 +32,9 @@
                     {{ currencySymbol(currencyCode) }} {{ money(activeProductPrice()) }}
                   </template>
                 </div>
+                <p class="pos-product__stock">
+                  Stock: {{ trimQty(maxStock) }} {{ product?.unit_type || 'pcs' }}
+                </p>
               </div>
             </div>
           </div>
@@ -127,19 +130,27 @@
 
         <div class="pos-modal__footer">
           <div class="pos-modal__qty-wrap">
-            <button type="button" class="qty-btn" @click="form.qty > 1 ? form.qty-- : null">
+            <button type="button" class="qty-btn" :disabled="form.qty <= 1" @click="decreaseQty">
               <i class="bi bi-dash-lg"></i>
             </button>
-            <input type="number" v-model.number="form.qty" min="1" class="qty-input" />
-            <button type="button" class="qty-btn" @click="form.qty++">
+            <input
+              type="number"
+              v-model.number="form.qty"
+              min="1"
+              :max="maxStock || undefined"
+              class="qty-input"
+              @blur="normalizeQty"
+            />
+            <button type="button" class="qty-btn" :disabled="form.qty >= maxStock" @click="increaseQty">
               <i class="bi bi-plus-lg"></i>
             </button>
           </div>
+          <div v-if="qtyError" class="pos-modal__qty-error">{{ qtyError }}</div>
           <div class="pos-modal__actions">
             <button type="button" class="footer-btn footer-btn--ghost" :disabled="submitting" @click="close">
               Cancel
             </button>
-            <button type="button" class="footer-btn footer-btn--primary" :disabled="submitting" @click="confirmAdd">
+            <button type="button" class="footer-btn footer-btn--primary" :disabled="submitting || !!qtyError" @click="confirmAdd">
               <i class="bi bi-cart-plus"></i>
               {{ submitting ? 'Adding...' : 'Add To Cart' }}
             </button>
@@ -163,6 +174,7 @@ export default {
     currencyCode: { type: String, default: 'LKR' },
     currencyMode: { type: String, default: 'base' },
     submitting: { type: Boolean, default: false },
+    initialQty: { type: Number, default: 1 },
   },
   data() {
     return {
@@ -196,6 +208,22 @@ export default {
         rows: Array.isArray(option.rows) ? option.rows : [],
       }))
     },
+    maxStock() {
+      return Math.max(0, this.toNumber(this.product?.current_stock))
+    },
+    qtyError() {
+      const qty = this.toNumber(this.form.qty)
+
+      if (qty <= 0) {
+        return 'Quantity must be at least 1.'
+      }
+
+      if (this.maxStock > 0 && qty > this.maxStock) {
+        return `Only ${this.trimQty(this.maxStock)} ${this.product?.unit_type || 'pcs'} available.`
+      }
+
+      return ''
+    },
   },
   watch: {
     show(value) {
@@ -216,7 +244,7 @@ export default {
       if (event.key === 'Escape' && this.show) this.close()
     },
     resetForm() {
-      this.form.qty = 1
+      this.form.qty = this.clampQty(this.initialQty)
       this.form.notes = ''
       this.form.selects = {}
       this.form.multi = {}
@@ -233,6 +261,24 @@ export default {
     close() {
       if (this.submitting) return
       this.$emit('close')
+    },
+    clampQty(value) {
+      const qty = Math.max(1, this.toNumber(value) || 1)
+
+      if (this.maxStock > 0) {
+        return Math.min(qty, this.maxStock)
+      }
+
+      return qty
+    },
+    normalizeQty() {
+      this.form.qty = this.clampQty(this.form.qty)
+    },
+    decreaseQty() {
+      this.form.qty = this.clampQty(this.toNumber(this.form.qty) - 1)
+    },
+    increaseQty() {
+      this.form.qty = this.clampQty(this.toNumber(this.form.qty) + 1)
     },
     isSpecialPriceActive() {
       if (!this.product) return false
@@ -308,6 +354,8 @@ export default {
     confirmAdd() {
       if (this.submitting) return
       if (!this.validateOptions()) return
+      if (this.qtyError) return
+      this.normalizeQty()
 
       const selectedOptions = []
 
@@ -388,6 +436,10 @@ export default {
     },
     money(value) {
       return this.toNumber(value).toFixed(3)
+    },
+    trimQty(value) {
+      const numeric = this.toNumber(value)
+      return Number.isInteger(numeric) ? numeric : numeric.toFixed(3).replace(/\.?0+$/, '')
     },
   },
 }
@@ -484,6 +536,13 @@ export default {
   margin-left: 8px;
 }
 
+.pos-product__stock {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
 .pos-modal__scroll {
   padding: 4px 24px 20px;
   overflow: auto;
@@ -560,6 +619,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 14px;
   padding: 16px 24px 22px;
 }
 
@@ -594,8 +654,13 @@ export default {
   color: #f97316;
 }
 
+.qty-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .qty-input {
-  width: 40px;
+  width: 64px;
   text-align: center;
   border: none;
   background: transparent;
@@ -604,6 +669,14 @@ export default {
   color: #334155;
   outline: none;
   -moz-appearance: textfield;
+}
+
+.pos-modal__qty-error {
+  flex: 1;
+  min-width: 120px;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .qty-input::-webkit-outer-spin-button,
@@ -673,6 +746,11 @@ export default {
   .pos-modal__footer {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .pos-modal__footer {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
 </style>
