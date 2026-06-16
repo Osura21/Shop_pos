@@ -78,7 +78,7 @@ const submit = () => {
                         <div class="login-header">
                             <span class="login-badge">Vendor Portal</span>
                             <h1>Welcome back</h1>
-                            <p>Sign in to manage your restaurant POS system.</p>
+                            <p>Sign in to manage your POS system.</p>
                         </div>
 
                         <form @submit.prevent="submit" class="login-form" novalidate>
