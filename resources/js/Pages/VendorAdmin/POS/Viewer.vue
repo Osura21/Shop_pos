@@ -67,15 +67,10 @@
                     <div class="catalog-toolbar">
                         <div class="barcode-box" :class="{ 'barcode-box--loading': scannerLoading }">
                             <i class="bi bi-upc-scan"></i>
-                            <input ref="barcodeInput" v-model="barcodeInput" type="text" class="barcode-box__input"
-                                placeholder="Scan barcode..." autocomplete="off" @keyup.enter="handleBarcodeScan" />
+                            <input ref="barcodeInput" v-model="searchQuery" type="text" class="barcode-box__input"
+                                placeholder="Scan barcode or search products..." autocomplete="off"
+                                @keyup.enter="handleBarcodeScan" />
                             <span v-if="scannerLoading" class="barcode-box__status">Scanning</span>
-                        </div>
-
-                        <div class="search-box">
-                            <i class="bi bi-search"></i>
-                            <input v-model="searchQuery" type="text" class="search-box__input"
-                                placeholder="Search Products..." />
                         </div>
 
                         <div class="category-strip">
@@ -217,35 +212,6 @@
                                 title="Add customer" @click="openQuickCustomerModal">
                                 <i class="bi bi-person-plus"></i>
                             </button>
-
-                            <div v-if="metaForm.channel !== 'pms'" class="pos-actions-wrap">
-                                <button type="button" class="pos-actions-btn"
-                                    :class="{ 'pos-actions-btn--open': showLoyaltyMenu }"
-                                    :disabled="!canUseLoyaltyActions"
-                                    :aria-expanded="showLoyaltyMenu ? 'true' : 'false'"
-                                    :title="canUseLoyaltyActions ? 'Open customer loyalty actions' : 'Select a customer to use loyalty actions'"
-                                    @click="toggleLoyaltyMenu">
-                                    <i class="bi bi-gift"></i>
-                                    <span>Loyalty Actions</span>
-                                    <i class="bi bi-chevron-down pos-actions-btn__chevron"></i>
-                                </button>
-                                <div v-if="showLoyaltyMenu" class="pos-actions-menu">
-                                    <button type="button" @click="openLoyaltySummary">
-                                        <i class="bi bi-coin"></i>
-                                        <span>
-                                            <strong>Redeem with Points</strong>
-                                            <small>Apply eligible customer rewards</small>
-                                        </span>
-                                    </button>
-                                    <button type="button" @click="openLoyaltyGifts">
-                                        <i class="bi bi-ticket-perforated"></i>
-                                        <span>
-                                            <strong>View Available Gifts</strong>
-                                            <small>Check gifts for the selected customer</small>
-                                        </span>
-                                    </button>
-                                </div>
-                            </div>
 
                             <!-- <div v-if="metaForm.channel === 'dine_in'"
                                 class="field-wrap field-wrap--meta field-wrap--table">
@@ -994,7 +960,6 @@ export default {
     data() {
         return {
             searchQuery: '',
-            barcodeInput: '',
             scannerLoading: false,
             selectedCategoryId: null,
             selectedProduct: null,
@@ -1330,7 +1295,11 @@ promotionDiscountTotal() {
                 const matchesMenu = !this.metaForm.menu_id || Number(product.menu_id) === Number(this.metaForm.menu_id)
                 const categoryIds = Array.isArray(product.category_ids) ? product.category_ids.map(Number) : []
                 const matchesCategory = !this.selectedCategoryId || categoryIds.includes(Number(this.selectedCategoryId))
-                const matchesSearch = !search || String(product.name || '').toLowerCase().includes(search)
+                const matchesSearch = !search || [
+                    product.name,
+                    product.sku,
+                    product.barcode,
+                ].some((value) => String(value || '').toLowerCase().includes(search))
 
                 return matchesMenu && matchesCategory && matchesSearch
             })
@@ -2248,10 +2217,11 @@ handleTableCreateOrder(table) {
             this.$refs.barcodeInput?.focus()
         },
         async handleBarcodeScan() {
-            const barcode = String(this.barcodeInput || '').trim()
+            const barcode = String(this.searchQuery || '').trim()
             if (!barcode || !this.session?.id || this.scannerLoading || this.addItemForm.processing) return
 
             this.scannerLoading = true
+            let shouldClearSearch = false
 
             try {
                 const product = this.loadedProducts.find((row) => String(row.sku || '').trim() === barcode)
@@ -2263,10 +2233,13 @@ handleTableCreateOrder(table) {
                 }
 
                 this.addScannedProduct(product)
+                shouldClearSearch = true
             } catch (error) {
                 this.toastError('Unable to scan product.')
             } finally {
-                this.barcodeInput = ''
+                if (shouldClearSearch) {
+                    this.searchQuery = ''
+                }
                 this.scannerLoading = false
                 this.$nextTick(() => this.focusBarcodeInput())
             }
