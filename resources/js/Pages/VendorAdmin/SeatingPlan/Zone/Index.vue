@@ -111,7 +111,7 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="branch-chip"><i class="bi bi-building"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'floor_name',
@@ -120,14 +120,14 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="floor-chip"> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'activation_badge',
     name: 'is_active',
     orderable: false,
     searchable: false,
-    render: (d) => d ?? `<span class="text-muted small">—</span>`,
+    render: (d) => d ?? `<span class="text-muted small">â€”</span>`,
   },
   { data: 'created_at', name: 'created_at', render: d => `<span class="text-secondary small">${d}</span>` },
   { data: 'updated_at', name: 'updated_at', render: d => `<span class="text-secondary small">${d}</span>` },

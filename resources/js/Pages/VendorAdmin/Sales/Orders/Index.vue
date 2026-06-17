@@ -49,7 +49,7 @@
             <span>Show Order</span>
           </button>
 
-         
+
 
           <button
             type="button"
@@ -398,20 +398,20 @@ const columns = computed(() => ([
       return `
         <div class="d-flex gap-2 justify-content-end">
 
-    <button 
-      type="button" 
-      class="btn-circle js-edit" 
-      data-id="${escapeHtml(data)}" 
+    <button
+      type="button"
+      class="btn-circle js-edit"
+      data-id="${escapeHtml(data)}"
       title="Edit"
     >
       <i class="bi bi-eye-fill"></i>
     </button>
 
-    <button 
-      type="button" 
-      class="btn-circle btn-circle-danger js-delete" 
-      data-id="${escapeHtml(data)}" 
-      data-name="${escapeHtml(name ?? '')}" 
+    <button
+      type="button"
+      class="btn-circle btn-circle-danger js-delete"
+      data-id="${escapeHtml(data)}"
+      data-name="${escapeHtml(name ?? '')}"
       title="Delete"
     >
       <i class="bi bi-x-lg"></i>
@@ -502,8 +502,8 @@ onUnmounted(() => {
   height: 46px;
   border-radius: 12px;
   background: linear-gradient(135deg, #fff3e0 0%, #fff8ef 100%);
-  border: 1px solid #fed7aa;
-  color: #f97316;
+  border: 1px solid #bfdbfe;
+  color: #3b82f6;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -567,8 +567,8 @@ onUnmounted(() => {
 
 :deep(.btn-circle:hover) {
   border-color: #fdba74;
-  color: #ea580c;
-  background: #fff7ed;
+  color: #1d4ed8;
+  background: #eff6ff;
   transform: translateY(-1px);
 }
 
@@ -767,7 +767,7 @@ onUnmounted(() => {
 }
 
 .btn-submit-soft {
-  color: #f59e0b;
+  color: #3b82f6;
   font-weight: 700;
 }
 

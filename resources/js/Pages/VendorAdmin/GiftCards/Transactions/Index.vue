@@ -73,7 +73,7 @@ function escapeHtml(value = '') {
 
 function moneyCell(currency, value) {
   if (value === null || value === undefined || value === '') {
-    return `<span class="text-muted small">—</span>`
+    return `<span class="text-muted small">â€”</span>`
   }
 
   return `

@@ -284,9 +284,9 @@ export default {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #fff7ed, #ffedd5);
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
     color: #c2410c;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
     padding: 8px 12px;
     border-radius: 999px;
     font-size: 12px;
@@ -319,8 +319,8 @@ export default {
 }
 
 .cm-close:hover {
-    background: #fff7ed;
-    color: #ea580c;
+    background: #eff6ff;
+    color: #1d4ed8;
 }
 
 .cm-direction-row {
@@ -346,8 +346,8 @@ export default {
 }
 
 .cm-toggle--active {
-    border-color: #f59e0b;
-    background: #fff7ed;
+    border-color: #3b82f6;
+    background: #eff6ff;
     color: #c2410c;
     box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.16);
 }
@@ -383,8 +383,8 @@ export default {
 }
 
 .cm-reason--active {
-    border-color: #f59e0b;
-    background: #fff7ed;
+    border-color: #3b82f6;
+    background: #eff6ff;
     color: #c2410c;
 }
 
@@ -417,7 +417,7 @@ export default {
 
 .cm-input:focus,
 .cm-textarea:focus {
-    border-color: #f59e0b;
+    border-color: #3b82f6;
     box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
 }
 
@@ -459,7 +459,7 @@ export default {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: linear-gradient(135deg, #f59e0b, #ea580c);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
     box-shadow: 0 12px 24px rgba(245, 158, 11, 0.22);
 }

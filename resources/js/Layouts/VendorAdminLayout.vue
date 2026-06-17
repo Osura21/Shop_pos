@@ -164,7 +164,7 @@
                             }" />
                             <span v-if="collapsed" class="admin-sidebar__tooltip">Seating Plan</span>
                         </button> -->
-<!-- 
+<!--
                         <div class="admin-sidebar__submenu" :class="{
                             'admin-sidebar__submenu--open':
                                 !collapsed && openMenu === 'seating-plan',
@@ -1515,7 +1515,7 @@
 
                         <div class="pos-sheet__header">
                             <span class="pos-sheet__title">POS settings</span>
-                            <button class="pos-sheet__close" @click="isPosSheetOpen = false">✕</button>
+                            <button class="pos-sheet__close" @click="isPosSheetOpen = false">âœ•</button>
                         </div>
 
                         <div class="pos-sheet__body">
@@ -2742,6 +2742,18 @@ watch(collapsed, (value) => {
 
 
 <style>
+.vendoradmin,
+.admin-root.vendoradmin {
+    --va-primary: #3b82f6;
+    --va-primary-dark: #2563eb;
+    --va-primary-soft: rgba(59, 130, 246, 0.08);
+    --va-primary-soft-strong: rgba(59, 130, 246, 0.14);
+    --va-primary-border: rgba(59, 130, 246, 0.18);
+    --va-primary-bg: #eff6ff;
+    --va-primary-bg-strong: #dbeafe;
+    --va-primary-ink: #1d4ed8;
+}
+
 .table-container-modern {
     padding: 0 0.5rem 1rem;
     max-width: calc(100vw - 300px);
@@ -2837,9 +2849,9 @@ body.sidebar-collapsed .table-container-modern {
 }
 
 .admin-topbar__icon-btn:hover {
-    background: rgba(255, 149, 0, 0.04);
-    color: #f57c00;
-    border-color: rgba(255, 149, 0, 0.12);
+    background: var(--va-primary-soft);
+    color: var(--va-primary-ink);
+    border-color: var(--va-primary-border);
     transform: translateY(-2px);
 }
 
@@ -2943,7 +2955,7 @@ body.sidebar-collapsed .table-container-modern {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #f57c00, #ffb340);
+    background: linear-gradient(135deg, var(--va-primary), var(--va-primary-dark));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2981,7 +2993,7 @@ body.sidebar-collapsed .table-container-modern {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #f57c00, #ffb340);
+    background: linear-gradient(135deg, var(--va-primary), var(--va-primary-dark));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3014,8 +3026,8 @@ body.sidebar-collapsed .table-container-modern {
 .admin-topbar__dropdown-role-badge {
     font-size: 11px;
     font-weight: 600;
-    background: rgba(255, 149, 0, 0.1);
-    color: #f57c00;
+    background: var(--va-primary-bg);
+    color: var(--va-primary-ink);
     padding: 1px 6px;
     border-radius: 4px;
 }
@@ -3136,8 +3148,8 @@ body.sidebar-collapsed .table-container-modern {
 }
 
 .admin-topbar__dropdown-item:hover {
-    background: rgba(255, 149, 0, 0.05);
-    color: #f57c00;
+    background: var(--va-primary-soft);
+    color: var(--va-primary-ink);
 }
 
 .admin-topbar__dropdown-item i {
@@ -3176,7 +3188,7 @@ body.sidebar-collapsed .table-container-modern {
     left: 14px;
     font-weight: 600;
     background: linear-gradient(to bottom, #ffffff 50%, #f0f0f0 50%);
-    color: #f57c00;
+    color: var(--va-primary-ink);
 }
 
 .admin-modal__label.admin-modal__error {
@@ -3197,7 +3209,7 @@ i.admin-modal__error {
     left: 14px;
     font-weight: 600;
     background: #fff;
-    color: #f57c00;
+    color: var(--va-primary-ink);
 }
 
 .admin-modal__input:focus+.admin-modal__label.admin-modal__error,
@@ -3292,9 +3304,9 @@ i.admin-modal__error {
 }
 
 .admin-toast__content--success {
-    background: linear-gradient(135deg, #f57c00, #ff9a2f);
+    background: linear-gradient(135deg, var(--va-primary), var(--va-primary-dark));
     box-shadow:
-        0 6px 18px rgba(245, 124, 0, 0.35),
+        0 6px 18px rgba(59, 130, 246, 0.32),
         0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
@@ -3537,15 +3549,15 @@ i.admin-modal__error {
 }
 
 .admin-sidebar__item:hover {
-    background: rgba(255, 149, 0, 0.04);
-    color: #f57c00;
+    background: var(--va-primary-soft);
+    color: var(--va-primary-ink);
 }
 
 .admin-sidebar__item--active {
-    background: rgba(255, 149, 0, 0.08);
-    color: #f57c00;
+    background: var(--va-primary-bg);
+    color: var(--va-primary-ink);
     padding: 6px 12px;
-    border-color: rgba(255, 149, 0, 0.14);
+    border-color: var(--va-primary-border);
     font-weight: 700;
 }
 
@@ -3642,13 +3654,13 @@ i.admin-modal__error {
 }
 
 .admin-flyout__item:hover {
-    background: rgba(255, 149, 0, 0.04);
-    color: #ff9500;
+    background: var(--va-primary-soft);
+    color: var(--va-primary-ink);
 }
 
 .admin-flyout__item--active {
-    background: rgba(255, 149, 0, 0.08);
-    color: #ff9500;
+    background: var(--va-primary-bg);
+    color: var(--va-primary-ink);
     font-weight: 800;
 }
 
@@ -3771,14 +3783,14 @@ i.admin-modal__error {
 }
 
 .admin-offcanvas__item:hover {
-    background: rgba(255, 149, 0, 0.04);
-    color: #f57c00;
+    background: var(--va-primary-soft);
+    color: var(--va-primary-ink);
 }
 
 .admin-offcanvas__item--active {
-    background: rgba(255, 149, 0, 0.08);
-    color: #f57c00;
-    border-color: rgba(255, 149, 0, 0.14);
+    background: var(--va-primary-bg);
+    color: var(--va-primary-ink);
+    border-color: var(--va-primary-border);
     font-weight: 700;
 }
 
@@ -3817,7 +3829,7 @@ i.admin-modal__error {
 }
 
 .password-field i:hover {
-    color: #f57c00;
+    color: var(--va-primary-ink);
 }
 
 .password-field input {
@@ -3890,7 +3902,7 @@ input:-webkit-autofill:focus {
 
 .admin-modal__icon {
     font-size: 26px;
-    color: #f57c00;
+    color: var(--va-primary-ink);
 }
 
 .admin-modal__close {
@@ -3945,8 +3957,8 @@ input:-webkit-autofill:focus {
 
 .admin-modal__input:focus {
     outline: none;
-    border-color: #f57c00;
-    box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.1);
+    border-color: var(--va-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .admin-modal__input::placeholder {
@@ -3989,13 +4001,13 @@ input:-webkit-autofill:focus {
 }
 
 .admin-modal__btn--primary {
-    background: #f57c00;
+    background: var(--va-primary);
     color: #ffffff;
-    border: 1px solid #f57c00;
+    border: 1px solid var(--va-primary);
 }
 
 .admin-modal__btn--primary:disabled {
-    background: #f59e0b;
+    background: var(--va-primary-dark);
     cursor: not-allowed;
     opacity: 0.8;
 }
@@ -4066,11 +4078,11 @@ input:-webkit-autofill:focus {
     bottom: 6px;
     width: 3px;
     border-radius: 2px;
-    background: rgba(245, 124, 0, 0.4);
+    background: var(--va-primary-border);
 }
 
 .admin-sidebar__subitem--active {
-    color: #f57c00;
+    color: var(--va-primary-ink);
     font-weight: 700;
 }
 
@@ -4082,7 +4094,7 @@ input:-webkit-autofill:focus {
     bottom: 6px;
     width: 3px;
     border-radius: 2px;
-    background: #f57c00;
+    background: var(--va-primary);
 }
 
 .admin-offcanvas__accordion-btn {
@@ -4139,9 +4151,9 @@ input:-webkit-autofill:focus {
 }
 
 .admin-offcanvas__subitem--active {
-    background: rgba(157, 13, 253, 0.08);
-    color: #7837aa;
-    border-color: rgba(109, 0, 252, 0.14);
+    background: var(--va-primary-bg);
+    color: var(--va-primary-ink);
+    border-color: var(--va-primary-border);
     font-weight: 700;
 }
 
@@ -4161,9 +4173,9 @@ input:-webkit-autofill:focus {
 
 .admin-topbar__icon-btn--pos:hover {
     background: #ffffff;
-    color: #f57c00;
-    border-color: rgba(245, 124, 0, 0.22);
-    box-shadow: 0 14px 28px rgba(245, 124, 0, 0.13);
+    color: var(--va-primary-ink);
+    border-color: var(--va-primary-border);
+    box-shadow: 0 14px 28px rgba(59, 130, 246, 0.12);
 }
 
 .admin-topbar--pos {
@@ -4181,7 +4193,7 @@ input:-webkit-autofill:focus {
 }
 
 .admin-topbar--pos.admin-topbar--stuck {
-    border-color: rgba(245, 124, 0, 0.12);
+    border-color: var(--va-primary-border);
     box-shadow:
         0 14px 40px rgba(15, 23, 42, 0.12),
         0 0 0 1px rgba(255, 255, 255, 0.64) inset;
@@ -4290,8 +4302,8 @@ input:-webkit-autofill:focus {
 
 .admin-posbar__select :deep(.form-input:focus),
 .admin-posbar__select :deep(.select-trigger:focus) {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+    border-color: var(--va-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .pos-filter-toggle {
@@ -4310,8 +4322,8 @@ input:-webkit-autofill:focus {
 }
 
 .pos-filter-toggle.has-selection {
-    border-color: #f59e0b;
-    background: #fffbeb;
+    border-color: var(--va-primary);
+    background: var(--va-primary-bg);
 }
 
 .pos-filter-toggle__badge {
@@ -4321,7 +4333,7 @@ input:-webkit-autofill:focus {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: #f59e0b;
+    background: var(--va-primary);
     color: #fff;
     font-size: 10px;
     font-weight: 700;
@@ -4425,7 +4437,7 @@ input:-webkit-autofill:focus {
     height: 48px;
     border-radius: 14px;
     border: none;
-    background: #f59e0b;
+    background: var(--va-primary);
     color: #fff;
     font-size: 14px;
     font-weight: 700;

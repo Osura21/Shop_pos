@@ -110,14 +110,14 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="branch-chip"><i class="bi bi-building"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'activation_badge',
     name: 'is_active',
     orderable: false,
     searchable: false,
-    render: (d) => d ?? `<span class="text-muted small">—</span>`,
+    render: (d) => d ?? `<span class="text-muted small">â€”</span>`,
   },
   { data: 'created_at', name: 'created_at', render: d => `<span class="text-secondary small">${d}</span>` },
   { data: 'updated_at', name: 'updated_at', render: d => `<span class="text-secondary small">${d}</span>` },
@@ -260,7 +260,7 @@ watch(
   gap: 0.4rem;
   padding: 0.3rem 0.7rem;
   border-radius: 8px;
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
   color: #c2410c;
   font-size: 0.78rem;
   font-weight: 600;

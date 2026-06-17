@@ -103,7 +103,7 @@ const columns = computed(() => ([
            <i class="bi bi-building"></i>
            <span class="branch-chip-text">${escapeHtml(data)}</span>
          </span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'menu_name',
@@ -115,14 +115,14 @@ const columns = computed(() => ([
            <i class="bi bi-building"></i>
            <span class="branch-chip-text">${escapeHtml(data)}</span>
          </span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'slug',
     name: 'slug',
     render: (data) => data
       ? `<span class="slug-chip"><i class="bi bi-link-45deg"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'status',

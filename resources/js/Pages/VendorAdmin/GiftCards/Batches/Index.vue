@@ -106,7 +106,7 @@ function escapeHtml(value = '') {
 
 function moneyCell(currency, value) {
   if (value === null || value === undefined || value === '') {
-    return `<span class="text-muted small">—</span>`
+    return `<span class="text-muted small">â€”</span>`
   }
 
   return `<span class="quantity-chip">${escapeHtml(currency)} ${escapeHtml(String(value))}</span>`
@@ -373,7 +373,7 @@ watch(
   align-items: center;
   border-radius: 8px;
   padding: 0.35rem 0.7rem;
-  background: #fff7ed;
+  background: #eff6ff;
   color: #c2410c;
   font-size: 0.78rem;
   font-weight: 800;

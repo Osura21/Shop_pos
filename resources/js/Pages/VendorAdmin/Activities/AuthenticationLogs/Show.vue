@@ -7,7 +7,7 @@
         <History :size="20" />
         <div>
           <h1>Show Authentication Log</h1>
-          <p>{{ log.login_at }} · {{ log.browser }}</p>
+          <p>{{ log.login_at }} Â· {{ log.browser }}</p>
         </div>
       </div>
 
@@ -100,7 +100,7 @@ const InfoRow = (props) => h('div', { class: 'info-row' }, [
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #f97316;
+  color: #3b82f6;
 }
 
 .activity-title h1 {
@@ -149,7 +149,7 @@ const InfoRow = (props) => h('div', { class: 'info-row' }, [
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #f97316;
+  color: #3b82f6;
   font-weight: 850;
   margin-bottom: 22px;
 }

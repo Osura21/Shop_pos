@@ -598,8 +598,8 @@ watch(
 }
 
 :deep(.stock-chip--low) {
-  background: #fff7ed;
-  border-color: #fed7aa;
+  background: #eff6ff;
+  border-color: #bfdbfe;
   color: #c2410c;
 }
 
@@ -670,7 +670,7 @@ watch(
   grid-template-columns: 128px minmax(0, 1fr);
   gap: 18px;
   align-items: end;
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.92), rgba(245, 158, 11, 0.88)), #f97316;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.92), rgba(245, 158, 11, 0.88)), #3b82f6;
   color: #ffffff;
 }
 
@@ -843,8 +843,8 @@ watch(
   gap: 1rem;
   padding: 1rem 1.1rem;
   border-radius: 16px;
-  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
-  border: 1px solid #fed7aa;
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+  border: 1px solid #bfdbfe;
 }
 
 .stock-overview__status {
@@ -921,7 +921,7 @@ watch(
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #fff7ed;
+  background: #eff6ff;
   color: #c2410c;
   font-weight: 900;
 }

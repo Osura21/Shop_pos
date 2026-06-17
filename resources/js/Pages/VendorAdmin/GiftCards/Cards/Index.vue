@@ -115,7 +115,7 @@ function escapeHtml(value = '') {
 
 function moneyCell(currency, value) {
   if (value === null || value === undefined || value === '') {
-    return `<span class="text-muted small">—</span>`
+    return `<span class="text-muted small">â€”</span>`
   }
 
   return `<span class="quantity-chip">${escapeHtml(currency)} ${escapeHtml(String(value))}</span>`
@@ -335,9 +335,9 @@ watch(
 
 <style scoped>
 .btn-primary-modern--soft {
-  background: #fff7ed;
-  color: #f97316;
-  border: 1px solid #fed7aa;
+  background: #eff6ff;
+  color: #3b82f6;
+  border: 1px solid #bfdbfe;
 }
 
 :deep(thead th) {

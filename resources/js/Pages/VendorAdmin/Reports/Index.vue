@@ -41,7 +41,7 @@
               <p>{{ section.items.length }} available reports</p>
             </div>
 
-           
+
           </div>
 
           <div class="report-grid">
@@ -248,7 +248,7 @@ const totalSections = computed(() => visibleSections.value.length)
   border-radius: 18px;
   background:
     radial-gradient(circle at top left, rgba(249, 115, 22, 0.12), transparent 34%),
-    linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+    linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
   border: 1px solid rgba(249, 115, 22, 0.16);
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.045);
 }
@@ -257,7 +257,7 @@ const totalSections = computed(() => visibleSections.value.length)
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  color: #f97316;
+  color: #3b82f6;
   font-weight: 850;
   margin-bottom: 10px;
 }
@@ -285,7 +285,7 @@ const totalSections = computed(() => visibleSections.value.length)
 }
 
 .reports-hero__meta span {
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
   background: #fff;
   border-radius: 999px;
   padding: 9px 14px;
@@ -399,9 +399,9 @@ const totalSections = computed(() => visibleSections.value.length)
   width: 54px;
   height: 54px;
   border-radius: 15px;
-  color: #f97316;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: #3b82f6;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -424,9 +424,9 @@ const totalSections = computed(() => visibleSections.value.length)
 .report-card__permission {
   display: inline-flex;
   margin-top: 9px;
-  color: #f97316;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: #3b82f6;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   border-radius: 999px;
   padding: 4px 8px;
   font-size: 10px;
@@ -434,7 +434,7 @@ const totalSections = computed(() => visibleSections.value.length)
 }
 
 .report-card__arrow {
-  color: #f97316;
+  color: #3b82f6;
   opacity: 0.65;
 }
 

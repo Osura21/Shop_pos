@@ -147,7 +147,7 @@ const submit = () => {
                         </form>
 
                         <div class="login-footer">
-                            Protected area • Authorized vendors only
+                            Protected area â€¢ Authorized vendors only
                         </div>
                     </div>
                 </div>
@@ -396,7 +396,7 @@ const submit = () => {
     position: absolute;
     inset: 0 0 auto 0;
     height: 4px;
-    background: linear-gradient(90deg, #f97316, #fb923c, #fdba74);
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #fdba74);
 }
 
 .login-header {
@@ -410,13 +410,13 @@ const submit = () => {
     min-height: 32px;
     padding: 7px 14px;
     border-radius: 999px;
-    background: #fff7ed;
-    color: #ea580c;
+    background: #eff6ff;
+    color: #1d4ed8;
     font-size: 12px;
     line-height: 1;
     font-weight: 800;
     margin-bottom: 14px;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
 }
 
 .login-header h1 {
@@ -465,7 +465,7 @@ const submit = () => {
 }
 
 .input-wrap:focus-within {
-    border-color: #f97316;
+    border-color: #3b82f6;
     box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12);
 }
 
@@ -478,7 +478,7 @@ const submit = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #f97316;
+    color: #3b82f6;
     flex: 0 0 auto;
 }
 
@@ -502,7 +502,7 @@ const submit = () => {
     flex: 0 0 auto;
     border: 0;
     background: transparent;
-    color: #ea580c;
+    color: #1d4ed8;
     font-size: 13px;
     font-weight: 850;
     padding: 0 14px;
@@ -545,7 +545,7 @@ const submit = () => {
 .remember-me input {
     width: 16px;
     height: 16px;
-    accent-color: #f97316;
+    accent-color: #3b82f6;
 }
 
 .submit-btn {
@@ -553,7 +553,7 @@ const submit = () => {
     min-height: 56px;
     border: 0;
     border-radius: 17px;
-    background: linear-gradient(135deg, #f97316, #ea580c);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: #ffffff;
     font-size: 15px;
     font-weight: 850;
@@ -720,7 +720,7 @@ const submit = () => {
     width: 72px;
     height: 26px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #fed7aa, #fdba74);
+    background: linear-gradient(135deg, #bfdbfe, #fdba74);
 }
 
 .screen-grid {
@@ -781,7 +781,7 @@ const submit = () => {
 .screen-chart span {
     flex: 1;
     border-radius: 10px 10px 4px 4px;
-    background: linear-gradient(180deg, #fdba74 0%, #f97316 100%);
+    background: linear-gradient(180deg, #fdba74 0%, #3b82f6 100%);
 }
 
 .screen-table {
@@ -913,7 +913,7 @@ const submit = () => {
     width: 28px;
     height: 28px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #fed7aa, #fb923c);
+    background: linear-gradient(135deg, #bfdbfe, #60a5fa);
 }
 
 .receipt-title {
@@ -968,7 +968,7 @@ const submit = () => {
 .phone-screen {
     height: calc(100% - 24px);
     border-radius: 20px;
-    background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+    background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
     padding: 14px 12px;
 }
 
@@ -987,14 +987,14 @@ const submit = () => {
 .phone-stat-grid span {
     height: 48px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #ffedd5, #ffe4d6);
+    background: linear-gradient(135deg, #dbeafe, #ffe4d6);
 }
 
 .phone-button {
     width: 100%;
     height: 38px;
     border-radius: 14px;
-    background: linear-gradient(135deg, #f97316, #ea580c);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     margin-top: auto;
 }
 

@@ -524,8 +524,8 @@ export default {
 }
 
 .note-area :focus {
-  border-color: #f28c00 !important;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15)!important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14)!important;
 }
 
 .formControl {
@@ -536,13 +536,13 @@ export default {
 }
 
 .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 .avatar-box {
   min-height: 240px;
-  border: 2px dashed rgba(242, 140, 0, 0.3);
+  border: 2px dashed rgba(59, 130, 246, 0.3);
   border-radius: 16px;
   background: #fcfaf7;
   display: flex;
@@ -554,24 +554,24 @@ export default {
 }
 
 .avatar-placeholder { color: #6b7280; }
-.avatar-icon { font-size: 68px; color: #f28c00; }
+.avatar-icon { font-size: 68px; color: #2563eb; }
 
 .avatar-image-wrapper {
-  width: 80px;             
+  width: 80px;
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;     
+  background: #f5f5f5;
   margin: 0 auto;
 }
 
 .avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;        
+  object-fit: cover;
 }
 
 .error-text {

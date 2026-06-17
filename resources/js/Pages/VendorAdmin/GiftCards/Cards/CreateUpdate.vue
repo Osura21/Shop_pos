@@ -16,7 +16,7 @@
             <p class="header-subtitle">
               Base currency: <strong>{{ baseCurrencyCode }}</strong>
               <template v-if="hasSecondaryCurrency">
-                · Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
+                Â· Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
               </template>
             </p>
           </div>

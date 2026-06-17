@@ -332,7 +332,7 @@ watch(
 
 .brand-row--active {
   border-color: #fdba74;
-  background: #fff7ed;
+  background: #eff6ff;
 }
 
 .brand-row strong {

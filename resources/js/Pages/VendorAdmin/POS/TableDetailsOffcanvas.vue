@@ -15,7 +15,7 @@
 
                         <div>
                             <h3>{{ table.name }}</h3>
-                            <p>{{ table.zone || '-' }} · {{ table.floor || '-' }}</p>
+                            <p>{{ table.zone || '-' }} Â· {{ table.floor || '-' }}</p>
                         </div>
                     </div>
 
@@ -550,7 +550,7 @@
 
                                 <span>
                                     <strong>{{ candidate.name }}</strong>
-                                    <small>{{ candidate.zone || '-' }} · {{ candidate.floor || '-' }}</small>
+                                    <small>{{ candidate.zone || '-' }} Â· {{ candidate.floor || '-' }}</small>
                                 </span>
 
                                 <em :class="'tdo-mini-status--' + String(candidate.status || '').toLowerCase()">
@@ -1146,8 +1146,8 @@ export default {
 }
 
 .tdo-status--merged {
-    background: #ffedd5;
-    color: #f97316;
+    background: #dbeafe;
+    color: #3b82f6;
 }
 
 .tdo-meta-grid {
@@ -1235,8 +1235,8 @@ export default {
 }
 
 .tdo-merge-chip--primary {
-    background: #ffedd5;
-    color: #f97316;
+    background: #dbeafe;
+    color: #3b82f6;
 }
 
 .tdo-order-list {
@@ -1629,7 +1629,7 @@ export default {
 
 .tdo-summary-total span,
 .tdo-summary-total strong {
-    color: #f97316;
+    color: #3b82f6;
     font-weight: 900;
 }
 

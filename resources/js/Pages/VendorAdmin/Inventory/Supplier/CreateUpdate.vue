@@ -48,18 +48,18 @@
               <div class="card-body formCardBody">
                 <div class="row g-3">
                   <div class="col-12 col-lg-6">
-                    <Input 
-                      id="name" 
-                      label="Supplier Name" 
-                      v-model="form.name" 
-                      placeholder="Supplier name" 
-                      :error="form.errors.name" 
+                    <Input
+                      id="name"
+                      label="Supplier Name"
+                      v-model="form.name"
+                      placeholder="Supplier name"
+                      :error="form.errors.name"
                     />
                   </div>
 
                   <div class="col-12 col-lg-6">
                     <label class="form-label formLabel">Branch</label>
-                    <SelectInput id="branch_id" v-model="form.branch_id" :options="branches" 
+                    <SelectInput id="branch_id" v-model="form.branch_id" :options="branches"
                       valueKey="id" labelKey="name" placeholder="Select Branch" />
                     <div v-if="form.errors.branch_id" class="error-text">{{ form.errors.branch_id }}</div>
                   </div>
@@ -70,31 +70,31 @@
                   </div>
 
                   <div class="col-12 col-lg-6">
-                    <Input 
-                      id="phone" 
-                      label="Phone Number" 
-                      v-model="form.phone" 
-                      placeholder="Phone number" 
-                      :error="form.errors.phone" 
+                    <Input
+                      id="phone"
+                      label="Phone Number"
+                      v-model="form.phone"
+                      placeholder="Phone number"
+                      :error="form.errors.phone"
                     />
                   </div>
 
                   <div class="col-12">
-                    <Input 
-                      id="address" 
-                      label="Address" 
-                      v-model="form.address" 
-                      placeholder="Full address" 
-                      :error="form.errors.address" 
+                    <Input
+                      id="address"
+                      label="Address"
+                      v-model="form.address"
+                      placeholder="Full address"
+                      :error="form.errors.address"
                     />
                   </div>
 
                   <div class="col-12">
                     <div class="form-check form-switch mt-2">
-                      <input 
-                        id="is_active" 
-                        class="form-check-input" 
-                        type="checkbox" 
+                      <input
+                        id="is_active"
+                        class="form-check-input"
+                        type="checkbox"
                         v-model="form.is_active"
                       >
                       <label class="form-check-label" for="is_active">Active Supplier</label>

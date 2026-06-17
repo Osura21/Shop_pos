@@ -319,16 +319,16 @@ const submit = () => {
 }
 
 .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
   outline: none;
 }
 
 .selected-count {
   font-size: 13px;
   font-weight: 700;
-  color: #f28c00;
-  background: rgba(242, 140, 0, 0.10);
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.10);
   padding: 5px 12px;
   border-radius: 999px;
   white-space: nowrap;
@@ -337,7 +337,7 @@ const submit = () => {
 .permission-section+.permission-section {
   margin-top: 28px;
   padding-top: 28px;
-  border-top: 1px solid rgba(242, 140, 0, 0.1);
+  border-top: 1px solid rgba(59, 130, 246, 0.12);
 }
 
 .permission-section__header {
@@ -379,19 +379,19 @@ const submit = () => {
 }
 
 .permission-card:hover {
-  border-color: #f28c00;
+  border-color: #2563eb;
   background: #fffaf0;
 }
 
 .permission-card--checked {
-  border-color: rgba(242, 140, 0, 0.5);
+  border-color: rgba(59, 130, 246, 0.5);
   background: #fffaf0;
 }
 
 .permission-card input {
   width: 16px;
   height: 16px;
-  accent-color: #f28c00;
+  accent-color: #2563eb;
   flex-shrink: 0;
 }
 
@@ -431,7 +431,7 @@ const submit = () => {
 }
 
 .helper-box {
-  border: 1px dashed rgba(242, 140, 0, 0.3);
+  border: 1px dashed rgba(59, 130, 246, 0.3);
   background: #fffaf0;
   border-radius: 14px;
   padding: 16px;
@@ -440,7 +440,7 @@ const submit = () => {
 .helper-box__title {
   font-size: 13px;
   font-weight: 700;
-  color: #f28c00;
+  color: #2563eb;
   margin-bottom: 6px;
 }
 
@@ -527,7 +527,7 @@ const submit = () => {
 
 .section-divider {
   height: 1px;
-  background: rgba(242, 140, 0, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   margin: 0 32px;
 }
 

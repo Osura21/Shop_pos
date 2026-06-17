@@ -124,7 +124,7 @@
                       autocomplete="off"
                     />
                     <div class="form-hint">
-                      <span v-if="googleMapsLoading">Loading Google location search…</span>
+                      <span v-if="googleMapsLoading">Loading Google location searchâ€¦</span>
                       <span v-else-if="googleMapsError" class="error-text">{{ googleMapsError }}</span>
                       <span v-else>Search a Google suggestion to auto-fill address and coordinates.</span>
                     </div>
@@ -333,7 +333,7 @@
                         class="tag-badge"
                       >
                         {{ option.label }}
-                        <button type="button" @click="removeMultiValue('order_types', option.value)" class="tag-remove">×</button>
+                        <button type="button" @click="removeMultiValue('order_types', option.value)" class="tag-remove">Ã—</button>
                       </span>
                     </div>
 
@@ -383,7 +383,7 @@
                         class="tag-badge"
                       >
                         {{ option.label }}
-                        <button type="button" @click="removeMultiValue('payment_methods', option.value)" class="tag-remove">×</button>
+                        <button type="button" @click="removeMultiValue('payment_methods', option.value)" class="tag-remove">Ã—</button>
                       </span>
                     </div>
 
@@ -866,7 +866,7 @@ export default {
 
   beforeUnmount() {
     document.removeEventListener('click', this.handleDocumentClick)
-    
+
   },
 }
 </script>
@@ -927,9 +927,9 @@ export default {
 
 .location-search:focus {
   outline: none;
-  border-color: #f28c00;
+  border-color: #2563eb;
   background: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 .location-search::placeholder {
@@ -1015,9 +1015,9 @@ export default {
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 
-    max-height: 200px;      
-    overflow-y: auto;       
-    z-index: 99999;          
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 99999;
 }
 
 .country-item span, .country-dropdown span {
@@ -1030,8 +1030,8 @@ export default {
 .country-item,
 .country-dropdown {
      font-family: 'DM Sans', sans-serif;
-    font-weight: 500; 
-    letter-spacing: 0.3px; 
+    font-weight: 500;
+    letter-spacing: 0.3px;
 }
 
 .country-item:hover {
@@ -1072,13 +1072,13 @@ export default {
 
 .multi-select-btn:hover {
   background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(242, 140, 0, 0.25);
+  border-color: rgba(59, 130, 246, 0.22);
 }
 
 .multi-select-btn:focus {
   outline: none;
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 .select-value {
@@ -1129,8 +1129,8 @@ export default {
   left: 0;
   right: 0;
   z-index: 50;
-   scrollbar-width: none;       
-  -ms-overflow-style: none;     
+   scrollbar-width: none;
+  -ms-overflow-style: none;
   margin-top: 8px;
   background: rgba(255, 255, 255, 0.98);
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -1143,7 +1143,7 @@ export default {
 }
 
 .single-select-menu::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 .single-select-item {
   padding: 10px 12px;
@@ -1155,7 +1155,7 @@ export default {
 }
 
 .single-select-item:hover {
-  background: rgba(242, 140, 0, 0.1);
+  background: rgba(59, 130, 246, 0.12);
   color: #1a202c;
 }
 
@@ -1189,7 +1189,7 @@ export default {
 }
 
 .multi-select-item:hover {
-  background: rgba(242, 140, 0, 0.1);
+  background: rgba(59, 130, 246, 0.12);
   color: #1a202c;
 }
 
@@ -1197,7 +1197,7 @@ export default {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #f28c00;
+  accent-color: #2563eb;
 }
 
 /* Tags */
@@ -1213,9 +1213,9 @@ export default {
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: rgba(242, 140, 0, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   color: #b85c00;
-  border: 1px solid rgba(242, 140, 0, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
@@ -1223,8 +1223,8 @@ export default {
 }
 
 .tag-badge:hover {
-  background: rgba(242, 140, 0, 0.18);
-  border-color: rgba(242, 140, 0, 0.5);
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.5);
 }
 
 .tag-remove {

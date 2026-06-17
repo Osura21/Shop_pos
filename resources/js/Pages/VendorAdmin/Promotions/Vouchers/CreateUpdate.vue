@@ -16,7 +16,7 @@ w<template>
             <p class="header-subtitle">
               Base currency: <strong>{{ baseCurrencyCode }}</strong>
               <template v-if="hasSecondaryCurrency">
-                · Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
+                Â· Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
               </template>
             </p>
           </div>
@@ -716,7 +716,7 @@ function submit() {
 .checkbox-line input {
   width: 18px;
   height: 18px;
-  accent-color: var(--primary, #f97316);
+  accent-color: var(--primary, #3b82f6);
 }
 
 .fancy-textarea {
@@ -743,7 +743,7 @@ function submit() {
 }
 
 .picker-box__control:focus {
-  border-color: var(--primary, #f97316);
+  border-color: var(--primary, #3b82f6);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.14);
   outline: none;
 }
@@ -798,7 +798,7 @@ function submit() {
 .picker-box__item input {
   width: 18px;
   height: 18px;
-  accent-color: var(--primary, #f97316);
+  accent-color: var(--primary, #3b82f6);
 }
 
 :deep(.multiselect-input) {

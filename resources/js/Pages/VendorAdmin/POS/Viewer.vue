@@ -280,7 +280,7 @@
                                                         <i class="bi bi-plus"></i>
                                                     </button>
                                                 </div>
-                                                <span class="meta-dot">•</span>
+                                                <span class="meta-dot">â€¢</span>
                                                 Unit: {{ getCurrencySymbol(item.currency_code || activeCurrencyCode) }} {{
                                                     money(unitPriceWithOptions(item)) }}
                                             </div>
@@ -340,7 +340,7 @@
         >
             <div>
                 <strong>{{ selectedOrderTable.name }}</strong>
-                <span>{{ selectedOrderTable.zone || '-' }} · {{ selectedOrderTable.floor || '-' }}</span>
+                <span>{{ selectedOrderTable.zone || '-' }} Â· {{ selectedOrderTable.floor || '-' }}</span>
             </div>
         </button>
 
@@ -635,7 +635,7 @@
             </aside>
         </div>
 
-     
+
 
         <div v-if="showMergeModal" class="table-detail-backdrop" @click.self="showMergeModal = false">
             <div class="merge-modal">
@@ -886,7 +886,7 @@
             </div>
             <div v-else-if="loyaltyGifts.length" class="loyalty-rewards">
                 <button v-for="gift in loyaltyGifts" :key="gift.id" type="button" class="loyalty-reward-card" @click="applyLoyaltyGift(gift.id)">
-                    <div><strong>{{ gift.reward }}</strong><span>{{ gift.code || gift.type }} · {{ gift.valid_until || 'No expiry' }} ({{ gift.points_spent }} Pts)</span></div>
+                    <div><strong>{{ gift.reward }}</strong><span>{{ gift.code || gift.type }} Â· {{ gift.valid_until || 'No expiry' }} ({{ gift.points_spent }} Pts)</span></div>
                     <em>Claim</em>
                 </button>
             </div>
@@ -1940,7 +1940,7 @@ handleTableCreateOrder(table) {
                 if (!isNaN(selectedDate.getTime()) && selectedDate < today) {
                     this.toastError('Scheduled date must be today or future.')
                     return
-                }   
+                }
             }
             this.selectedPaymentMethod = method
             this.actionLoading.openPayment = true
@@ -2087,7 +2087,7 @@ handleTableCreateOrder(table) {
         },
         redeemReward(rewardId) {
             if (!this.session?.id || !rewardId) return
-            
+
             const reward = this.loyaltySummary.rewards?.find(r => r.id === rewardId)
             const isGift = reward && ['free_item', 'voucher_code'].includes(reward.type)
 
@@ -2562,21 +2562,21 @@ handleTableCreateOrder(table) {
             const hasSpecial = this.metaForm.currency_mode === 'secondary' && this.secondaryCurrencyCode
                 ? (product.secondary_special_price !== null && product.secondary_special_price !== undefined && product.secondary_special_price !== '') || (product.special_price_type === 'percentage' && product.base_special_price !== null && product.base_special_price !== undefined && product.base_special_price !== '')
                 : product.base_special_price !== null && product.base_special_price !== undefined && product.base_special_price !== '';
-                
+
             if (!hasSpecial) return false;
-            
+
             const now = new Date();
-            
+
             if (product.special_price_start) {
                 const start = new Date(product.special_price_start);
                 if (now < start) return false;
             }
-            
+
             if (product.special_price_end) {
                 const end = new Date(product.special_price_end);
                 if (now > end) return false;
             }
-            
+
             return true;
         },
         normalPrice(product) {
@@ -2586,7 +2586,7 @@ handleTableCreateOrder(table) {
         },
         productPrice(product) {
             const normalPrice = this.normalPrice(product);
-            
+
             if (this.isSpecialPriceActive(product)) {
                 if (product.special_price_type === 'percentage') {
                     const percentage = this.metaForm.currency_mode === 'secondary' && this.secondaryCurrencyCode
@@ -2856,11 +2856,11 @@ handleTableCreateOrder(table) {
         },
         removeItem(itemId) {
             if (!this.session?.id || this.actionLoading.removingItemId) return
-            
+
             const item = this.session.items?.find((item) => Number(item.id) === Number(itemId))
             const isGiftItem = item && item.loyalty_gift_id !== null
             const itemName = item?.product_name || 'Item'
-            
+
             this.actionLoading.removingItemId = itemId
             router.delete(route('vendor.pos.remove-item', { session: this.session.id, itemId }), {
                 preserveScroll: true,
@@ -3042,7 +3042,7 @@ handleTableCreateOrder(table) {
             router.patch(route('vendor.pos.pay-fire', this.session.id), {}, { preserveScroll: true })
         },
     },
-    
+
     watch: {
         flash: {
             handler(flash) {
@@ -3147,7 +3147,7 @@ handleTableCreateOrder(table) {
 }
 
 .barcode-box__input {
-    border-color: #f59e0b;
+    border-color: #3b82f6;
     padding-left: 42px;
     padding-right: 88px;
     font-weight: 800;
@@ -3156,8 +3156,8 @@ handleTableCreateOrder(table) {
 .search-box__input:focus,
 .barcode-box__input:focus,
 .field-control:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .barcode-box__status {
@@ -3165,14 +3165,14 @@ handleTableCreateOrder(table) {
     top: 50%;
     right: 14px;
     transform: translateY(-50%);
-    color: #f59e0b;
+    color: #3b82f6;
     font-size: 11px;
     font-weight: 900;
     text-transform: uppercase;
 }
 
 .barcode-box--loading .barcode-box__input {
-    background: #fff7ed;
+    background: #eff6ff;
 }
 
 .field-control--textarea {
@@ -3189,7 +3189,7 @@ handleTableCreateOrder(table) {
     overflow-y: hidden;
     padding-bottom: 8px;
     scrollbar-width: thin;
-    scrollbar-color: #f59e0b #fff7ed;
+    scrollbar-color: #3b82f6 #eff6ff;
 }
 
 .category-strip::-webkit-scrollbar {
@@ -3197,12 +3197,12 @@ handleTableCreateOrder(table) {
 }
 
 .category-strip::-webkit-scrollbar-track {
-    background: #fff7ed;
+    background: #eff6ff;
     border-radius: 999px;
 }
 
 .category-strip::-webkit-scrollbar-thumb {
-    background: #f59e0b;
+    background: #3b82f6;
     border-radius: 999px;
 }
 
@@ -3221,7 +3221,7 @@ handleTableCreateOrder(table) {
 }
 
 .category-chip--active {
-    background: #f59e0b;
+    background: #3b82f6;
     color: #ffffff;
 }
 
@@ -3231,7 +3231,7 @@ handleTableCreateOrder(table) {
     overflow: auto;
     padding-right: 2px;
     scrollbar-width: thin;
-    scrollbar-color: #f59e0b #fff7ed;
+    scrollbar-color: #3b82f6 #eff6ff;
 }
 
 .catalog-scroll::-webkit-scrollbar,
@@ -3243,14 +3243,14 @@ handleTableCreateOrder(table) {
 .catalog-scroll::-webkit-scrollbar-track,
 .order-list::-webkit-scrollbar-track,
 .summary-panel::-webkit-scrollbar-track {
-    background: #fff7ed;
+    background: #eff6ff;
     border-radius: 999px;
 }
 
 .catalog-scroll::-webkit-scrollbar-thumb,
 .order-list::-webkit-scrollbar-thumb,
 .summary-panel::-webkit-scrollbar-thumb {
-    background: #f59e0b;
+    background: #3b82f6;
     border-radius: 999px;
 }
 
@@ -3277,8 +3277,8 @@ handleTableCreateOrder(table) {
 }
 
 .product-card--low-stock {
-    border-color: #fbbf24;
-    box-shadow: 0 12px 24px rgba(245, 158, 11, 0.12);
+    border-color: #93c5fd;
+    box-shadow: 0 12px 24px rgba(59, 130, 246, 0.12);
 }
 
 .product-card--unavailable {
@@ -3289,7 +3289,7 @@ handleTableCreateOrder(table) {
 
 .product-card__media {
     position: relative;
-    height: 100px; 
+    height: 100px;
     width: 100%;
     /* background: #f3f4f6; */
     border-radius: 14px 14px 0 0;
@@ -3379,7 +3379,7 @@ handleTableCreateOrder(table) {
 
 .product-card__stock-note {
     margin: 6px 0 0;
-    color: #92400e;
+    color: #2563eb;
     font-size: 11px;
     font-weight: 800;
     line-height: 1.25;
@@ -3545,7 +3545,7 @@ handleTableCreateOrder(table) {
     flex-direction: column;
     gap: 10px;
     scrollbar-width: thin;
-    scrollbar-color: #f59e0b #fff7ed;
+    scrollbar-color: #3b82f6 #eff6ff;
 }
 
 .order-item-card {
@@ -3663,8 +3663,8 @@ handleTableCreateOrder(table) {
     height: 40px;
     border: none;
     border-radius: 10px;
-    background: #fff7ed;
-    color: #f97316;
+    background: #eff6ff;
+    color: #3b82f6;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -3673,8 +3673,8 @@ handleTableCreateOrder(table) {
 }
 
 .remove-btn:hover {
-    background: #ffedd5;
-    color: #ea580c;
+    background: #dbeafe;
+    color: #1d4ed8;
 }
 
 .remove-btn:disabled,
@@ -3701,7 +3701,7 @@ handleTableCreateOrder(table) {
     min-width: 0;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #f59e0b #fff7ed;
+    scrollbar-color: #3b82f6 #eff6ff;
 }
 
 .summary-utility-grid {
@@ -3733,8 +3733,8 @@ handleTableCreateOrder(table) {
 }
 
 .summary-utility-card:hover {
-    border-color: #f59e0b;
-    color: #c2410c;
+    border-color: #3b82f6;
+    color: #2563eb;
 }
 
 .summary-form {
@@ -3766,9 +3766,9 @@ handleTableCreateOrder(table) {
 }
 
 .discount-switcher__btn--active {
-    border-color: #f59e0b;
-    background: #fff7ed;
-    color: #c2410c;
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #2563eb;
 }
 
 .discount-row {
@@ -3784,7 +3784,7 @@ handleTableCreateOrder(table) {
 .apply-btn {
     border: none;
     border-radius: 8px;
-    background: #f97316;
+    background: #3b82f6;
     color: #ffffff;
     font-size: 13px;
     font-weight: 700;
@@ -3821,8 +3821,8 @@ handleTableCreateOrder(table) {
     height: 28px;
     border: none;
     border-radius: 8px;
-    background: #fff7ed;
-    color: #f97316;
+    background: #eff6ff;
+    color: #3b82f6;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -3832,8 +3832,8 @@ handleTableCreateOrder(table) {
 }
 
 .remove-deduction-btn:hover {
-    background: #ffedd5;
-    color: #ea580c;
+    background: #dbeafe;
+    color: #1d4ed8;
 }
 
 .totals-row--grand {
@@ -3844,7 +3844,7 @@ handleTableCreateOrder(table) {
 
 .totals-row--grand span,
 .totals-row--grand strong {
-    color: #f97316;
+    color: #3b82f6;
     font-weight: 800;
 }
 
@@ -4031,10 +4031,10 @@ handleTableCreateOrder(table) {
 .pos-add-customer-btn {
     width: 42px;
     height: 42px;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
     border-radius: 12px;
-    background: #fff7ed;
-    color: #f97316;
+    background: #eff6ff;
+    color: #3b82f6;
     display: inline-grid;
     place-items: center;
     align-self: end;
@@ -4059,10 +4059,10 @@ handleTableCreateOrder(table) {
 }
 
 .pos-customer-view-btn:hover:not(:disabled) {
-    background: #fff7ed;
-    border-color: #fdba74;
-    color: #ea580c;
-    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.08);
+    background: #eff6ff;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.08);
 }
 
 .pos-customer-view-btn:disabled {
@@ -4071,10 +4071,10 @@ handleTableCreateOrder(table) {
 }
 
 .pos-add-customer-btn:hover {
-    background: #ffedd5;
-    border-color: #fb923c;
-    color: #ea580c;
-    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.12);
+    background: #dbeafe;
+    border-color: #60a5fa;
+    color: #1d4ed8;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.12);
 }
 
 .pos-actions-wrap {
@@ -4089,7 +4089,7 @@ handleTableCreateOrder(table) {
     border: none;
     border-radius: 8px;
     padding: 0 15px;
-    background: #f97316;
+    background: #3b82f6;
     color: #ffffff;
     font-weight: 800;
     font-size: 13px;
@@ -4099,7 +4099,7 @@ handleTableCreateOrder(table) {
     white-space: nowrap;
     cursor: pointer;
     overflow: hidden;
-    box-shadow: 0 10px 18px rgba(249, 115, 22, 0.22);
+    box-shadow: 0 10px 18px rgba(59, 130, 246, 0.22);
     transition: background 0.14s ease, box-shadow 0.14s ease, opacity 0.14s ease;
 }
 
@@ -4115,8 +4115,8 @@ handleTableCreateOrder(table) {
 
 .pos-actions-btn:hover:not(:disabled),
 .pos-actions-btn--open {
-    background: #f97316;
-    box-shadow: 0 10px 18px rgba(249, 115, 22, 0.22);
+    background: #3b82f6;
+    box-shadow: 0 10px 18px rgba(59, 130, 246, 0.22);
 }
 
 .pos-actions-btn:hover:not(:disabled)::before {
@@ -4124,7 +4124,7 @@ handleTableCreateOrder(table) {
 }
 
 .pos-actions-btn:active:not(:disabled) {
-    background: #ea580c;
+    background: #1d4ed8;
 }
 
 .pos-actions-btn:disabled {
@@ -4177,8 +4177,8 @@ handleTableCreateOrder(table) {
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: #fff7ed;
-    color: #f97316;
+    background: #eff6ff;
+    color: #3b82f6;
     display: grid;
     place-items: center;
     font-size: 16px;
@@ -4204,7 +4204,7 @@ handleTableCreateOrder(table) {
 }
 
 .pos-actions-menu button:hover {
-    background: #fff7ed;
+    background: #eff6ff;
 }
 
 @media (max-width: 760px) {
@@ -4303,7 +4303,7 @@ handleTableCreateOrder(table) {
     border: 0;
     border-radius: 10px;
     padding: 18px 18px;
-    background: linear-gradient(90deg, #fff7ed 0%, #e8e1dc 58%, #cfcfcf 100%);
+    background: linear-gradient(90deg, #eff6ff 0%, #e8e1dc 58%, #cfcfcf 100%);
     display: grid;
     grid-template-columns: 1.2fr 1fr 1fr;
     align-items: center;
@@ -4336,7 +4336,7 @@ handleTableCreateOrder(table) {
 }
 
 .loyalty-tier-avatar i {
-    color: #d97706;
+    color: #2563eb;
     font-size: 28px;
 }
 
@@ -4354,7 +4354,7 @@ handleTableCreateOrder(table) {
 }
 
 .loyalty-hero__level i {
-    color: #d97706;
+    color: #2563eb;
     font-size: 28px;
 }
 
@@ -4376,7 +4376,7 @@ handleTableCreateOrder(table) {
 }
 
 .loyalty-hero__points strong {
-    color: #f97316;
+    color: #3b82f6;
     font-size: 18px;
 }
 
@@ -4409,8 +4409,8 @@ handleTableCreateOrder(table) {
 }
 
 .loyalty-reward-card:hover {
-    border-color: #fdba74;
-    box-shadow: 0 14px 26px rgba(249, 115, 22, 0.1);
+    border-color: #93c5fd;
+    box-shadow: 0 14px 26px rgba(59, 130, 246, 0.1);
 }
 
 .loyalty-reward-card strong,
@@ -4430,7 +4430,7 @@ handleTableCreateOrder(table) {
 }
 
 .loyalty-reward-card em {
-    color: #f97316;
+    color: #3b82f6;
     font-style: normal;
     font-weight: 900;
     white-space: nowrap;
@@ -4492,7 +4492,7 @@ handleTableCreateOrder(table) {
     height: 140px;
     border-radius: 50%;
     background: #f1ede8;
-    color: #f97316;
+    color: #3b82f6;
     font-size: 70px;
     display: grid;
     place-items: center;
@@ -4571,8 +4571,8 @@ handleTableCreateOrder(table) {
 }
 
 .quick-customer-field input:focus {
-    border-color: #fb923c;
-    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.12);
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .quick-customer-phone {
@@ -4611,7 +4611,7 @@ handleTableCreateOrder(table) {
 .quick-customer-create {
     border: none;
     background: transparent;
-    color: #f97316;
+    color: #3b82f6;
     font-size: 14px;
     font-weight: 700;
     padding: 7px 4px;
@@ -4695,8 +4695,8 @@ handleTableCreateOrder(table) {
 }
 
 .apply-btn--ready {
-    background: #f97316;
-    box-shadow: 0 10px 18px rgba(249, 115, 22, 0.22);
+    background: #3b82f6;
+    box-shadow: 0 10px 18px rgba(59, 130, 246, 0.22);
 }
 
 .product-card--skeleton {
@@ -4761,7 +4761,7 @@ handleTableCreateOrder(table) {
     max-width: 100%;
 
     scrollbar-width: thin;
-    scrollbar-color: #f59e0b #fff7ed;
+    scrollbar-color: #3b82f6 #eff6ff;
 }
 
 .category-strip::-webkit-scrollbar {
@@ -4769,17 +4769,17 @@ handleTableCreateOrder(table) {
 }
 
 .category-strip::-webkit-scrollbar-track {
-    background: #fff7ed;
+    background: #eff6ff;
     border-radius: 999px;
 }
 
 .category-strip::-webkit-scrollbar-thumb {
-    background: linear-gradient(90deg, #f59e0b, #f97316);
+    background: linear-gradient(90deg, #3b82f6, #3b82f6);
     border-radius: 999px;
 }
 
 .category-strip::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(90deg, #ea580c, #f59e0b);
+    background: linear-gradient(90deg, #1d4ed8, #3b82f6);
 }
 
 .viewer-empty-state {
@@ -4794,7 +4794,7 @@ handleTableCreateOrder(table) {
     display: grid;
     grid-template-columns: 180px 1fr;
     gap: 28px;
-    background: linear-gradient(135deg, #ffffff, #fff7ed);
+    background: linear-gradient(135deg, #ffffff, #eff6ff);
     border: 1px solid #fde7cf;
     border-radius: 28px;
     box-shadow: 0 22px 50px rgba(15, 23, 42, 0.08);
@@ -4807,7 +4807,7 @@ handleTableCreateOrder(table) {
     border-radius: 28px;
     display: grid;
     place-items: center;
-    background: radial-gradient(circle at 30% 30%, #fed7aa, #fb923c);
+    background: radial-gradient(circle at 30% 30%, #bfdbfe, #60a5fa);
     color: #ffffff;
     font-size: 62px;
     box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.2);
@@ -4826,9 +4826,9 @@ handleTableCreateOrder(table) {
     width: fit-content;
     padding: 8px 12px;
     border-radius: 999px;
-    background: #fff1e6;
-    border: 1px solid #fed7aa;
-    color: #c2410c;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #2563eb;
     font-size: 12px;
     font-weight: 800;
     margin-bottom: 14px;
@@ -4900,9 +4900,9 @@ handleTableCreateOrder(table) {
 
 .viewer-primary-btn {
     border: none;
-    background: linear-gradient(135deg, #f59e0b, #ea580c);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: #fff;
-    box-shadow: 0 14px 28px rgba(245, 158, 11, 0.22);
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.22);
     cursor: pointer;
 }
 
@@ -5022,9 +5022,9 @@ handleTableCreateOrder(table) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #fff7ed, #ffedd5);
-    color: #c2410c;
-    border: 1px solid #fed7aa;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
     border-radius: 999px;
     padding: 8px 12px;
     font-size: 12px;
@@ -5063,9 +5063,9 @@ handleTableCreateOrder(table) {
 }
 
 .open-session-modal__close:hover {
-    background: #fff7ed;
-    color: #ea580c;
-    border-color: #fed7aa;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
 }
 
 .open-session-modal__body {
@@ -5151,8 +5151,8 @@ handleTableCreateOrder(table) {
 
 .open-session-field__input:focus,
 .open-session-field__textarea:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }
 
 .open-session-modal__footer {
@@ -5184,9 +5184,9 @@ handleTableCreateOrder(table) {
 }
 
 .open-session-btn--primary {
-    background: linear-gradient(135deg, #f59e0b, #ea580c);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: #ffffff;
-    box-shadow: 0 14px 28px rgba(245, 158, 11, 0.22);
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.22);
 }
 
 .open-session-btn--primary:disabled {
@@ -5359,8 +5359,8 @@ handleTableCreateOrder(table) {
 }
 
 .channel-chip--takeaway {
-    --channel-accent: #f59e0b;
-    --channel-soft: #fff7ed;
+    --channel-accent: #3b82f6;
+    --channel-soft: #eff6ff;
 }
 
 .channel-chip--dine-in {
@@ -5389,7 +5389,7 @@ handleTableCreateOrder(table) {
 }
 
 .channel-chip--pms {
-    --channel-accent: #f59e0b;
+    --channel-accent: #3b82f6;
     --channel-soft: #fff4ed;
 }
 
@@ -5406,7 +5406,7 @@ handleTableCreateOrder(table) {
     width: min(460px, 100%);
     height: 100%;
     background:  #ffffff ;
-    border-left: 1px solid rgba(245, 158, 11, 0.24);
+    border-left: 1px solid rgba(59, 130, 246, 0.24);
     box-shadow: -24px 0 60px rgba(15, 23, 42, 0.22);
     display: flex;
     flex-direction: column;
@@ -5425,7 +5425,7 @@ handleTableCreateOrder(table) {
 
 .pms-offcanvas__eyebrow {
     margin: 0 0 3px;
-    color: #ea580c;
+    color: #1d4ed8;
     font-size: 11px;
     font-weight: 900;
     text-transform: uppercase;
@@ -5445,10 +5445,10 @@ handleTableCreateOrder(table) {
     min-height: 24px;
     margin-top: 9px;
     padding: 0 10px;
-    border: 1px solid rgba(245, 158, 11, 0.28);
+    border: 1px solid rgba(59, 130, 246, 0.28);
     border-radius: 999px;
     background: #ffffff;
-    color: #c2410c;
+    color: #2563eb;
     font-size: 12px;
     font-weight: 900;
 }
@@ -5458,16 +5458,16 @@ handleTableCreateOrder(table) {
     height: 42px;
     border: none;
     border-radius: 12px;
-    background: #fff7ed;
-    color: #9a3412;
+    background: #eff6ff;
+    color: #2563eb;
     display: grid;
     place-items: center;
     transition: all 0.18s ease;
 }
 
 .pms-offcanvas__close:hover {
-    background: #ffedd5;
-    color: #7c2d12;
+    background: #dbeafe;
+    color: #1d4ed8;
 }
 
 .pms-offcanvas__tools {
@@ -5475,29 +5475,29 @@ handleTableCreateOrder(table) {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
-    border-bottom: 1px solid rgba(245, 158, 11, 0.14);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.14);
 }
 
 .pms-search {
     min-height: 46px;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
     border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 0 12px;
     background: #ffffff;
-    box-shadow: 0 10px 22px rgba(251, 146, 60, 0.08);
+    box-shadow: 0 10px 22px rgba(59, 130, 246, 0.08);
     transition: all 0.18s ease;
 }
 
 .pms-search:focus-within {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.13);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.13);
 }
 
 .pms-search i {
-    color: #f59e0b;
+    color: #3b82f6;
 }
 
 .pms-search input {
@@ -5514,7 +5514,7 @@ handleTableCreateOrder(table) {
     min-height: 46px;
     border: none;
     border-radius: 12px;
-    background: #f97316;
+    background: #3b82f6;
     color: #ffffff;
     font-size: 13px;
     font-weight: 800;
@@ -5522,12 +5522,12 @@ handleTableCreateOrder(table) {
     align-items: center;
     gap: 7px;
     padding: 0 14px;
-    box-shadow: 0 14px 24px rgba(249, 115, 22, 0.22);
+    box-shadow: 0 14px 24px rgba(59, 130, 246, 0.22);
     transition: all 0.18s ease;
 }
 
 .pms-refresh:hover:not(:disabled) {
-    background: #ea580c;
+    background: #1d4ed8;
     transform: translateY(-1px);
 }
 
@@ -5552,7 +5552,7 @@ handleTableCreateOrder(table) {
 }
 
 .pms-guest-list::-webkit-scrollbar-track {
-    background: #fff7ed;
+    background: #eff6ff;
 }
 
 .pms-guest-card {
@@ -5568,23 +5568,23 @@ handleTableCreateOrder(table) {
 }
 
 .pms-guest-card:hover {
-    border-color: #fdba74;
-    box-shadow: 0 16px 30px rgba(249, 115, 22, 0.12);
+    border-color: #93c5fd;
+    box-shadow: 0 16px 30px rgba(59, 130, 246, 0.12);
     transform: translateY(-1px);
 }
 
 .pms-guest-card--selected {
-    border-color: #f59e0b;
-    background: linear-gradient(90deg, #fff7ed 0%, #ffffff 100%);
-    box-shadow: 0 16px 34px rgba(245, 158, 11, 0.16);
+    border-color: #3b82f6;
+    background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%);
+    box-shadow: 0 16px 34px rgba(59, 130, 246, 0.16);
 }
 
 .pms-guest-card__icon {
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background: #fff7ed;
-    color: #f97316;
+    background: #eff6ff;
+    color: #3b82f6;
     display: grid;
     place-items: center;
     flex: 0 0 auto;
@@ -5592,8 +5592,8 @@ handleTableCreateOrder(table) {
 }
 
 .pms-guest-card--selected .pms-guest-card__icon {
-    background: #ffedd5;
-    color: #c2410c;
+    background: #dbeafe;
+    color: #2563eb;
 }
 
 .pms-guest-card__content {
@@ -5659,7 +5659,7 @@ handleTableCreateOrder(table) {
 .pms-skeleton-button {
     display: block;
     border-radius: 999px;
-    background: linear-gradient(90deg, #fff7ed 0%, #fed7aa 46%, #fff7ed 100%);
+    background: linear-gradient(90deg, #eff6ff 0%, #bfdbfe 46%, #eff6ff 100%);
     background-size: 220% 100%;
     animation: pms-skeleton-shimmer 1.1s ease-in-out infinite;
 }
@@ -5703,19 +5703,19 @@ handleTableCreateOrder(table) {
 .pms-select-btn {
     border: none;
     border-radius: 10px;
-    background: #f97316;
+    background: #3b82f6;
     color: #ffffff;
     font-size: 12px;
     font-weight: 900;
     padding: 9px 12px;
     white-space: nowrap;
-    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.2);
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
     transition: all 0.18s ease;
     cursor: pointer;
 }
 
 .pms-select-btn:hover:not(:disabled) {
-    background: #ea580c;
+    background: #1d4ed8;
 }
 
 .pms-select-btn:disabled {
@@ -5727,11 +5727,11 @@ handleTableCreateOrder(table) {
 }
 
 .pms-guest-card--selected .pms-select-btn {
-    background: #9a3412;
+    background: #2563eb;
 }
 
 .pms-guest-card em {
-    color: #ea580c;
+    color: #1d4ed8;
     font-style: normal;
     font-weight: 900;
 }
@@ -5747,9 +5747,9 @@ handleTableCreateOrder(table) {
 .pms-selected-bar {
     margin-top: 10px;
     min-height: 52px;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
     border-radius: 12px;
-    background: #fff7ed;
+    background: #eff6ff;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -5760,8 +5760,8 @@ handleTableCreateOrder(table) {
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    background: #ffedd5;
-    color: #f97316;
+    background: #dbeafe;
+    color: #3b82f6;
     display: grid;
     place-items: center;
     flex: 0 0 auto;
@@ -5788,7 +5788,7 @@ handleTableCreateOrder(table) {
 
 .pms-selected-bar__body span {
     margin-top: 2px;
-    color: #c2410c;
+    color: #2563eb;
     font-size: 12px;
     font-weight: 800;
 }
@@ -5808,7 +5808,7 @@ handleTableCreateOrder(table) {
     display: grid;
     place-items: center;
     padding: 28px;
-    color: #92400e;
+    color: #2563eb;
     font-weight: 800;
     text-align: center;
 }
@@ -5875,7 +5875,7 @@ handleTableCreateOrder(table) {
 }
 
 .channel-strip-arrow:hover {
-    color: #f59e0b;
+    color: #3b82f6;
     box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
 }
 
@@ -6007,16 +6007,16 @@ handleTableCreateOrder(table) {
 }
 
 .table-viewer-filter {
-    background: #ffedd5;
-    color: #f97316;
+    background: #dbeafe;
+    color: #3b82f6;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .table-viewer-filter:hover,
 .table-viewer-filter--active {
-    background: #fed7aa;
-    color: #ea580c;
+    background: #bfdbfe;
+    color: #1d4ed8;
 }
 
 .table-viewer-filter-panel {
@@ -6025,7 +6025,7 @@ handleTableCreateOrder(table) {
     gap: 12px;
     padding: 16px;
     background: #fffdfa;
-    border: 1px solid #ffedd5;
+    border: 1px solid #dbeafe;
     border-radius: 12px;
     margin-bottom: 16px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
@@ -6106,8 +6106,8 @@ handleTableCreateOrder(table) {
 }
 
 .table-status--merged {
-    background: #ffedd5;
-    color: #f97316;
+    background: #dbeafe;
+    color: #3b82f6;
 }
 
 .table-detail-modal,
@@ -6172,8 +6172,8 @@ handleTableCreateOrder(table) {
 }
 
 .merge-chip--primary {
-    background: #ffedd5;
-    color: #f97316;
+    background: #dbeafe;
+    color: #3b82f6;
 }
 
 .table-order-card {
@@ -6233,8 +6233,8 @@ handleTableCreateOrder(table) {
 }
 
 .merge-modal-actions button:last-child {
-    background: #fed7aa;
-    color: #f97316;
+    background: #bfdbfe;
+    color: #3b82f6;
 }
 
 @media (max-width: 760px) {
@@ -6302,8 +6302,8 @@ handleTableCreateOrder(table) {
 }
 
 .table-order-status--pending {
-    background: #fff5dc;
-    color: #d97706;
+    background: #eff6ff;
+    color: #2563eb;
 }
 
 .table-order-status--preparing {
@@ -6332,8 +6332,8 @@ handleTableCreateOrder(table) {
 }
 
 .table-payment-status--partial {
-    background: #fff5dc;
-    color: #d97706;
+    background: #eff6ff;
+    color: #2563eb;
 }
 
 .table-order-card__actions {
@@ -6569,8 +6569,8 @@ handleTableCreateOrder(table) {
     height: 38px;
     border: none;
     border-radius: 10px;
-    background: #fff7ed;
-    color: #f97316;
+    background: #eff6ff;
+    color: #3b82f6;
     display: grid;
     place-items: center;
     cursor: pointer;
@@ -6578,8 +6578,8 @@ handleTableCreateOrder(table) {
 }
 
 .selected-table-strip__remove:hover {
-    background: #ffedd5;
-    color: #ea580c;
+    background: #dbeafe;
+    color: #1d4ed8;
 }
 
 .selected-table-strip--empty {

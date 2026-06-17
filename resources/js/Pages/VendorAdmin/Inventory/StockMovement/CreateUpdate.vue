@@ -49,7 +49,7 @@
                 <div class="row g-3">
                   <div class="col-12 col-lg-6">
                     <label class="form-label formLabel">Branch</label>
-                    <SelectInput id="branch_id" v-model="form.branch_id" :options="branches" 
+                    <SelectInput id="branch_id" v-model="form.branch_id" :options="branches"
                       valueKey="id" labelKey="name" placeholder="Select Branch" />
                     <div v-if="form.errors.branch_id" class="error-text">{{ form.errors.branch_id }}</div>
                   </div>
@@ -204,8 +204,8 @@ export default {
 }
 
 .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 .error-text {

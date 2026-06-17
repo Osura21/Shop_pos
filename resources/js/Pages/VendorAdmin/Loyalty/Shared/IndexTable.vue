@@ -195,9 +195,9 @@ onUnmounted(unbindActions)
 }
 
 :deep(.btn-circle:hover) {
-  border-color: #f97316;
-  color: #f97316;
-  background: #fff7ed;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: #eff6ff;
 }
 
 :deep(.btn-circle-danger:hover) {
@@ -219,8 +219,8 @@ onUnmounted(unbindActions)
   min-width: 42px;
   border-radius: 12px;
   overflow: hidden;
-  background: #fff7ed;
-  color: #f97316;
+  background: #eff6ff;
+  color: #3b82f6;
   border: 1px solid rgba(249, 115, 22, 0.22);
   display: flex;
   align-items: center;

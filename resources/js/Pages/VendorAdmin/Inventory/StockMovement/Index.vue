@@ -95,21 +95,21 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="ingredient-chip"><i class="bi bi-cup-hot"></i> ${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'type_badge',
     name: 'type',
     orderable: false,
     searchable: false,
-    render: (data) => data ?? `<span class="text-muted small">—</span>`
+    render: (data) => data ?? `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'quantity_label',
     name: 'quantity',
     render: (data) => data !== null && data !== undefined
       ? `<span class="quantity-chip">${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   { data: 'created_at', name: 'created_at', render: d => `<span class="text-secondary small">${d}</span>` },
   { data: 'updated_at', name: 'updated_at', render: d => `<span class="text-secondary small">${d}</span>` },

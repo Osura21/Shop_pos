@@ -278,8 +278,8 @@ export default {
 }
 
 .country-display:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   outline: none;
 }
 
@@ -322,12 +322,12 @@ export default {
 }
 
 .options-list::-webkit-scrollbar-thumb {
-  background: #ff9f4d;
+  background: #93c5fd;
   border-radius: 20px;
 }
 
 .options-list::-webkit-scrollbar-thumb:hover {
-  background: #ff7a1f;
+  background: #3b82f6;
 }
 
 .country-item {
@@ -362,8 +362,8 @@ export default {
 }
 
 input:focus {
-  border-color: #b19268ad;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: rgba(59, 130, 246, 0.68);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   outline: none;
 }
 
@@ -381,7 +381,7 @@ input:focus {
 
 .dropdown-item.active,
 .country-item.active {
-  background: linear-gradient(135deg, #ff7a36, #ff9f4d);
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
   color: #fff;
   border-radius: 10px;
   position: relative;
@@ -397,18 +397,18 @@ input:focus {
 }
 
 .country-item.selected {
-  background: rgba(255, 122, 54, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   border-radius: 10px;
-  color: #ff7a36;
+  color: #2563eb;
   font-weight: 600;
 }
 
 .country-item.selected .country-code {
-  color: #ff7a36;
+  color: #2563eb;
 }
 
 .country-item.active {
-  background: linear-gradient(135deg, #ff7a36, #ff9f4d);
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
   color: #fff;
 }
 

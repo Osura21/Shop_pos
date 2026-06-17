@@ -83,31 +83,31 @@ const columns = computed(() => [
   {
     data: 'name',
     name: 'name',
-    render: (data) => `<span class="fw-bold text-dark">${escapeHtml(data || '—')}</span>`
+    render: (data) => `<span class="fw-bold text-dark">${escapeHtml(data || 'â€”')}</span>`
   },
   {
     data: 'username',
     name: 'username',
-    render: (data) => `<span class="text-muted">${escapeHtml(data || '—')}</span>`
+    render: (data) => `<span class="text-muted">${escapeHtml(data || 'â€”')}</span>`
   },
   {
     data: 'email',
     name: 'email',
-    render: (data) => `<span class="text-muted">${escapeHtml(data || '—')}</span>`
+    render: (data) => `<span class="text-muted">${escapeHtml(data || 'â€”')}</span>`
   },
   {
     data: 'branch',
     name: 'branch',
     render: (data) => data
       ? `<span class="branch-chip"><i class="bi bi-building"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'role',
     name: 'role',
     render: (data) => data
       ? `<span class="role-chip">${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'status',

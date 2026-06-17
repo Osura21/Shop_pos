@@ -11,7 +11,7 @@
     edit-route="vendor.loyalty.programs.edit"
     destroy-route="vendor.loyalty.programs.destroy"
     deleteModalTitle="Delete this earning rule"
-    deleteModalCancelLabel="Keep Earning Rule" 
+    deleteModalCancelLabel="Keep Earning Rule"
     deleteModalConfirmLabel="Delete Earning Rule"
     :headers="headers"
     :columns="columns"

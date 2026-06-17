@@ -371,13 +371,13 @@ export default {
 }
 
 .multiselect-input:hover {
-  border-color: #f28c00;
+  border-color: #3b82f6;
 }
 
 .multiselect-input.is-open,
 .multiselect-input:focus-within {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   outline: none;
 }
 
@@ -401,9 +401,9 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: linear-gradient(135deg, rgba(255, 122, 54, 0.12), rgba(255, 159, 77, 0.12));
-  color: #c85a00;
-  border: 1px solid rgba(242, 140, 0, 0.25);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(96, 165, 250, 0.16));
+  color: #1d4ed8;
+  border: 1px solid rgba(59, 130, 246, 0.25);
   border-radius: 20px;
   padding: 3px 10px 3px 10px;
   font-size: 0.78rem;
@@ -429,13 +429,13 @@ export default {
   cursor: pointer;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #f28c00;
+  color: #2563eb;
   line-height: 1;
   transition: color 0.15s;
 }
 
 .remove-pill:hover {
-  color: #c85a00;
+  color: #1d4ed8;
 }
 
 /* Dropdown Menu */
@@ -480,8 +480,8 @@ export default {
 }
 
 .dropdown-search .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   outline: none;
 }
 
@@ -500,13 +500,13 @@ export default {
 }
 
 .options-list::-webkit-scrollbar-thumb {
-  background: #ff9f4d;
+  background: #93c5fd;
   border-radius: 20px;
   min-height: 30px;
 }
 
 .options-list::-webkit-scrollbar-thumb:hover {
-  background: #ff7a1f;
+  background: #3b82f6;
 }
 
 .dropdown-item {
@@ -526,7 +526,7 @@ export default {
 }
 
 .dropdown-item.active {
-  background: linear-gradient(135deg, #ff7a36, #ff9f4d);
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
   color: #fff;
   border-radius: 10px;
 }
@@ -546,8 +546,8 @@ export default {
 }
 
 .check-box.checked {
-  background: linear-gradient(135deg, #ff7a36, #ff9f4d);
-  border-color: #ff7a36;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  border-color: #2563eb;
 }
 
 .dropdown-item.active .check-box {
@@ -556,7 +556,7 @@ export default {
 }
 
 .dropdown-item.active .check-box.checked {
-  background: linear-gradient(135deg, #ff7a36, #ff9f4d);
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
   border-color: rgb(255, 255, 255);
 }
 

@@ -111,7 +111,7 @@ const columns = computed(() => {
       searchable: false,
       render: (data) => data
         ? `<span class="branch-chip"><i class="bi bi-building"></i> ${data}</span>`
-        : `<span class="text-muted small">—</span>`
+        : `<span class="text-muted small">â€”</span>`
     },
     {
       data: 'supplier_name',
@@ -120,14 +120,14 @@ const columns = computed(() => {
       searchable: false,
       render: (data) => data
         ? `<span class="supplier-chip"><i class="bi bi-truck"></i> ${data}</span>`
-        : `<span class="text-muted small">—</span>`
+        : `<span class="text-muted small">â€”</span>`
     },
     {
       data: 'total',
       name: 'total',
       render: (data) => data !== null && data !== undefined
         ? `<span class="quantity-chip">${data}</span>`
-        : `<span class="text-muted small">—</span>`
+        : `<span class="text-muted small">â€”</span>`
     },
   ]
 
@@ -139,7 +139,7 @@ const columns = computed(() => {
       searchable: false,
       render: (data) => data !== null && data !== undefined
         ? `<span class="quantity-chip secondary">${data}</span>`
-        : `<span class="text-muted small">—</span>`
+        : `<span class="text-muted small">â€”</span>`
     })
   }
 
@@ -149,7 +149,7 @@ const columns = computed(() => {
       name: 'status',
       orderable: false,
       searchable: false,
-      render: (data) => data ?? `<span class="text-muted small">—</span>`,
+      render: (data) => data ?? `<span class="text-muted small">â€”</span>`,
     },
     {
       data: 'id',

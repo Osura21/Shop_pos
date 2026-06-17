@@ -63,7 +63,7 @@
                   </div>
 
                   <div class="col-12 col-md-6">
-                    <SelectInput label="Linked Menu" id="branch.id" v-model="form.menu_id" :options="menus" 
+                    <SelectInput label="Linked Menu" id="branch.id" v-model="form.menu_id" :options="menus"
                       valueKey="id" labelKey="name" placeholder="Select Menu" :error="form.errors.menu_id" />
                   </div>
 
@@ -106,7 +106,7 @@ export default {
     return {
       form: useForm({
         name: this.onlineMenu?.name ?? '',
-        branch_ids: this.onlineMenu?.branch_ids ?? [], 
+        branch_ids: this.onlineMenu?.branch_ids ?? [],
         menu_id: this.onlineMenu?.menu_id ?? '',
         slug: this.onlineMenu?.slug ?? '',
         is_active: !!(this.onlineMenu?.is_active ?? true),

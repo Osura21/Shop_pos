@@ -90,7 +90,7 @@
                     <h5 class="upload-title">Upload Business Favicon</h5>
 
                     <p class="upload-description">
-                      Recommended: 32×32 or 64×64 ICO, PNG or SVG
+                      Recommended: 32Ã—32 or 64Ã—64 ICO, PNG or SVG
                     </p>
 
                     <div class="action-row">
@@ -274,7 +274,7 @@ export default {
   min-width: 0;
 }
 
-/* 
+/*
    IMAGE PREVIEW
  */
 
@@ -337,7 +337,7 @@ export default {
   margin-top: 10px;
 }
 
-/* 
+/*
    TEXT STYLES
  */
 .upload-title {
@@ -353,7 +353,7 @@ export default {
   margin: 0;
 }
 
-/* 
+/*
    BUTTONS
  */
 .upload-btn,
@@ -374,7 +374,7 @@ export default {
 }
 
 .upload-btn {
-  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #3b82f6 100%);
   color: #ffffff;
 }
 
@@ -407,7 +407,7 @@ export default {
 }
 
 .form-control-modern:focus {
-  border-color: #f59e0b;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.13);
 }
 

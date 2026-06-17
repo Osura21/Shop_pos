@@ -48,12 +48,12 @@
               <div class="card-body formCardBody">
                 <div class="row g-3">
                   <div class="col-12 col-lg-6">
-                    <Input 
-                      id="name" 
-                      label="Name (English)" 
-                      v-model="form.name" 
-                      placeholder="Ingredient name" 
-                      :error="form.errors.name" 
+                    <Input
+                      id="name"
+                      label="Name (English)"
+                      v-model="form.name"
+                      placeholder="Ingredient name"
+                      :error="form.errors.name"
                     />
                   </div>
 
@@ -92,31 +92,31 @@
                   </div>
 
                   <div v-if="!isEdit" class="col-12 col-lg-6">
-                    <Input 
-                      id="current_stock" 
-                      label="Current Stock" 
-                      v-model="form.current_stock" 
-                      placeholder="Current stock quantity" 
-                      :error="form.errors.current_stock" 
+                    <Input
+                      id="current_stock"
+                      label="Current Stock"
+                      v-model="form.current_stock"
+                      placeholder="Current stock quantity"
+                      :error="form.errors.current_stock"
                     />
                   </div>
 
                   <div class="col-12 col-lg-6">
-                    <Input 
-                      id="alert_quantity" 
-                      label="Alert Quantity" 
-                      v-model="form.alert_quantity" 
-                      placeholder="Low stock alert level" 
-                      :error="form.errors.alert_quantity" 
+                    <Input
+                      id="alert_quantity"
+                      label="Alert Quantity"
+                      v-model="form.alert_quantity"
+                      placeholder="Low stock alert level"
+                      :error="form.errors.alert_quantity"
                     />
                   </div>
 
                   <div class="col-12">
                     <div class="form-check form-switch mt-2">
-                      <input 
-                        id="is_active" 
-                        class="form-check-input" 
-                        type="checkbox" 
+                      <input
+                        id="is_active"
+                        class="form-check-input"
+                        type="checkbox"
                         v-model="form.is_active"
                       >
                       <label class="form-check-label" for="is_active">Active Ingredient</label>
@@ -157,7 +157,7 @@ export default {
     return {
       form: useForm({
         name: this.ingredient?.name ?? '',
-        branch_ids: this.ingredient?.branch_ids ?? [], 
+        branch_ids: this.ingredient?.branch_ids ?? [],
         unit_id: this.ingredient?.unit_id ?? '',
         current_stock: this.ingredient?.current_stock ?? '0',
         alert_quantity: this.ingredient?.alert_quantity ?? '0',

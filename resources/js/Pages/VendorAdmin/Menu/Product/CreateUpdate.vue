@@ -19,7 +19,7 @@
             <p class="header-subtitle">
               Base currency: <strong>{{ baseCurrencyCode }}</strong>
               <template v-if="hasSecondaryCurrency">
-                · Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
+                Â· Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
               </template>
             </p>
           </div>
@@ -1084,8 +1084,8 @@ function submit() {
 }
 
 .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 .readonly-input {
@@ -1191,7 +1191,7 @@ function submit() {
 }
 
 .picker-box__item:hover {
-  background: #fff7ed;
+  background: #eff6ff;
 }
 
 .media-box {
@@ -1261,7 +1261,7 @@ function submit() {
 
 .empty-ingredients i {
   font-size: 46px;
-  color: #f28c00;
+  color: #2563eb;
 }
 
 .empty-ingredients h5 {
@@ -1271,9 +1271,9 @@ function submit() {
 }
 
 .btn-ingredient {
-  background: linear-gradient(135deg, #f28c00 0%, #f5a623 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #f5a623 100%);
   color: #ffffff;
-  box-shadow: 0 4px 16px rgba(242, 140, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
 }
 
 .ingredients-wrap .table,
@@ -1388,18 +1388,18 @@ function submit() {
 }
 
 .btn-save {
-  background: linear-gradient(135deg, #ff9800, #f57c00);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: #fff;
 }
 
 .btn-add-primary,
 .btn-add-row {
-  background: linear-gradient(135deg, #ff9800, #f57c00);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: #fff;
 }
 
 .btn-insert {
-  background: linear-gradient(135deg, #fb923c, #f97316, #ea580c);
+  background: linear-gradient(135deg, #60a5fa, #3b82f6, #1d4ed8);
   color: #fff;
   border: none;
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
@@ -1407,7 +1407,7 @@ function submit() {
 }
 
 .btn-insert:hover {
-  background: linear-gradient(135deg, #f97316, #ea580c, #c2410c);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8, #c2410c);
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);

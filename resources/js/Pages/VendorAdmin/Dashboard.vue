@@ -186,9 +186,9 @@ function makeLineChart(canvas, labels, values) {
 
     const context = canvas.getContext("2d");
     const gradient = context.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, "rgba(245, 124, 0, 0.34)");
-    gradient.addColorStop(0.55, "rgba(245, 124, 0, 0.12)");
-    gradient.addColorStop(1, "rgba(245, 124, 0, 0)");
+    gradient.addColorStop(0, "rgba(37, 99, 235, 0.34)");
+    gradient.addColorStop(0.55, "rgba(37, 99, 235, 0.12)");
+    gradient.addColorStop(1, "rgba(37, 99, 235, 0)");
 
     chartInstances.push(new Chart(canvas, {
         type: "line",
@@ -197,7 +197,7 @@ function makeLineChart(canvas, labels, values) {
             datasets: [{
                 label: "Revenue",
                 data: values,
-                borderColor: "#f57c00",
+                borderColor: "#2563eb",
                 backgroundColor: gradient,
                 borderWidth: 3,
                 fill: true,
@@ -205,7 +205,7 @@ function makeLineChart(canvas, labels, values) {
                 pointRadius: 4,
                 pointHoverRadius: 6,
                 pointBackgroundColor: "#ffffff",
-                pointBorderColor: "#f57c00",
+                pointBorderColor: "#2563eb",
                 pointBorderWidth: 2,
             }],
         },
@@ -223,7 +223,7 @@ function makeBarChart(canvas, labels, values) {
             datasets: [{
                 label: "Orders",
                 data: values,
-                backgroundColor: ["#2563eb", "#14b8a6", "#f57c00", "#7c3aed", "#e11d48", "#475569", "#22c55e"],
+                backgroundColor: ["#2563eb", "#14b8a6", "#2563eb", "#7c3aed", "#e11d48", "#475569", "#22c55e"],
                 borderRadius: 12,
                 borderSkipped: false,
                 maxBarThickness: 36,
@@ -303,7 +303,7 @@ function chartOptions(formatter) {
 const statusLegend = computed(() => {
     const labels = charts.value?.statuses?.labels || [];
     const values = charts.value?.statuses?.values || [];
-    const colors = ["#22c55e", "#e11d48", "#14b8a6", "#7c3aed", "#f59e0b"];
+    const colors = ["#22c55e", "#e11d48", "#14b8a6", "#7c3aed", "#3b82f6"];
 
     const total = values.reduce((sum, item) => sum + Number(item || 0), 0);
 
@@ -318,7 +318,7 @@ const statusLegend = computed(() => {
 const channelLegend = computed(() => {
     const labels = charts.value?.channels?.labels || [];
     const values = charts.value?.channels?.values || [];
-    const colors = ["#2563eb", "#f57c00", "#14b8a6", "#e11d48", "#7c3aed", "#475569"];
+    const colors = ["#2563eb", "#2563eb", "#14b8a6", "#e11d48", "#7c3aed", "#475569"];
 
     const total = values.reduce((sum, item) => sum + Number(item || 0), 0);
 
@@ -349,14 +349,14 @@ async function renderCharts() {
     statusesCanvas.value,
     charts.value?.statuses?.labels || [],
     charts.value?.statuses?.values || [],
-    ["#22c55e", "#e11d48", "#14b8a6", "#7c3aed", "#f59e0b"]
+    ["#22c55e", "#e11d48", "#14b8a6", "#7c3aed", "#3b82f6"]
 );
 
 makeDoughnutChart(
     channelsCanvas.value,
     charts.value?.channels?.labels || [],
     charts.value?.channels?.values || [],
-    ["#2563eb", "#f57c00", "#14b8a6", "#e11d48", "#7c3aed", "#475569"]
+    ["#2563eb", "#2563eb", "#14b8a6", "#e11d48", "#7c3aed", "#475569"]
 );
 }
 
@@ -736,9 +736,9 @@ watch(charts, renderCharts, { deep: true });
     justify-content: space-between;
     gap: 24px;
     background:
-        radial-gradient(circle at 8% 0%, rgba(245, 124, 0, 0.18), transparent 31%),
+        radial-gradient(circle at 8% 0%, rgba(37, 99, 235, 0.18), transparent 31%),
         radial-gradient(circle at 88% 16%, rgba(37, 99, 235, 0.12), transparent 30%),
-        linear-gradient(135deg, #ffffff 0%, #fff7ed 48%, #ffffff 100%);
+        linear-gradient(135deg, #ffffff 0%, #eff6ff 48%, #ffffff 100%);
 }
 
 .hero-glow {
@@ -754,7 +754,7 @@ watch(charts, renderCharts, { deep: true });
 .hero-glow--left {
     left: -88px;
     top: -118px;
-    background: #fed7aa;
+    background: #bfdbfe;
 }
 
 .hero-glow--right {
@@ -833,7 +833,7 @@ watch(charts, renderCharts, { deep: true });
     gap: 7px;
     color: #9a3412;
     background: rgba(255, 247, 237, 0.88);
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
     font-size: 12px;
     font-weight: 900;
     text-transform: uppercase;
@@ -935,14 +935,14 @@ watch(charts, renderCharts, { deep: true });
 
 .primary-action {
     color: #ffffff;
-    background: linear-gradient(135deg, #f57c00, #fb923c);
-    box-shadow: 0 14px 28px rgba(245, 124, 0, 0.28);
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.28);
 }
 
 .soft-action {
     color: #92400e;
     background: rgba(255, 247, 237, 0.88);
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
 }
 
 .stats-grid {
@@ -1023,13 +1023,13 @@ watch(charts, renderCharts, { deep: true });
     border-radius: 16px;
 }
 
-.stat-card--amber { color: #f57c00; }
+.stat-card--amber { color: #2563eb; }
 .stat-card--blue { color: #2563eb; }
 .stat-card--green { color: #059669; }
 .stat-card--purple { color: #7c3aed; }
 .stat-card--danger { color: #e11d48; }
 
-.stat-card--amber .stat-card__icon { background: #fff7ed; border: 1px solid #fed7aa; }
+.stat-card--amber .stat-card__icon { background: #eff6ff; border: 1px solid #bfdbfe; }
 .stat-card--blue .stat-card__icon { background: #eff6ff; border: 1px solid #bfdbfe; }
 .stat-card--green .stat-card__icon { background: #ecfdf5; border: 1px solid #a7f3d0; }
 .stat-card--purple .stat-card__icon { background: #f5f3ff; border: 1px solid #ddd6fe; }
@@ -1115,7 +1115,7 @@ watch(charts, renderCharts, { deep: true });
 .panel-kicker {
     display: block;
     margin-bottom: 4px;
-    color: #f57c00;
+    color: #2563eb;
     font-size: 11px;
     font-weight: 950;
     text-transform: uppercase;
@@ -1142,8 +1142,8 @@ watch(charts, renderCharts, { deep: true });
     display: inline-flex;
     align-items: center;
     color: #92400e;
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
     font-size: 12px;
     font-weight: 900;
 }
@@ -1158,7 +1158,7 @@ watch(charts, renderCharts, { deep: true });
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #f57c00;
+    color: #2563eb;
     font-size: 13px;
     font-weight: 950;
     white-space: nowrap;
@@ -1305,24 +1305,24 @@ watch(charts, renderCharts, { deep: true });
     align-items: center;
     gap: 12px;
     color: #0f172a;
-    background: linear-gradient(135deg, #fff7ed, #ffffff);
-    border: 1px solid #fed7aa;
+    background: linear-gradient(135deg, #eff6ff, #ffffff);
+    border: 1px solid #bfdbfe;
     font-weight: 850;
     transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .quick-action:hover {
-    border-color: #fb923c;
-    box-shadow: 0 14px 24px rgba(245, 124, 0, 0.12);
+    border-color: #60a5fa;
+    box-shadow: 0 14px 24px rgba(37, 99, 235, 0.12);
 }
 
 .quick-action__icon {
     width: 42px;
     height: 42px;
     border-radius: 14px;
-    color: #f57c00;
+    color: #2563eb;
     background: #ffffff;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
 }
 
 .quick-action__text {

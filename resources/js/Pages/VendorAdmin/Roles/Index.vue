@@ -110,7 +110,7 @@ watch(
         <div class="search-input-wrapper">
           <i class="bi bi-search search-icon"></i>
           <input v-model="searchQuery" type="text" class="search-input"
-            placeholder="Search by role name or permission…" />
+            placeholder="Search by role name or permissionâ€¦" />
           <button v-if="searchQuery" class="search-clear" @click="searchQuery = ''">
             <i class="bi bi-x-lg"></i>
           </button>
@@ -185,12 +185,12 @@ watch(
             <div class="role-card-footer">
               <div class="timestamp-item">
                 <i class="bi bi-calendar-plus"></i>
-                <span>{{ role.created_at || '—' }}</span>
+                <span>{{ role.created_at || 'â€”' }}</span>
               </div>
               <div class="timestamp-divider"></div>
               <div class="timestamp-item">
                 <i class="bi bi-pencil-square"></i>
-                <span>{{ role.updated_at || '—' }}</span>
+                <span>{{ role.updated_at || 'â€”' }}</span>
               </div>
             </div>
 
@@ -249,7 +249,7 @@ watch(
 .search-input:focus {
   border-color: var(--primary);
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.12);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .search-input::placeholder {
@@ -281,8 +281,8 @@ watch(
 .result-count {
   font-size: 13px;
   font-weight: 700;
-  color: #f28c00;
-  background: rgba(242, 140, 0, 0.10);
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.10);
   padding: 6px 12px;
   border-radius: 999px;
 }
@@ -312,7 +312,7 @@ watch(
 .role-card:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
-  border-color: rgba(242, 140, 0, 0.3);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .role-card-top {
@@ -325,7 +325,7 @@ watch(
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: rgba(242, 140, 0, 0.1);
+  background: rgba(59, 130, 246, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -371,7 +371,7 @@ watch(
 }
 
 .perm-count {
-  background: rgba(242, 140, 0, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   color: var(--primary);
   border-radius: 999px;
   padding: 1px 7px;
@@ -391,9 +391,9 @@ watch(
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
-  background: rgba(242, 140, 0, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   color: var(--primary);
-  border: 1px solid rgba(242, 140, 0, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.22);
 }
 
 .permission-chip--more {
@@ -453,7 +453,7 @@ watch(
 .btn-circle:hover {
   background: var(--primary-soft);
   color: var(--primary);
-  border-color: rgba(242, 140, 0, 0.3);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .btn-circle-danger:hover {

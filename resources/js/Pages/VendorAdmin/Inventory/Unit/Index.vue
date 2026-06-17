@@ -93,7 +93,7 @@ const columns = computed(() => ([
     name: 'type',
     render: (data, type, row) => {
       const colorMap = {
-        custom: { bg: 'rgba(242,140,0,0.10)', color: '#f28c00' },
+        custom: { bg: 'rgba(59, 130, 246, 0.10)', color: '#2563eb' },
         count: { bg: 'rgba(59,130,246,0.10)', color: '#3b82f6' },
       }
       const style = colorMap[row.type] ?? { bg: 'rgba(22,163,74,0.10)', color: '#16a34a' }

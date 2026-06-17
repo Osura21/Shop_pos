@@ -1,3 +1,15 @@
+.vendoradmin,
+.admin-root.vendoradmin {
+  --va-primary: #3b82f6;
+  --va-primary-dark: #2563eb;
+  --va-primary-soft: rgba(59, 130, 246, 0.10);
+  --va-primary-soft-strong: rgba(59, 130, 246, 0.16);
+  --va-primary-border: rgba(59, 130, 246, 0.22);
+  --va-primary-bg: #eff6ff;
+  --va-primary-bg-strong: #dbeafe;
+  --va-primary-ink: #1d4ed8;
+}
+
 .form-check-input {
   background-color: #e5e7eb !important;
   border-color: #9ca3af !important;
@@ -13,8 +25,8 @@
 }
 
 .form-check-input:checked {
-  background-color: #f28c00 !important;
-  border-color: #f28c00 !important;
+  background-color: var(--va-primary, #3b82f6) !important;
+  border-color: var(--va-primary, #3b82f6) !important;
 }
 
 .form-switch .form-check-input {
@@ -24,21 +36,21 @@
 .form-switch .form-check-input:focus {
   --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%236b7280'/%3e%3c/svg%3e");
 
-  border-color: #f28c00 !important;
-  box-shadow: 0 0 0 0.1rem rgba(242, 140, 0, 0.25) !important;
+  border-color: var(--va-primary, #3b82f6) !important;
+  box-shadow: 0 0 0 0.1rem rgba(59, 130, 246, 0.25) !important;
 }
 
 .form-switch .form-check-input:checked {
   --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
 
-  background-color: #f28c00 !important;
-  border-color: #f28c00 !important;
+  background-color: var(--va-primary, #3b82f6) !important;
+  border-color: var(--va-primary, #3b82f6) !important;
 }
 
 .form-switch .form-check-input:checked:focus {
   --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
 
-  box-shadow: 0 0 0 0.1rem rgba(242, 140, 0, 0.25) !important;
+  box-shadow: 0 0 0 0.1rem rgba(59, 130, 246, 0.25) !important;
 }
 
 .form-switch .form-check-input::after {
@@ -52,7 +64,7 @@ input[type="checkbox"] {
   appearance: none;
   width: 18px;
   height: 18px;
-  border: 2px solid #f28c00;
+  border: 2px solid var(--va-primary, #3b82f6);
   border-radius: 4px;
   position: relative;
   cursor: pointer;
@@ -62,8 +74,8 @@ input[type="checkbox"] {
 
 /* Checked state */
 input[type="checkbox"]:checked {
-  background-color: #f28c00;
-  border-color: #f28c00;
+  background-color: var(--va-primary, #3b82f6);
+  border-color: var(--va-primary, #3b82f6);
 }
 
 input[type="checkbox"]::after {
@@ -86,7 +98,7 @@ input[type="checkbox"]::after {
 /* Altered the bootsrtap BUTTONS styles */
 
 .btn-primary-modern {
-  background: linear-gradient(135deg, #f28c00 0%, #f5a623 100%);
+  background: linear-gradient(135deg, var(--va-primary, #3b82f6) 0%, var(--va-primary-dark, #2563eb) 100%);
   color: #ffffff;
   padding: 11px 24px;
   border: none;
@@ -106,9 +118,9 @@ input[type="checkbox"]::after {
 }
 
 .page-container {
-  --primary: #f28c00;
-  --primary-soft: rgba(242, 140, 0, 0.08);
-  --primary-hover: #d97d00;
+  --primary: var(--va-primary, #3b82f6);
+  --primary-soft: var(--va-primary-soft, rgba(59, 130, 246, 0.10));
+  --primary-hover: var(--va-primary-dark, #2563eb);
   --slate-900: #1a202c;
   --slate-600: #4b5563;
   --slate-400: #94a3b8;
@@ -135,7 +147,7 @@ input[type="checkbox"]::after {
 .card-modern-header {
   padding: 1.75rem 2rem;
   border-bottom: 1px solid var(--slate-50);
-  background: rgba(242, 140, 0, 0.02);
+  background: rgba(59, 130, 246, 0.03);
 }
 
 .header-content {
@@ -168,8 +180,8 @@ input[type="checkbox"]::after {
 }
 
 .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: var(--va-primary, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .btn-ghost {
@@ -214,6 +226,32 @@ input[type="checkbox"]::after {
   color: var(--primary);
 }
 
+.vendoradmin .text-warning,
+.vendoradmin .link-warning,
+.vendoradmin .btn-link.text-warning {
+  color: var(--va-primary, #3b82f6) !important;
+}
+
+.vendoradmin .bg-warning-subtle {
+  background-color: var(--va-primary-bg, #eff6ff) !important;
+}
+
+.vendoradmin .border-warning {
+  border-color: var(--va-primary-border, rgba(59, 130, 246, 0.22)) !important;
+}
+
+.vendoradmin .btn-warning,
+.vendoradmin .btn-root {
+  background: linear-gradient(135deg, var(--va-primary, #3b82f6) 0%, var(--va-primary-dark, #2563eb) 100%) !important;
+  border-color: var(--va-primary, #3b82f6) !important;
+  color: #ffffff !important;
+}
+
+.vendoradmin .btn-warning:hover,
+.vendoradmin .btn-root:hover {
+  filter: brightness(0.98);
+}
+
 .btn-circle-danger:hover {
   background: rgba(239, 68, 68, 0.08);
   color: #ef4444;
@@ -233,8 +271,8 @@ input[type="checkbox"]::after {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 20% 50%, rgba(242, 140, 0, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.02) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -265,7 +303,7 @@ input[type="checkbox"]::after {
 .form-card {
   position: relative;
   background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(242, 140, 0, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.14);
   border-radius: 16px;
   /* backdrop-filter: blur(10px); */
   overflow: visible;
@@ -275,19 +313,19 @@ input[type="checkbox"]::after {
 
 .form-card:hover {
   background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(242, 140, 0, 0.25);
-  /* box-shadow: 0 8px 32px rgba(242, 140, 0, 0.12); */
+  border-color: rgba(59, 130, 246, 0.22);
+  /* box-shadow: 0 8px 32px rgba(59, 130, 246, 0.12); */
 }
 
 .card-header {
   padding: 24px;
   border-radius: 16px 16px 0 0;
-  border-bottom: 1px solid rgba(242, 140, 0, 0.12);
-  background: rgba(242, 140, 0, 0.02);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+  background: rgba(59, 130, 246, 0.03);
 }
 
 .card-header i {
-  color: #f28c00;
+  color: var(--va-primary, #3b82f6);
 }
 
 
@@ -346,7 +384,7 @@ input[type="checkbox"]::after {
     width: 100%;
     padding: 0 0.5rem 1rem;
   }
-  
+
 
   :deep(thead th) {
     font-size: 0.65rem !important;

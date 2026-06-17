@@ -154,7 +154,7 @@ export default {
           preserveScroll: true,
         })
     },
-  }, 
+  },
   watch: {
     flash: {
       handler(flash) {

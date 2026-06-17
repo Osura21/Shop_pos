@@ -88,21 +88,21 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="branch-chip"><i class="bi bi-building"></i> ${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'phone',
     name: 'phone',
     render: (data) => data
       ? `<span class="text-dark small">${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'email',
     name: 'email',
     render: (data) => data
       ? `<span class="text-dark small">${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   { data: 'created_at', name: 'created_at', render: d => `<span class="text-secondary small">${d}</span>` },
   { data: 'updated_at', name: 'updated_at', render: d => `<span class="text-secondary small">${d}</span>` },

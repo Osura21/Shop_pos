@@ -304,15 +304,15 @@ function toastHtml(message) {
 
 function openPreview(type, row, el) {
   const rect = el.getBoundingClientRect()
-  
+
   // Ensure x doesn't go off screen horizontally
   let calcX = rect.left + window.scrollX - 120
   if (calcX < 16) calcX = 16
   if (calcX + 300 > window.innerWidth + window.scrollX) calcX = window.innerWidth + window.scrollX - 316
-  
+
   // Ensure y correctly maps to the document by adding scrollY
   let calcY = rect.bottom + window.scrollY + 12
-  
+
   preview.value = { visible: true, type, row, x: calcX, y: calcY }
 }
 

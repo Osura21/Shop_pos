@@ -108,17 +108,17 @@ function renderValue(data, row) {
 
   return data
     ? `<span class="quantity-chip">${baseCurrencyCode.value} ${escapeHtml(String(data))}</span>`
-    : `<span class="text-muted small">—</span>`
+    : `<span class="text-muted small">â€”</span>`
 }
 
 function renderSecondaryValue(data, row) {
   if (row?.type === 'percentage') {
-    return `<span class="text-muted small">—</span>`
+    return `<span class="text-muted small">â€”</span>`
   }
 
   return data
     ? `<span class="quantity-chip">${secondaryCurrencyCode.value} ${escapeHtml(String(data))}</span>`
-    : `<span class="text-muted small">—</span>`
+    : `<span class="text-muted small">â€”</span>`
 }
 
 const columns = computed(() => {

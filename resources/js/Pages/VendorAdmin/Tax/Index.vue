@@ -116,42 +116,42 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="branch-chip"><i class="bi bi-building"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'code',
     name: 'code',
     render: (data) => data
       ? `<span class="code-chip">${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'rate',
     name: 'rate',
     render: (data) => data !== null && data !== undefined
       ? `<span class="quantity-chip">${escapeHtml(String(data))}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'compound_badge',
     name: 'is_compound',
     orderable: false,
     searchable: false,
-    render: (data) => data ?? `<span class="text-muted small">—</span>`,
+    render: (data) => data ?? `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'type_badge',
     name: 'type',
     orderable: false,
     searchable: false,
-    render: (data) => data ?? `<span class="text-muted small">—</span>`,
+    render: (data) => data ?? `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'status_badge',
     name: 'is_active',
     orderable: false,
     searchable: false,
-    render: (data) => data ?? `<span class="text-muted small">—</span>`,
+    render: (data) => data ?? `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'id',
@@ -343,8 +343,8 @@ watch(
 }
 
 :deep(.tax-badge--compound) {
-  background: #ffedd5;
-  color: #f97316;
+  background: #dbeafe;
+  color: #3b82f6;
 }
 
 :deep(.tax-badge--plain) {

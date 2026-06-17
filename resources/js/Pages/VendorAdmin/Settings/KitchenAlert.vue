@@ -204,8 +204,8 @@ export default {
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background: #ffedd5;
-  color: #f97316;
+  background: #dbeafe;
+  color: #3b82f6;
   font-size: 20px;
   flex-shrink: 0;
 }
@@ -238,7 +238,7 @@ export default {
   align-items: center;
   gap: 10px;
   padding: 0 12px;
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
   border-radius: 13px;
   background: rgba(255, 255, 255, 0.78);
   cursor: pointer;
@@ -295,8 +295,8 @@ export default {
   gap: 8px;
   border: 1px solid #fdba74;
   border-radius: 13px;
-  background: #fff7ed;
-  color: #ea580c;
+  background: #eff6ff;
+  color: #1d4ed8;
   padding: 0 16px;
   font-weight: 900;
   cursor: pointer;
@@ -304,8 +304,8 @@ export default {
 }
 
 .sound-test-btn:hover {
-  border-color: #fb923c;
-  background: #ffedd5;
+  border-color: #60a5fa;
+  background: #dbeafe;
 }
 
 .error-text {

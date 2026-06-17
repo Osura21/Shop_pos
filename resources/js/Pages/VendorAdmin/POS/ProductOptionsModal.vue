@@ -402,21 +402,21 @@ export default {
       const hasSpecial = this.currencyMode === 'secondary'
         ? (this.product.secondary_special_price !== null && this.product.secondary_special_price !== undefined && this.product.secondary_special_price !== '') || (this.product.special_price_type === 'percentage' && this.product.base_special_price !== null && this.product.base_special_price !== undefined && this.product.base_special_price !== '')
         : this.product.base_special_price !== null && this.product.base_special_price !== undefined && this.product.base_special_price !== '';
-        
+
       if (!hasSpecial) return false;
-      
+
       const now = new Date();
-      
+
       if (this.product.special_price_start) {
         const start = new Date(this.product.special_price_start);
         if (now < start) return false;
       }
-      
+
       if (this.product.special_price_end) {
         const end = new Date(this.product.special_price_end);
         if (now > end) return false;
       }
-      
+
       return true;
     },
     normalProductPrice() {
@@ -427,7 +427,7 @@ export default {
     },
     activeProductPrice() {
       const normalPrice = this.normalProductPrice();
-      
+
       if (this.isSpecialPriceActive()) {
         if (this.product.special_price_type === 'percentage') {
           const percentage = this.currencyMode === 'secondary'
@@ -703,7 +703,7 @@ export default {
   width: 19px;
   height: 19px;
   margin: 0;
-  accent-color: #f97316;
+  accent-color: #3b82f6;
 }
 
 .option-field-wrap {
@@ -728,8 +728,8 @@ export default {
 }
 
 .option-field:focus {
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .pos-modal__footer {
@@ -769,7 +769,7 @@ export default {
 }
 
 .qty-btn:hover {
-  color: #f97316;
+  color: #3b82f6;
 }
 
 .qty-btn:disabled {
@@ -815,8 +815,8 @@ export default {
 }
 
 .loose-qty-presets button:hover:not(:disabled) {
-  border-color: #f97316;
-  color: #f97316;
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
 .loose-qty-presets button:disabled {
@@ -852,7 +852,7 @@ export default {
 }
 
 .footer-btn--primary {
-  color: #f97316;
+  color: #3b82f6;
 }
 
 .pos-modal-fade-enter-active,

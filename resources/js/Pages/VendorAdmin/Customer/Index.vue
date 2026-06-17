@@ -325,7 +325,7 @@ watch(
 }
 
 :deep(.customer-avatar--placeholder) {
-  border: 1px solid rgba(242, 140, 0, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 /* Badges */

@@ -16,7 +16,7 @@
             <p class="header-subtitle">
               Base currency: <strong>{{ baseCurrencyCode }}</strong>
               <template v-if="hasSecondaryCurrency">
-                · Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
+                Â· Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong>
               </template>
             </p>
           </div>
@@ -354,8 +354,8 @@ function submit() {
   width: 54px;
   height: 54px;
   border-radius: 18px;
-  background: #fff7ed;
-  color: #f97316;
+  background: #eff6ff;
+  color: #3b82f6;
   display: inline-flex;
   align-items: center;
   justify-content: center;

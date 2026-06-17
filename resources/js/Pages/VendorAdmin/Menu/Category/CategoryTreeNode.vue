@@ -95,12 +95,12 @@ const isExpanded = computed(() => props.expandedIds.includes(props.node.id))
 
 /* Hover */
 .category-node__row:hover {
-  color: #f97316;
+  color: #3b82f6;
 }
 
 /* Active */
 .category-node__row--active {
-  color: #ea580c;
+  color: #1d4ed8;
   font-weight: 600;
 }
 
@@ -112,7 +112,7 @@ const isExpanded = computed(() => props.expandedIds.includes(props.node.id))
   bottom: 6px;
   width: 3px;
   border-radius: 10px;
-  background: linear-gradient(180deg, #f97316, #fb923c);
+  background: linear-gradient(180deg, #3b82f6, #60a5fa);
 }
 
 /* Toggle button */
@@ -144,7 +144,7 @@ const isExpanded = computed(() => props.expandedIds.includes(props.node.id))
 
 /* Folder icon */
 .category-node__folder {
-  color: #f59e0b;
+  color: #3b82f6;
   font-size: 16px;
   transition: transform 0.2s ease;
 }

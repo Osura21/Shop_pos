@@ -1343,7 +1343,7 @@ return this.visibleOrders.filter(
     gap: 10px;
     align-items: center;
     padding: 12px;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
     border-radius: 14px;
     background: rgba(255, 251, 235, 0.98);
     box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
@@ -1374,7 +1374,7 @@ return this.visibleOrders.filter(
     min-height: 32px;
     border: none;
     border-radius: 9px;
-    background: #f59e0b;
+    background: #3b82f6;
     color: #fff;
     padding: 0 12px;
     font-size: 12px;
@@ -1391,7 +1391,7 @@ return this.visibleOrders.filter(
     height: 30px;
     border: 1px solid #fde68a;
     border-radius: 9px;
-    background: #fff7ed;
+    background: #eff6ff;
     color: #92400e;
     display: inline-flex;
     align-items: center;
@@ -1421,7 +1421,7 @@ return this.visibleOrders.filter(
     position: absolute;
     inset: auto 0 0 0;
     height: 4px;
-    background: linear-gradient(90deg, #22c55e, #f97316);
+    background: linear-gradient(90deg, #22c55e, #3b82f6);
     animation: kitchenAlertTimer 5.6s linear forwards;
 }
 
@@ -1495,8 +1495,8 @@ return this.visibleOrders.filter(
 }
 
 .kitchen-order-alert__meta em {
-    background: #fff7ed;
-    color: #f97316;
+    background: #eff6ff;
+    color: #3b82f6;
 }
 
 .kitchen-order-alert__meta small {
@@ -1518,8 +1518,8 @@ return this.visibleOrders.filter(
 }
 
 .kitchen-order-alert__close:hover {
-    border-color: #fb923c;
-    color: #f97316;
+    border-color: #60a5fa;
+    color: #3b82f6;
 }
 
 .kitchen-alert-enter-active,
@@ -1599,8 +1599,8 @@ return this.visibleOrders.filter(
 }
 
 .top-icon-btn:hover {
-    border-color: #f59e0b;
-    color: #f59e0b;
+    border-color: #3b82f6;
+    color: #3b82f6;
 }
 
 .toolbar-search {
@@ -1739,7 +1739,7 @@ return this.visibleOrders.filter(
 }
 
 .order-card--pending {
-    border-top: 3px solid #f59e0b;
+    border-top: 3px solid #3b82f6;
 }
 
 .order-card--preparing {
@@ -1784,7 +1784,7 @@ return this.visibleOrders.filter(
 
 .table-chip {
     padding: 3px 8px;
-    background: #ffedd5;
+    background: #dbeafe;
     color: #c2410c;
     border-radius: 8px;
 }
@@ -2158,7 +2158,7 @@ return this.visibleOrders.filter(
 }
 
 :deep(.kitchen-swal-toast .swal2-timer-progress-bar) {
-    background: linear-gradient(90deg, #f59e0b, #8b5cf6, #10b981) !important;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981) !important;
     height: 4px !important;
 }
 

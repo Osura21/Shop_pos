@@ -102,14 +102,14 @@ const columns = computed(() => ([
            <i class="bi bi-building"></i>
            <span class="branch-chip-text">${escapeHtml(data)}</span>
          </span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'description',
     name: 'description',
     render: (data) => data
       ? `<span class="description-text">${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'status',
@@ -269,8 +269,8 @@ watch(
   gap: 0.4rem;
   padding: 0.3rem 0.7rem;
   border-radius: 8px;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   color: #c2410c;
   font-size: 0.88rem;
   font-weight: 600;

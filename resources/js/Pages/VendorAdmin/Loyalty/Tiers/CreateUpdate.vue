@@ -355,7 +355,7 @@ onBeforeUnmount(() => {
 .checkbox-line input {
     width: 18px;
     height: 18px;
-    accent-color: #f97316;
+    accent-color: #3b82f6;
 }
 @media (max-width: 1100px) {
     .tier-layout {
@@ -370,7 +370,7 @@ onBeforeUnmount(() => {
 }
 .avatar-box {
   min-height: 220px;
-  border: 2px dashed rgba(242, 140, 0, 0.3);
+  border: 2px dashed rgba(59, 130, 246, 0.3);
   border-radius: 16px;
   background: #fcfaf7;
   display: flex;
@@ -387,7 +387,7 @@ onBeforeUnmount(() => {
 
 .avatar-icon {
   font-size: 64px;
-  color: #f28c00;
+  color: #2563eb;
 }
 
 .avatar-image-wrapper {

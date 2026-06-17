@@ -397,7 +397,7 @@ buyerName() {
 }
 
 .primary-btn {
-  background: #f59e0b;
+  background: #3b82f6;
   color: #fff;
 }
 
@@ -608,12 +608,12 @@ buyerName() {
 }
 
 .summary-row--total {
-  color: #f97316;
+  color: #3b82f6;
   font-weight: 800;
 }
 
 .summary-row--total strong {
-  color: #f97316;
+  color: #3b82f6;
 }
 
 .success-text {
@@ -660,7 +660,7 @@ buyerName() {
 
 .badge--orange {
   background: #fde7c9;
-  color: #f59e0b;
+  color: #3b82f6;
 }
 
 @media (max-width: 1200px) {

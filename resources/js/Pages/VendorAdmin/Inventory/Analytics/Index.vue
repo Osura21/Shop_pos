@@ -624,7 +624,7 @@ function chartOptions(formatter = number) {
 }
 
 function makeLineDatasets(datasets) {
-  const colors = ['#f57c00', '#2563eb', '#14b8a6', '#7c3aed', '#e11d48', '#059669']
+  const colors = ['#2563eb', '#2563eb', '#14b8a6', '#7c3aed', '#e11d48', '#059669']
 
   return safeArray(datasets).map((dataset, index) => {
     const color = colors[index % colors.length]
@@ -763,9 +763,9 @@ watch(
   justify-content: space-between;
   gap: 24px;
   background:
-    radial-gradient(circle at 8% 0%, rgba(245, 124, 0, 0.18), transparent 31%),
+    radial-gradient(circle at 8% 0%, rgba(37, 99, 235, 0.18), transparent 31%),
     radial-gradient(circle at 88% 16%, rgba(37, 99, 235, 0.12), transparent 30%),
-    linear-gradient(135deg, #ffffff 0%, #fff7ed 48%, #ffffff 100%);
+    linear-gradient(135deg, #ffffff 0%, #eff6ff 48%, #ffffff 100%);
 }
 
 .hero-glow {
@@ -781,7 +781,7 @@ watch(
 .hero-glow--left {
   left: -88px;
   top: -118px;
-  background: #fed7aa;
+  background: #bfdbfe;
 }
 
 .hero-glow--right {
@@ -810,7 +810,7 @@ watch(
   gap: 7px;
   color: #9a3412;
   background: rgba(255, 247, 237, 0.88);
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
   font-size: 12px;
   font-weight: 900;
   text-transform: uppercase;
@@ -901,14 +901,14 @@ watch(
 
 .primary-action {
   color: #ffffff;
-  background: linear-gradient(135deg, #f57c00, #fb923c);
-  box-shadow: 0 14px 28px rgba(245, 124, 0, 0.28);
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.28);
 }
 
 .soft-action {
   color: #92400e;
   background: rgba(255, 247, 237, 0.88);
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
 }
 
 .filter-grid {
@@ -994,7 +994,7 @@ watch(
   font-weight: 950;
 }
 
-.insight-item--amber .insight-icon { color: #f57c00; background: #fff7ed; border: 1px solid #fed7aa; }
+.insight-item--amber .insight-icon { color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; }
 .insight-item--blue .insight-icon { color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; }
 .insight-item--green .insight-icon { color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; }
 .insight-item--danger .insight-icon { color: #e11d48; background: #fff1f2; border: 1px solid #fecdd3; }
@@ -1031,14 +1031,14 @@ watch(
 
 .quick-action:hover {
   transform: translateY(-1px);
-  border-color: #fed7aa;
-  box-shadow: 0 14px 28px rgba(245, 124, 0, 0.1);
+  border-color: #bfdbfe;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.10);
 }
 
 .quick-action__icon {
-  color: #f57c00;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
 }
 
 .quick-action__text {
@@ -1127,13 +1127,13 @@ watch(
   font-size: 22px;
 }
 
-.stat-card--amber { color: #f57c00; }
+.stat-card--amber { color: #2563eb; }
 .stat-card--blue { color: #2563eb; }
 .stat-card--green { color: #059669; }
 .stat-card--purple { color: #7c3aed; }
 .stat-card--danger { color: #e11d48; }
 
-.stat-card--amber .stat-card__icon { background: #fff7ed; border: 1px solid #fed7aa; }
+.stat-card--amber .stat-card__icon { background: #eff6ff; border: 1px solid #bfdbfe; }
 .stat-card--blue .stat-card__icon { background: #eff6ff; border: 1px solid #bfdbfe; }
 .stat-card--green .stat-card__icon { background: #ecfdf5; border: 1px solid #a7f3d0; }
 .stat-card--purple .stat-card__icon { background: #f5f3ff; border: 1px solid #ddd6fe; }
@@ -1176,7 +1176,7 @@ watch(
 .panel-kicker {
   display: block;
   margin-bottom: 4px;
-  color: #f57c00;
+  color: #2563eb;
   font-size: 11px;
   font-weight: 950;
   text-transform: uppercase;
@@ -1206,8 +1206,8 @@ watch(
   display: inline-flex;
   align-items: center;
   color: #92400e;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   font-size: 12px;
   font-weight: 900;
   white-space: nowrap;
@@ -1399,8 +1399,8 @@ watch(
 :deep(.form-control:focus),
 :deep(.formControl:focus),
 :deep(.form-select:focus) {
-  border-color: #f57c00;
-  box-shadow: 0 0 0 4px rgba(245, 124, 0, 0.12);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 @media (max-width: 1360px) {

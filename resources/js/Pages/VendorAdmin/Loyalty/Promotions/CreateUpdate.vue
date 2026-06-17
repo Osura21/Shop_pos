@@ -4,7 +4,7 @@
     <div class="form-wrapper formWrapper">
       <div class="form-header formHeader">
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-          <h1 class="header-title"><i class="bi bi- me-2 text-warning"></i>{{ isEdit ? 'Edit Loyalty Promotion' : 'Create Loyalty Promotion' }}</h1>
+          <h1 class="header-title"><i class="bi bi- me-2 promotion-header-icon"></i>{{ isEdit ? 'Edit Loyalty Promotion' : 'Create Loyalty Promotion' }}</h1>
           <div class="d-flex gap-2"><button class="btn btn-ghost" type="button" @click="goBack">Cancel</button><button class="btn btn-primary-modern" type="button" :disabled="form.processing" @click="submit">{{ form.processing ? 'Saving...' : (isEdit ? 'Update' : 'Create') }}</button></div>
         </div>
       </div>
@@ -12,7 +12,7 @@
       <div class="promotion-layout">
         <div class="stack">
           <div class="form-card">
-            <div class="card-accent-line"></div>
+            <div class="card-accent-line promotion-accent-line"></div>
             <div class="d-flex align-items-center gap-2 card-header"><i class="bi bi-info-circle"></i><h2 class="card-title cardTitle">Loyalty Promotion Information</h2></div>
             <div class="card-body formCardBody form-grid">
               <InputField id="name" v-model="form.name" label="Name" placeholder="Promotion name" :error="form.errors.name" />
@@ -24,7 +24,7 @@
           </div>
 
           <div class="form-card">
-            <div class="card-accent-line"></div>
+            <div class="card-accent-line promotion-accent-line"></div>
             <div class="d-flex align-items-center gap-2 card-header"><i class="bi bi-funnel"></i><h2 class="card-title cardTitle">Conditions</h2></div>
             <div class="card-body formCardBody form-grid">
               <InputField id="minimum_spend" v-model="form.minimum_spend" type="number" :label="`Minimum Spend (${baseCurrencyCode})`" />
@@ -36,7 +36,7 @@
 
         <div class="stack">
           <div class="form-card">
-            <div class="card-accent-line"></div>
+            <div class="card-accent-line promotion-accent-line"></div>
             <div class="d-flex align-items-center gap-2 card-header"><i class="bi bi-coin"></i><h2 class="card-title cardTitle">Multiplier & Bonus Points</h2></div>
             <div class="card-body formCardBody side-grid">
               <InputField v-if="form.type === 'multiplier'" id="multiplier" v-model="form.multiplier" type="number" label="Multiplier" placeholder="2" />
@@ -44,7 +44,7 @@
             </div>
           </div>
           <div class="form-card">
-            <div class="card-accent-line"></div>
+            <div class="card-accent-line promotion-accent-line"></div>
             <div class="d-flex align-items-center gap-2 card-header"><i class="bi bi-arrow-clockwise"></i><h2 class="card-title cardTitle">Usage Rules</h2></div>
             <div class="card-body formCardBody side-grid">
               <InputField id="usage_limit" v-model="form.usage_limit" type="number" label="Usage Limit" />
@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="form-card">
-            <div class="card-accent-line"></div>
+            <div class="card-accent-line promotion-accent-line"></div>
             <div class="d-flex align-items-center gap-2 card-header"><i class="bi bi-calendar2-check"></i><h2 class="card-title cardTitle">Availability & Schedule</h2></div>
             <div class="card-body formCardBody side-grid">
               <div>
@@ -127,7 +127,7 @@ function submit() {
 .full { grid-column:1 / -1; }
 .field-label { display:block; margin-bottom:.45rem; color:#334155; font-size:.82rem; font-weight:800; }
 .checkbox-line { display:inline-flex; align-items:center; gap:.6rem; font-weight:800; color:#334155; }
-.checkbox-line input { width:18px; height:18px; accent-color:#f97316; }
+.checkbox-line input { width:18px; height:18px; accent-color:#3b82f6; }
 @media (max-width:1100px) { .promotion-layout { grid-template-columns:1fr; } }
 @media (max-width:760px) { .form-grid { grid-template-columns:1fr; } }
 .error-text {
@@ -135,5 +135,14 @@ function submit() {
   color: #dc2626;
   font-size: .78rem;
   font-weight: 600;
+}
+
+.promotion-header-icon {
+  color: #3b82f6;
+}
+
+.promotion-accent-line {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.08);
 }
 </style>

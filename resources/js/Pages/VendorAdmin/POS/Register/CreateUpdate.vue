@@ -195,8 +195,8 @@ export default {
 }
 
 .formControl:focus {
-    border-color: #f28c00;
-    box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
     outline: none;
 }
 

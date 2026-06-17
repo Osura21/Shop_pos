@@ -274,18 +274,18 @@ const form = useForm({
 const tierOptions = computed(() => {
   const allTiers = props.tiers || []
   const programId = form.loyalty_program_id
-  
+
   const filtered = programId
     ? allTiers.filter(t => String(t.loyalty_program_id) === String(programId))
     : allTiers
-    
+
   return [{ id: '', name: 'All Tiers' }, ...filtered]
 })
 
 watch(() => form.loyalty_program_id, (newProgramId) => {
   if (form.loyalty_tier_id) {
     const tierExistsInProgram = (props.tiers || []).some(
-      tier => String(tier.id) === String(form.loyalty_tier_id) && 
+      tier => String(tier.id) === String(form.loyalty_tier_id) &&
               String(tier.loyalty_program_id) === String(newProgramId)
     )
     if (!tierExistsInProgram) {
@@ -438,7 +438,7 @@ onBeforeUnmount(() => {
 .checkbox-line input {
   width: 18px;
   height: 18px;
-  accent-color: #f97316;
+  accent-color: #3b82f6;
 }
 
 @media (max-width:1100px) {
@@ -454,7 +454,7 @@ onBeforeUnmount(() => {
 }
 .avatar-box {
   min-height: 220px;
-  border: 2px dashed rgba(242, 140, 0, 0.3);
+  border: 2px dashed rgba(59, 130, 246, 0.3);
   border-radius: 16px;
   background: #fcfaf7;
   display: flex;
@@ -471,7 +471,7 @@ onBeforeUnmount(() => {
 
 .avatar-icon {
   font-size: 64px;
-  color: #f28c00;
+  color: #2563eb;
 }
 
 .avatar-image-wrapper {

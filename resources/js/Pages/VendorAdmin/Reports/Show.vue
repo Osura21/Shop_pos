@@ -17,7 +17,7 @@
             <h1>{{ report.title }}</h1>
             <p>{{ report.description }}</p>
 
-           
+
           </div>
         </div>
 
@@ -936,9 +936,9 @@ watch(totalPages, (value) => {
   width: 52px;
   height: 52px;
   border-radius: 15px;
-  background: #fff7ed;
-  color: #f97316;
-  border: 1px solid #fed7aa;
+  background: #eff6ff;
+  color: #3b82f6;
+  border: 1px solid #bfdbfe;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -946,7 +946,7 @@ watch(totalPages, (value) => {
 }
 
 .breadcrumb-title {
-  color: #f97316;
+  color: #3b82f6;
   font-size: 12px;
   font-weight: 850;
   margin-bottom: 6px;
@@ -1011,18 +1011,18 @@ watch(totalPages, (value) => {
 .ghost-btn:hover,
 .pager button:hover:not(:disabled) {
   border-color: #fdba74;
-  color: #f97316;
+  color: #3b82f6;
 }
 
 .primary-btn {
-  background: #f97316;
-  border-color: #f97316;
+  background: #3b82f6;
+  border-color: #3b82f6;
   color: #fff;
 }
 
 .primary-btn:hover {
-  background: #ea580c;
-  border-color: #ea580c;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .export-actions {
@@ -1137,7 +1137,7 @@ select {
 input:focus,
 select:focus,
 .search-box:focus-within {
-  border-color: #fb923c;
+  border-color: #60a5fa;
   box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
 }
 
@@ -1263,7 +1263,7 @@ td {
 }
 
 tbody tr:hover td {
-  background: #fff7ed;
+  background: #eff6ff;
 }
 
 .money {
@@ -1317,7 +1317,7 @@ tbody tr:hover td {
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: #f97316;
+  background: #3b82f6;
   color: #fff;
   font-weight: 900;
 }
@@ -1326,7 +1326,7 @@ tbody tr:hover td {
   min-width: 36px;
   min-height: 36px;
   padding: 0;
-  color: #f97316;
+  color: #3b82f6;
 }
 
 .pager button:disabled {
@@ -1401,12 +1401,12 @@ tbody tr:hover td {
   display: inline-flex;
   align-items: center;
   gap: 11px;
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
   border-radius: 14px;
   padding: 0 13px;
   background:
     radial-gradient(circle at top left, rgba(251, 146, 60, 0.18), transparent 38%),
-    linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+    linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
   color: #9a3412;
   box-shadow: 0 12px 28px rgba(249, 115, 22, 0.1);
   cursor: pointer;
@@ -1416,7 +1416,7 @@ tbody tr:hover td {
 .export-trigger:hover:not(:disabled),
 .export-trigger--open {
   transform: translateY(-1px);
-  border-color: #fb923c;
+  border-color: #60a5fa;
   box-shadow: 0 18px 36px rgba(249, 115, 22, 0.16);
 }
 
@@ -1432,7 +1432,7 @@ tbody tr:hover td {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #f97316;
+  background: #3b82f6;
   color: #fff;
   flex: 0 0 auto;
 }

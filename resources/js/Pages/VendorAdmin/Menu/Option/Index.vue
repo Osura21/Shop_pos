@@ -117,7 +117,7 @@ const columns = computed(() => ([
            <i class="bi bi-building"></i>
            <span class="branch-chip-text">${escapeHtml(data)}</span>
          </span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'type_label',
@@ -126,7 +126,7 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="type-chip">${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   { data: 'created_at', name: 'created_at', render: d => `<span class="text-secondary small">${d}</span>` },
   { data: 'updated_at', name: 'updated_at', render: d => `<span class="text-secondary small">${d}</span>` },
@@ -268,8 +268,8 @@ watch(
   gap: 0.4rem;
   padding: 0.3rem 0.7rem;
   border-radius: 8px;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   color: #c2410c;
   font-size: 0.78rem;
   font-weight: 600;

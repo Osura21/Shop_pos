@@ -200,7 +200,7 @@ export default {
                     name: 'name',
                     render: (data, type, row) => `
             <div>
-              <div class="fw-bold text-dark">${this.escapeHtml(data || '—')}</div>
+              <div class="fw-bold text-dark">${this.escapeHtml(data || 'â€”')}</div>
               <div class="text-muted x-small">SES-${row.id}</div>
             </div>
           `
@@ -210,47 +210,47 @@ export default {
                     name: 'branch',
                     render: (data) => data
                         ? `<span class="branch-chip"><i class="bi bi-building"></i> ${this.escapeHtml(data)}</span>`
-                        : `<span class="text-muted small">—</span>`
+                        : `<span class="text-muted small">â€”</span>`
                 },
                 {
                     data: 'opener',
                     name: 'opener',
                     render: (data) => data
                         ? `<span class="user-chip user-chip--opener"><i class="bi bi-person-fill"></i> ${this.escapeHtml(data)}</span>`
-                        : `<span class="text-muted small">—</span>`
+                        : `<span class="text-muted small">â€”</span>`
                 },
                 {
                     data: 'closer',
                     name: 'closer',
                     render: (data) => data
                         ? `<span class="user-chip user-chip--closer"><i class="bi bi-person-fill-slash"></i> ${this.escapeHtml(data)}</span>`
-                        : `<span class="text-muted small">—</span>`
+                        : `<span class="text-muted small">â€”</span>`
                 },
                 {
                     data: 'opening_float',
                     name: 'opening_float',
                     render: (data) => data
                         ? `<span class="amount-chip amount-chip--neutral"> ${this.escapeHtml(String(data))}</span>`
-                        : `<span class="text-muted small">—</span>`
+                        : `<span class="text-muted small">â€”</span>`
                 },
                 {
                     data: 'current_balance',
                     name: 'current_balance',
                     render: (data) => data
                         ? `<span class="amount-chip amount-chip--balance">${this.escapeHtml(String(data))}</span>`
-                        : `<span class="text-muted small">—</span>`
+                        : `<span class="text-muted small">â€”</span>`
                 },
                 {
                     data: 'opened_at',
                     name: 'opened_at',
-                    render: (d) => `<span class="text-secondary text-wrap small">${d || '—'}</span>`
+                    render: (d) => `<span class="text-secondary text-wrap small">${d || 'â€”'}</span>`
                 },
                 {
                     data: 'closed_at',
                     name: 'closed_at',
                     render: (d) => d
                         ? `<span class="text-secondary small">${d}</span>`
-                        : `<span class="closed-label">—</span>`
+                        : `<span class="closed-label">â€”</span>`
                 },
                 {
                     data: 'status',
@@ -276,7 +276,7 @@ export default {
                         `
                         }
 
-                        return `<span class="text-muted small">—</span>`
+                        return `<span class="text-muted small">â€”</span>`
                     }
                 },
                 {
@@ -496,13 +496,13 @@ export default {
 }
 
 :deep(.btn-circle-warning:hover:not(:disabled)) {
-    border-color: #f59e0b;
-    color: #f59e0b;
-    background: #fffbeb;
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: #eff6ff;
 }
 
 
-/* ── Modal Backdrop ── */
+/* â”€â”€ Modal Backdrop â”€â”€ */
 .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -514,7 +514,7 @@ export default {
     padding: 18px;
 }
 
-/* ── Modal Card ── */
+/* â”€â”€ Modal Card â”€â”€ */
 .modal-card {
     width: 100%;
     max-width: 540px;
@@ -595,7 +595,7 @@ export default {
     padding: 0.7rem 1.5rem;
     border-radius: 12px;
     border: none;
-    background: #f59e0b;
+    background: #3b82f6;
     color: white;
     font-weight: 600;
     font-size: 0.875rem;
@@ -616,8 +616,8 @@ export default {
 .close-session-icon {
     width: 60px;
     height: 60px;
-    background: #fffbeb;
-    color: #f59e0b;
+    background: #eff6ff;
+    color: #3b82f6;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -640,7 +640,7 @@ export default {
 }
 
 .formControl:focus {
-  border-color: #f59e0b;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
 }
 

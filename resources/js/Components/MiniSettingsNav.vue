@@ -130,9 +130,9 @@ onBeforeUnmount(() => {
 .settings-mini-nav {
     background: #fff;
     border-radius: 24px;
-    border: 1px solid #fde8cc;
-    box-shadow: 0 10px 30px rgba(251, 146, 60, 0.06),
-        0 2px 8px rgba(251, 146, 60, 0.04);
+    border: 1px solid #dbeafe;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.06),
+        0 2px 8px rgba(59, 130, 246, 0.04);
     height: fit-content;
     margin-left: auto;
     margin-right: auto;
@@ -157,35 +157,35 @@ onBeforeUnmount(() => {
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
-    color: #c07830;
+    color: #475569;
     transition: 0.2s ease;
 }
 
 .settings-mini-nav__item i {
     font-size: 1.1rem;
-    color: #e8953a;
+    color: #3b82f6;
     flex-shrink: 0;
 }
 
 .settings-mini-nav__item:hover {
-    background: #fff7ed;
-    color: #e8853a;
+    background: #eff6ff;
+    color: #2563eb;
     transform: translateX(2px);
 }
 
 .settings-mini-nav__item:hover i {
-    color: #f97316;
+    color: #2563eb;
 }
 
 .settings-mini-nav__item.active {
-    background: #fff4e6;
-    color: #c2620a;
-    border-color: #fcd09a;
-    box-shadow: inset 0 1px 3px rgba(251, 146, 60, 0.10);
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+    box-shadow: inset 0 1px 3px rgba(59, 130, 246, 0.10);
 }
 
 .settings-mini-nav__item.active i {
-    color: #f97316;
+    color: #2563eb;
 }
 
 .settings-mini-nav--desktop {
@@ -222,8 +222,8 @@ onBeforeUnmount(() => {
     width: 32px;
     height: 32px;
     border-radius: 12px;
-    border: 1.5px solid #fcd09a;
-    background: #fff7ed;
+    border: 1.5px solid #bfdbfe;
+    background: #eff6ff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -291,25 +291,25 @@ onBeforeUnmount(() => {
 }
 
 .settings-mini-nav__item--mobile:hover {
-    background: #fff7ed;
+    background: #eff6ff;
 }
 
 .settings-mini-nav__item--mobile:hover i {
-    color: #f97316;
+    color: #2563eb;
 }
 
 .settings-mini-nav__item--mobile.active {
-    background: #fff4e6;
-    border-color: #fcd09a;
-    box-shadow: inset 0 1px 3px rgba(251, 146, 60, 0.10);
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    box-shadow: inset 0 1px 3px rgba(59, 130, 246, 0.10);
 }
 
 .settings-mini-nav__item--mobile.active i {
-    color: #f97316;
+    color: #2563eb;
 }
 
 .settings-mini-nav__item--mobile.active .nav-icon-label {
-    color: #c2620a;
+    color: #2563eb;
 }
 
 .mobile-nav-dots {

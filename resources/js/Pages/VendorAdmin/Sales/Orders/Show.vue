@@ -428,7 +428,7 @@ export default {
 }
 
 .hero-stat {
-  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
   border: 1px solid #f7ddba;
   border-radius: 16px;
   padding: 18px;
@@ -488,8 +488,8 @@ export default {
 }
 
 .secondary-btn:hover {
-  border-color: #f97316;
-  color: #f97316;
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
 .show-layout {
@@ -651,7 +651,7 @@ export default {
 
 .badge--orange {
   background: #fde7c9;
-  color: #f59e0b;
+  color: #3b82f6;
 }
 
 .summary-list {
@@ -675,12 +675,12 @@ export default {
 }
 
 .summary-row--total {
-  color: #f97316;
+  color: #3b82f6;
   font-weight: 800;
 }
 
 .summary-row--total strong {
-  color: #f97316;
+  color: #3b82f6;
 }
 
 .payments-list {

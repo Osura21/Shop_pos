@@ -280,7 +280,7 @@
 
           <div class="transaction-row__main">
             <strong>{{ tx.card?.code || '-' }}</strong>
-            <span>{{ labelize(tx.type) }} · {{ tx.branch?.name || 'No Branch' }}</span>
+            <span>{{ labelize(tx.type) }} Â· {{ tx.branch?.name || 'No Branch' }}</span>
           </div>
 
           <div class="transaction-row__amount">
@@ -544,15 +544,15 @@ async function renderCharts() {
       datasets: [{
         label: 'Sales',
         data: safeArray(props.charts.sales_over_time?.values),
-        borderColor: '#f57c00',
-        backgroundColor: 'rgba(245, 124, 0, 0.22)',
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37, 99, 235, 0.22)',
         borderWidth: 3,
         fill: true,
         tension: 0.42,
         pointRadius: 4,
         pointHoverRadius: 6,
         pointBackgroundColor: '#ffffff',
-        pointBorderColor: '#f57c00',
+        pointBorderColor: '#2563eb',
         pointBorderWidth: 2,
       }],
     },
@@ -587,7 +587,7 @@ async function renderCharts() {
       labels: safeArray(props.charts.cards_health?.labels),
       datasets: [{
         data: safeArray(props.charts.cards_health?.status),
-        backgroundColor: ['#22c55e', '#f57c00', '#e11d48', '#475569', '#2563eb'],
+        backgroundColor: ['#22c55e', '#2563eb', '#e11d48', '#475569', '#2563eb'],
         borderColor: '#ffffff',
         borderWidth: 5,
         hoverOffset: 8,
@@ -614,8 +614,8 @@ async function renderCharts() {
           type: 'line',
           label: 'Amount',
           data: safeArray(props.charts.transaction_mix?.amounts),
-          borderColor: '#f57c00',
-          backgroundColor: '#f57c00',
+          borderColor: '#2563eb',
+          backgroundColor: '#2563eb',
           borderWidth: 3,
           pointRadius: 4,
           tension: 0.4,
@@ -656,7 +656,7 @@ async function renderCharts() {
       datasets: [{
         label: 'Usage',
         data: safeArray(props.charts.usage_by_day?.values),
-        backgroundColor: ['#f57c00', '#2563eb', '#059669', '#7c3aed', '#e11d48', '#14b8a6', '#475569'],
+        backgroundColor: ['#2563eb', '#2563eb', '#059669', '#7c3aed', '#e11d48', '#14b8a6', '#475569'],
         borderRadius: 12,
         borderSkipped: false,
         maxBarThickness: 42,
@@ -707,9 +707,9 @@ watch(
   justify-content: space-between;
   gap: 24px;
   background:
-    radial-gradient(circle at 8% 0%, rgba(245, 124, 0, 0.18), transparent 31%),
+    radial-gradient(circle at 8% 0%, rgba(37, 99, 235, 0.18), transparent 31%),
     radial-gradient(circle at 88% 16%, rgba(37, 99, 235, 0.12), transparent 30%),
-    linear-gradient(135deg, #ffffff 0%, #fff7ed 48%, #ffffff 100%);
+    linear-gradient(135deg, #ffffff 0%, #eff6ff 48%, #ffffff 100%);
 }
 
 .hero-glow {
@@ -725,7 +725,7 @@ watch(
 .hero-glow--left {
   left: -88px;
   top: -118px;
-  background: #fed7aa;
+  background: #bfdbfe;
 }
 
 .hero-glow--right {
@@ -754,7 +754,7 @@ watch(
   gap: 7px;
   color: #9a3412;
   background: rgba(255, 247, 237, 0.88);
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
   font-size: 12px;
   font-weight: 900;
   text-transform: uppercase;
@@ -810,14 +810,14 @@ watch(
 
 .primary-action {
   color: #ffffff;
-  background: linear-gradient(135deg, #f57c00, #fb923c);
-  box-shadow: 0 14px 28px rgba(245, 124, 0, 0.28);
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.28);
 }
 
 .soft-action {
   color: #92400e;
   background: rgba(255, 247, 237, 0.88);
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
 }
 
 .stats-grid {
@@ -888,7 +888,7 @@ watch(
 }
 
 .stat-card--amber {
-  color: #f57c00;
+  color: #2563eb;
 }
 
 .stat-card--blue {
@@ -908,8 +908,8 @@ watch(
 }
 
 .stat-card--amber .stat-card__icon {
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
 }
 
 .stat-card--blue .stat-card__icon {
@@ -965,7 +965,7 @@ watch(
 .panel-kicker {
   display: block;
   margin-bottom: 4px;
-  color: #f57c00;
+  color: #2563eb;
   font-size: 11px;
   font-weight: 950;
   text-transform: uppercase;
@@ -995,8 +995,8 @@ watch(
   display: inline-flex;
   align-items: center;
   color: #92400e;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   font-size: 12px;
   font-weight: 900;
   white-space: nowrap;
@@ -1076,9 +1076,9 @@ watch(
 }
 
 .list-icon--amber {
-  color: #f57c00;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   font-weight: 950;
 }
 

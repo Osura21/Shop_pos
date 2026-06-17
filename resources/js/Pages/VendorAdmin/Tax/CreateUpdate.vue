@@ -280,8 +280,8 @@ function submit() {
 }
 
 .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 /* Order Picker */
@@ -309,7 +309,7 @@ function submit() {
 }
 
 .order-chip {
-  background: rgba(242, 140, 0, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   color: #b85c00;
   border-radius: 999px;
   padding: 4px 10px;
@@ -345,7 +345,7 @@ function submit() {
 }
 
 .order-picker__item:hover {
-  background: rgba(242, 140, 0, 0.08);
+  background: rgba(59, 130, 246, 0.10);
 }
 
 /* Checkboxes */

@@ -85,7 +85,7 @@ const columns = computed(() => ([
     name: 'name',
     render: (data, type, row) => `
       <div>
-        <div class="fw-bold text-dark">${escapeHtml(data || '—')}</div>
+        <div class="fw-bold text-dark">${escapeHtml(data || 'â€”')}</div>
         <div class="text-muted x-small">REG-${row.id}</div>
       </div>
     `
@@ -95,40 +95,40 @@ const columns = computed(() => ([
     name: 'branch',
     render: (data) => data
       ? `<span class="branch-chip"><i class="bi bi-building"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'code',
     name: 'code',
     render: (data) => data
       ? `<span class="code-chip">${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'invoice_printer',
     name: 'invoice_printer',
     render: (data) => data
       ? `<span class="printer-chip"><i class="bi bi-printer"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'bill_printer',
     name: 'bill_printer',
     render: (data) => data
       ? `<span class="printer-chip"><i class="bi bi-receipt"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'status',
     name: 'status',
     orderable: false,
     searchable: false,
-    render: (data) => data || `<span class="text-muted small">—</span>`
+    render: (data) => data || `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'created_at',
     name: 'created_at',
-    render: (d) => `<span class="text-secondary small">${d || '—'}</span>`
+    render: (d) => `<span class="text-secondary small">${d || 'â€”'}</span>`
   },
   {
     data: 'id',

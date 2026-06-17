@@ -111,8 +111,8 @@ export default {
 }
 
 .form-control:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 
@@ -155,7 +155,6 @@ export default {
 }
 
 .password-toggle:hover {
-  color: #f28c00;
+  color: #2563eb;
 }
 </style>
-

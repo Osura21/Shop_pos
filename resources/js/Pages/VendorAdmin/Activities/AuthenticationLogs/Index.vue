@@ -153,7 +153,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #f97316;
+  color: #3b82f6;
   margin-bottom: 28px;
 }
 
@@ -191,7 +191,7 @@ export default {
   margin-left: 6px;
   font-size: 10px;
   font-style: normal;
-  color: #f97316;
+  color: #3b82f6;
   background: #fff2e4;
   border-radius: 4px;
   padding: 3px 7px;
@@ -201,7 +201,7 @@ export default {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #f97316;
+  background: #3b82f6;
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -223,7 +223,7 @@ export default {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   background: #fff;
-  color: #f97316;
+  color: #3b82f6;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -231,8 +231,8 @@ export default {
 }
 
 :deep(.show-action:hover) {
-  background: #f97316;
-  border-color: #f97316;
+  background: #3b82f6;
+  border-color: #3b82f6;
   color: #fff;
 }
 

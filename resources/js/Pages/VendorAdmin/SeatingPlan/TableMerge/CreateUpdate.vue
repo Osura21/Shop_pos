@@ -172,8 +172,8 @@ function submit() {
 }
 
 .form-select:focus {
-    border-color: #f28c00;
-    box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 /* Table Picker */
@@ -197,12 +197,12 @@ function submit() {
 }
 
 .table-pick-item:hover {
-    border-color: #f28c00;
-    background: rgba(242, 140, 0, 0.03);
+    border-color: #2563eb;
+    background: rgba(59, 130, 246, 0.03);
 }
 
 .table-pick-item input {
-    accent-color: #f28c00;
+    accent-color: #2563eb;
 }
 
 .spinner-icon {

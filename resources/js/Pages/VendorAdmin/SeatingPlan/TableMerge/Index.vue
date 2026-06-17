@@ -101,21 +101,21 @@ const columns = computed(() => ([
     name: 'created_by_name',
     render: (data) => data
       ? `<span class="user-chip"><i class="bi bi-person-fill"></i> ${escapeHtml(data)}</span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'members_badges',
     name: 'members',
     orderable: false,
     searchable: false,
-    render: (d) => d ?? `<span class="text-muted small">—</span>`,
+    render: (d) => d ?? `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'type_badge',
     name: 'type',
     orderable: false,
     searchable: false,
-    render: (d) => d ?? `<span class="text-muted small">—</span>`,
+    render: (d) => d ?? `<span class="text-muted small">â€”</span>`,
   },
   { data: 'updated_at', name: 'updated_at', render: d => `<span class="text-secondary small">${d}</span>` },
   { data: 'created_at', name: 'created_at', render: d => `<span class="text-secondary small">${d}</span>` },
@@ -272,7 +272,7 @@ watch(
 }
 
 :deep(.merge-member--primary) {
-  color: #f97316;
+  color: #3b82f6;
 }
 
 :deep(.merge-type) {

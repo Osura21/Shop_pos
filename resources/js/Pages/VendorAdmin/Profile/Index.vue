@@ -244,7 +244,7 @@ function upgradePlan() {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 52%, #f8fafc 100%);
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 52%, #f8fafc 100%);
 }
 
 .profile-hero__identity {
@@ -261,7 +261,7 @@ function upgradePlan() {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #f9741623, #f59e0b);
+  background: linear-gradient(135deg, #f9741623, #3b82f6);
   color: #ffffff;
   font-size: 30px;
   font-weight: 900;
@@ -327,7 +327,7 @@ function upgradePlan() {
 }
 
 .status-pill--soft {
-  background: #fff7ed;
+  background: #eff6ff;
   color: #9a3412;
 }
 
@@ -336,7 +336,7 @@ function upgradePlan() {
   padding: 18px;
   border-radius: 16px;
   background: #ffffff;
-  border: 1px solid #fed7aa;
+  border: 1px solid #bfdbfe;
 }
 
 .profile-hero__membership strong {
@@ -370,7 +370,7 @@ function upgradePlan() {
 }
 
 .profile-tabs button.active {
-  background: #fff7ed;
+  background: #eff6ff;
   color: #c2410c;
 }
 
@@ -413,8 +413,8 @@ function upgradePlan() {
   border-radius: 14px;
   display: grid;
   place-items: center;
-  background: #fff7ed;
-  color: #f97316;
+  background: #eff6ff;
+  color: #3b82f6;
   font-size: 20px;
 }
 
@@ -457,14 +457,14 @@ function upgradePlan() {
 
 .membership-card {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, #111827, #3b2414 54%, #f97316);
+  background: linear-gradient(135deg, #111827, #3b2414 54%, #3b82f6);
   color: #ffffff;
   border: 0;
 }
 
 .membership-card .profile-eyebrow,
 .membership-pricing span {
-  color: #fed7aa;
+  color: #bfdbfe;
 }
 
 .membership-card h2,

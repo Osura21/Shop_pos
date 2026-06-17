@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- 
+                    <!--
                     <div v-if="usesRoomCharge" class="fp-section fp-room-charge">
                         <div class="fp-section-head">
                             <label class="fp-label">Charge to Room</label>
@@ -333,7 +333,7 @@ export default {
             keypadKeys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0'],
             showCalculator: false,
             calculatorExpression: '',
-            calculatorKeys: ['7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '0', '.', 'C', '+'],
+            calculatorKeys: ['7', '8', '9', 'Ã·', '4', '5', '6', 'Ã—', '1', '2', '3', 'âˆ’', '0', '.', 'C', '+'],
         }
     },
 
@@ -597,9 +597,9 @@ export default {
         handleCalculatorKeyboard(event) {
             const key = String(event.key || '')
             const operatorMap = {
-                '/': '÷',
-                '*': '×',
-                '-': '−',
+                '/': 'Ã·',
+                '*': 'Ã—',
+                '-': 'âˆ’',
                 '+': '+',
             }
 
@@ -896,9 +896,9 @@ export default {
             }
 
             const map = {
-                '÷': '/',
-                '×': '*',
-                '−': '-',
+                'Ã·': '/',
+                'Ã—': '*',
+                'âˆ’': '-',
             }
 
             const next = this.calculatorExpression + (map[key] || key)
@@ -909,7 +909,7 @@ export default {
         },
 
         calculatorKeyClass(key) {
-            if (['÷', '×', '−', '+'].includes(key)) return 'fp-calc-key--operator'
+            if (['Ã·', 'Ã—', 'âˆ’', '+'].includes(key)) return 'fp-calc-key--operator'
             if (key === 'C') return 'fp-calc-key--clear'
             return ''
         },
@@ -1028,7 +1028,7 @@ export default {
 
 .fp-eyebrow {
     margin: 0 0 4px;
-    color: #f97316;
+    color: #3b82f6;
     font-size: 12px;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -1116,9 +1116,9 @@ export default {
 }
 
 .fp-mode-card--active {
-    border-color: #f59e0b;
-    background: #fff7ed;
-    color: #d97706;
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #2563eb;
 }
 
 .fp-payments {
@@ -1154,8 +1154,8 @@ export default {
 }
 
 .fp-input:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.13);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.13);
 }
 
 .fp-input[readonly] {
@@ -1169,9 +1169,9 @@ export default {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     padding: 10px;
-    border: 1px solid #fed7aa;
+    border: 1px solid #bfdbfe;
     border-radius: 12px;
-    background: #fff7ed;
+    background: #eff6ff;
 }
 
 .fp-pms-details div {
@@ -1187,7 +1187,7 @@ export default {
 }
 
 .fp-pms-details span {
-    color: #9a3412;
+    color: #2563eb;
     font-size: 11px;
     font-weight: 800;
 }
@@ -1256,8 +1256,8 @@ export default {
     min-height: 50px;
     border: none;
     border-radius: 14px;
-    background: #f5e7d2;
-    color: #f59e0b;
+    background: #eff6ff;
+    color: #3b82f6;
     font-weight: 900;
     margin-top: 12px;
     display: inline-flex;
@@ -1275,8 +1275,8 @@ export default {
     min-height: clamp(54px, 8vw, 72px);
     border: none;
     border-radius: 14px;
-    background: #f7efc8;
-    color: #ca8a04;
+    background: #eff6ff;
+    color: #2563eb;
     font-size: 14px;
     font-weight: 900;
     cursor: pointer;
@@ -1284,7 +1284,7 @@ export default {
 }
 
 .fp-quick-btn--active {
-    background: #f2c400;
+    background: #3b82f6;
     color: #ffffff;
 }
 
@@ -1340,7 +1340,7 @@ export default {
 .fp-summary-list__grand strong,
 .fp-summary-list__grand-updated span,
 .fp-summary-list__grand-updated strong {
-    color: #f97316;
+    color: #3b82f6;
     font-weight: 900;
 }
 
@@ -1385,7 +1385,7 @@ export default {
 }
 
 .fp-action--print {
-    background: #f78307;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: #ffffff;
 }
 
@@ -1479,8 +1479,8 @@ export default {
 }
 
 .fp-calc-key--operator {
-    background: #f5e7d2;
-    color: #f59e0b;
+    background: #eff6ff;
+    color: #3b82f6;
 }
 
 .fp-calc-key--clear {
@@ -1513,7 +1513,7 @@ export default {
 
 .fp-calc-action--primary {
     color: #ffffff;
-    background: #f59e0b;
+    background: #3b82f6;
 }
 
 @media (max-width: 1200px) {
@@ -1728,7 +1728,7 @@ export default {
     height: 36px;
     border: none;
     border-radius: 8px;
-    background: #f59e0b;
+    background: #3b82f6;
     color: white;
     display: flex;
     align-items: center;
@@ -1740,7 +1740,7 @@ export default {
 }
 
 .btn-apply-gift-card:hover {
-    background: #d97706;
+    background: #1d4ed8;
 }
 
 .btn-apply-gift-card:disabled {

@@ -58,7 +58,7 @@
 
                   <div class="col-12 col-lg-6">
                     <label class="form-label formLabel">Branch</label>
-                    <!-- <SelectInput id="branch.id" v-model="form.branch_id" :options="branches" 
+                    <!-- <SelectInput id="branch.id" v-model="form.branch_id" :options="branches"
                       valueKey="id" labelKey="name" placeholder="All Branches (Global)"
                       :error="form.errors.branch_id" /> -->
                       <MultiSelectInput v-model="form.branch_ids" :options="branches" labelKey="name" valueKey="id"
@@ -205,7 +205,7 @@ const secondaryCurrencyCode = computed(() => secondaryCurrency.value?.code || 'S
 
 const form = useForm({
   name: props.option?.name ?? '',
-  branch_ids: props.option?.branch_ids ?? [], 
+  branch_ids: props.option?.branch_ids ?? [],
   type: props.option?.type ?? '',
   is_required: !!(props.option?.is_required ?? false),
 
@@ -300,7 +300,7 @@ function submit() {
             'Something went wrong.'
 
           alertError(message)
-        } 
+        }
       })
     return
   }
@@ -316,7 +316,7 @@ function submit() {
           'Something went wrong.'
 
         alertError(message)
-      } 
+      }
     })
 }
 </script>
@@ -336,9 +336,9 @@ function submit() {
 }
 
 .alert-orange {
-  --bs-alert-color: #7c2d12;          
-  --bs-alert-bg: #ffedd5;              
-  --bs-alert-border-color: #ffdcb6;  
+  --bs-alert-color: #7c2d12;
+  --bs-alert-bg: #dbeafe;
+  --bs-alert-border-color: #ffdcb6;
   --bs-alert-link-color: #9a3412;
 }
 
@@ -351,8 +351,8 @@ function submit() {
 }
 
 .formControl:focus {
-  border-color: #f28c00;
-  box-shadow: 0 0 0 3px rgba(242, 140, 0, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
 }
 
 /* Table Styling */

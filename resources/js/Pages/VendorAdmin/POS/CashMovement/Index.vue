@@ -112,7 +112,7 @@ function money(value) {
   return Number(value || 0).toFixed(3)
 }
 function prettyLabel(value) {
-  if (!value) return '—'
+  if (!value) return 'â€”'
   return String(value)
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (char) => char.toUpperCase())
@@ -122,9 +122,9 @@ const columns = computed(() => {
     {
       data: 'register_name',
       name: 'register_name',
-      render: (data, type, row) => 
+      render: (data, type, row) =>
         `<div>
-          <div class="fw-bold text-dark">${escapeHtml(data || '—')}</div>
+          <div class="fw-bold text-dark">${escapeHtml(data || 'â€”')}</div>
           <div class="text-muted x-small">CM-${row.id}</div>
         </div>
         `
@@ -136,7 +136,7 @@ const columns = computed(() => {
       name: 'branch_name',
       render: (data) => data
         ? `<span class="branch-chip"><i class="bi bi-building"></i> ${escapeHtml(data)}</span>`
-        : `<span class="text-muted small">—</span>`
+        : `<span class="text-muted small">â€”</span>`
     },
     {
       data: 'direction',
@@ -181,7 +181,7 @@ const columns = computed(() => {
       data: 'occurred_at',
       name: 'occurred_at',
       render: (data) =>
-        `<span class="text-secondary small">${data ? new Date(data).toLocaleString() : '—'}</span>`
+        `<span class="text-secondary small">${data ? new Date(data).toLocaleString() : 'â€”'}</span>`
     },
     {
       data: 'id',

@@ -211,9 +211,9 @@ onUnmounted(() => {
 }
 
 :deep(.btn-circle:hover) {
-  border-color: #f97316;
-  color: #f97316;
-  background: #fff7ed;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: #eff6ff;
 }
 
 :deep(.x-small) {

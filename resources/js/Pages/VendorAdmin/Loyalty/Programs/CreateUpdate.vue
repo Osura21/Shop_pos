@@ -7,7 +7,7 @@
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
           <div>
             <h1 class="header-title"><i class="bi bi- me-2 text-warning"></i>{{ isEdit ? 'Edit Loyalty Program' : 'Create Loyalty Program' }}</h1>
-            <p class="header-subtitle">Base currency: <strong>{{ baseCurrencyCode }}</strong><template v-if="secondaryCurrencyCode"> · Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong></template></p>
+            <p class="header-subtitle">Base currency: <strong>{{ baseCurrencyCode }}</strong><template v-if="secondaryCurrencyCode"> Â· Secondary currency: <strong>{{ secondaryCurrencyCode }}</strong></template></p>
           </div>
           <div class="d-flex gap-2">
             <button class="btn btn-ghost" type="button" @click="goBack">Cancel</button>
@@ -105,7 +105,7 @@ function submit() {
 .checkbox-line input {
   width: 18px;
   height: 18px;
-  accent-color: #f97316;
+  accent-color: #3b82f6;
 }
 
 @media (max-width: 760px) {

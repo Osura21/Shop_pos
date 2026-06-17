@@ -129,7 +129,7 @@
           <div class="receipt-card__head">
             <div>
               <h6>Receipt {{ receipt.receipt_no }}</h6>
-              <span>{{ formatDateTime(receipt.received_at) }} · {{ receipt.received_by_name || '-' }}</span>
+              <span>{{ formatDateTime(receipt.received_at) }} Â· {{ receipt.received_by_name || '-' }}</span>
             </div>
           </div>
 
@@ -357,7 +357,7 @@ function confirmReceive() {
   height:38px;
   border-radius:50%;
   background:#fff1e4;
-  color:#f28c00;
+  color:#2563eb;
   display:grid;
   place-items:center;
   font-weight:800;
@@ -376,7 +376,7 @@ function confirmReceive() {
   text-decoration:none;
 }
 .btn-create{
-  background:#f28c00;
+  background:#2563eb;
   border:none;
   color:#fff;
   font-weight:700;

@@ -510,7 +510,7 @@ export default {
     width: 64px;
     height: 64px;
     border-radius: 18px;
-    background: linear-gradient(135deg, #f59e0b, #fb7185);
+    background: linear-gradient(135deg, #3b82f6, #fb7185);
     color: #fff;
     display: grid;
     place-items: center;
@@ -671,9 +671,9 @@ export default {
 }
 
 .pcd-tab--active {
-    background: #f59e0b;
+    background: #3b82f6;
     color: #fff;
-    border-color: #f59e0b;
+    border-color: #3b82f6;
 }
 
 .pcd-section--stack {
@@ -782,7 +782,7 @@ export default {
     padding: 0 16px;
     border: none;
     border-radius: 12px;
-    background: #f59e0b;
+    background: #3b82f6;
     color: #fff;
     font-size: 13px;
     font-weight: 800;
@@ -834,7 +834,7 @@ export default {
 .pcd-link-btn {
     border: none;
     background: transparent;
-    color: #ea580c;
+    color: #1d4ed8;
     font-size: 12px;
     font-weight: 800;
     padding: 0;

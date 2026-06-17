@@ -168,7 +168,7 @@ export default {
 }
 
 .form-control-modern:focus {
-  border-color: #f59e0b;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.13);
 }
 

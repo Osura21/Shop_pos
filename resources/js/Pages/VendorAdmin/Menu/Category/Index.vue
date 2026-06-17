@@ -596,13 +596,13 @@ function confirmDelete() {
 }
 
 .btn-root {
-  background: linear-gradient(135deg, #f97316, #ea580c) !important;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
   color: #fff !important;
 }
 
 .btn-sub {
-  background: linear-gradient(135deg, #fcd34d, #fbbf24) !important;
-  color: #1f2937 !important;
+  background: linear-gradient(135deg, #60a5fa, #2563eb) !important;
+  color: #ffffff !important;
 }
 
 .category-tree-card__search {
@@ -636,7 +636,7 @@ function confirmDelete() {
 .tree-link {
   border: none;
   background: transparent;
-  color: #f57c00;
+  color: #2563eb;
   font-weight: 700;
   padding: 0;
 }
@@ -663,7 +663,7 @@ function confirmDelete() {
 }
 
 .tree-scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #fad596, #ffbe90);
+  background: linear-gradient(180deg, #93c5fd, #3b82f6);
   border-radius: 10px;
 }
 
@@ -719,7 +719,7 @@ function confirmDelete() {
 }
 
 .btn-update {
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: #fff;
 }
 
@@ -736,8 +736,8 @@ function confirmDelete() {
 
 .pretty-input:focus,
 .formControl:focus {
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }
 
 .formControl {
@@ -757,8 +757,8 @@ function confirmDelete() {
 .media-box {
   width: 100%;
   height: 250px;
-  border: 2px dashed #ffbe90;
-  background: #fff8f3;
+  border: 2px dashed #bfdbfe;
+  background: #eff6ff;
   border-radius: 16px;
   display: grid;
   place-items: center;
@@ -792,7 +792,7 @@ function confirmDelete() {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: #fff8f3;
+  background: #eff6ff;
   overflow: hidden;
 }
 
@@ -857,8 +857,8 @@ function confirmDelete() {
 }
 
 .checkbox-wrap input:checked+.checkbox-wrap__box {
-  background: #f59e0b;
-  border-color: #f59e0b;
+  background: #3b82f6;
+  border-color: #3b82f6;
   color: #fff;
 }
 
@@ -883,8 +883,8 @@ function confirmDelete() {
   border-radius: 18px;
   display: grid;
   place-items: center;
-  background: #fff7ed;
-  color: #f57c00;
+  background: #eff6ff;
+  color: #2563eb;
   font-size: 28px;
 }
 

@@ -90,7 +90,7 @@ const columns = computed(() => ([
         <i class="bi bi-building"></i>
         <span class="branch-chip-text">${data}</span>
      </span>`
-      : `<span class="text-muted small">—</span>`,
+      : `<span class="text-muted small">â€”</span>`,
   },
   {
     data: 'current_stock_label',
@@ -102,7 +102,7 @@ const columns = computed(() => ([
     name: 'alert_quantity',
     render: (data) => data !== null && data !== undefined
       ? `<span class="alert-chip"><i class="bi bi-bell"></i> ${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'unit_name',
@@ -111,14 +111,14 @@ const columns = computed(() => ([
     searchable: false,
     render: (data) => data
       ? `<span class="unit-chip">${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'cost_per_unit',
     name: 'cost_per_unit',
     render: (data) => data !== null && data !== undefined
       ? `<span class="fw-semibold text-dark small">${data}</span>`
-      : `<span class="text-muted small">—</span>`
+      : `<span class="text-muted small">â€”</span>`
   },
   {
     data: 'id',
@@ -289,7 +289,7 @@ watch(
   gap: 0.35rem;
   padding: 0.35rem 0.75rem;
   border-radius: 8px;
-  color: #ea580c;
+  color: #1d4ed8;
   font-size: 0.78rem;
   font-weight: 700;
 }
