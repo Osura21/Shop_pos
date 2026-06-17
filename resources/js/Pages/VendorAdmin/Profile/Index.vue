@@ -35,10 +35,10 @@
         <i class="bi bi-person-badge"></i>
         Profile Details
       </button>
-      <button type="button" :class="{ active: activeTab === 'membership' }" @click="activeTab = 'membership'">
+      <!-- <button type="button" :class="{ active: activeTab === 'membership' }" @click="activeTab = 'membership'">
         <i class="bi bi-stars"></i>
         My Membership
-      </button>
+      </button> -->
     </div>
 
     <section v-if="activeTab === 'profile'" class="profile-content">
