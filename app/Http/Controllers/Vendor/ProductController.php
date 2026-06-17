@@ -82,6 +82,12 @@ class ProductController extends Controller
             return $base;
         })
 
+        ->addColumn('current_stock_display', function ($row) {
+            $unit = trim((string) ($row->unit_type ?? ''));
+
+            return number_format((float) $row->current_stock, 2) . ($unit !== '' ? ' ' . $unit : '');
+        })
+
         ->addColumn('activation_badge', function ($row) {
 
     $isActive = (int) $row->is_active === 1;
