@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
-use App\Models\Ingredient;
-use App\Models\Purchase;
-use App\Models\PurchaseItem;
-use App\Models\StockMovement;
-use App\Models\Supplier;
+use App\Models\Product;
+use App\Models\ProductStockMovement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -19,14 +16,7 @@ class InventoryAnalyticsController extends Controller
 {
     private const OUTFLOW_TYPES = [
         'out',
-        'spoil',
-        'adjust_subtract',
-        'transfer_out',
-        'return_supplier',
-    ];
-
-    private const WASTE_TYPES = [
-        'adjust_subtract',
+        'wastage',
     ];
 
     public function index(Request $request)
@@ -61,107 +51,117 @@ class InventoryAnalyticsController extends Controller
                 'to' => $to->toDateString(),
             ],
             'stats' => [
-                'total_purchase_amount' => $this->totalPurchaseAmount($branchId, $from, $to),
-                'total_purchase_orders' => $this->totalPurchaseOrders($branchId, $from, $to),
+                'total_stock_in_qty' => $this->totalStockInQty($branchId, $from, $to),
+                'total_restocked_products' => $this->totalRestockedProducts($branchId, $from, $to),
                 'total_movements' => $this->totalMovements($branchId, $from, $to),
-                'low_stock_count' => $this->lowStockIngredients($branchId)->count(),
+                'total_wastage_qty' => $this->totalWastageQty($branchId, $from, $to),
+                'low_stock_count' => $this->lowStockProducts()->count(),
             ],
             'charts' => [
-                'fast_moving' => $this->fastMovingIngredientsChart($branchId, $from, $to, $dateLabels),
-                'top_suppliers' => $this->topSuppliersChart($branchId, $from, $to),
-                'most_wasted' => $this->mostWastedChart($branchId, $from, $to),
-                'purchase_status' => $this->purchaseStatusChart($branchId, $from, $to),
-                'stock_movement_summary' => $this->stockMovementSummaryChart($branchId, $from, $to),
-                'wastage_spoilage' => $this->wastageSpoilageChart($branchId, $from, $to),
+                'fast_moving' => $this->fastMovingProductsChart($branchId, $from, $to, $dateLabels),
+                'top_products' => $this->topRestockedProductsChart($branchId, $from, $to),
+                'most_wasted' => $this->mostWastedProductsChart($branchId, $from, $to),
             ],
             'lists' => [
-                'ingredient_purchases_summary' => $this->ingredientPurchasesSummary($branchId, $from, $to),
-                'low_stock_ingredients' => $this->lowStockIngredients($branchId),
+                'product_purchases_summary' => $this->productStockInSummary($branchId, $from, $to),
+                'low_stock_products' => $this->lowStockProducts(),
             ],
         ]);
     }
 
-    private function totalPurchaseAmount(?int $branchId, Carbon $from, Carbon $to): float
+    private function totalStockInQty(?int $branchId, Carbon $from, Carbon $to): float
     {
-        return (float) Purchase::query()
+        return (float) ProductStockMovement::query()
             ->where('tenant_id', $this->tenantId())
+            ->where('type', 'in')
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->whereBetween('created_at', [$from, $to])
-            ->sum('total');
+            ->sum('quantity');
     }
 
-    private function totalPurchaseOrders(?int $branchId, Carbon $from, Carbon $to): int
+    private function totalRestockedProducts(?int $branchId, Carbon $from, Carbon $to): int
     {
-        return (int) Purchase::query()
+        return (int) ProductStockMovement::query()
             ->where('tenant_id', $this->tenantId())
+            ->where('type', 'in')
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->whereBetween('created_at', [$from, $to])
-            ->count();
+            ->distinct('product_id')
+            ->count('product_id');
     }
 
     private function totalMovements(?int $branchId, Carbon $from, Carbon $to): int
     {
-        return (int) StockMovement::query()
+        return (int) ProductStockMovement::query()
             ->where('tenant_id', $this->tenantId())
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->whereBetween('created_at', [$from, $to])
             ->count();
     }
 
-    private function fastMovingIngredientsChart(?int $branchId, Carbon $from, Carbon $to, Collection $dateLabels): array
+    private function totalWastageQty(?int $branchId, Carbon $from, Carbon $to): float
     {
-        $topIngredientIds = StockMovement::query()
+        return (float) ProductStockMovement::query()
+            ->where('tenant_id', $this->tenantId())
+            ->where('type', 'wastage')
+            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->whereBetween('created_at', [$from, $to])
+            ->sum('quantity');
+    }
+
+    private function fastMovingProductsChart(?int $branchId, Carbon $from, Carbon $to, Collection $dateLabels): array
+    {
+        $topProductIds = ProductStockMovement::query()
             ->where('tenant_id', $this->tenantId())
             ->whereIn('type', self::OUTFLOW_TYPES)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->whereBetween('created_at', [$from, $to])
-            ->select('ingredient_id', DB::raw('SUM(quantity) as total_qty'))
-            ->groupBy('ingredient_id')
+            ->select('product_id', DB::raw('SUM(quantity) as total_qty'))
+            ->groupBy('product_id')
             ->orderByDesc('total_qty')
             ->limit(10)
-            ->pluck('ingredient_id');
+            ->pluck('product_id');
 
-        if ($topIngredientIds->isEmpty()) {
+        if ($topProductIds->isEmpty()) {
             return [
                 'labels' => $dateLabels->values()->all(),
                 'datasets' => [],
             ];
         }
 
-        $ingredients = Ingredient::query()
-            ->with('unit:id,symbol')
-            ->whereIn('id', $topIngredientIds)
+        $products = Product::query()
+            ->whereIn('id', $topProductIds)
             ->get()
             ->keyBy('id');
 
-        $grouped = StockMovement::query()
+        $grouped = ProductStockMovement::query()
             ->where('tenant_id', $this->tenantId())
             ->whereIn('type', self::OUTFLOW_TYPES)
-            ->whereIn('ingredient_id', $topIngredientIds)
+            ->whereIn('product_id', $topProductIds)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->whereBetween('created_at', [$from, $to])
             ->select(
-                'ingredient_id',
+                'product_id',
                 DB::raw('DATE(created_at) as movement_date'),
                 DB::raw('SUM(quantity) as total_qty')
             )
-            ->groupBy('ingredient_id', DB::raw('DATE(created_at)'))
+            ->groupBy('product_id', DB::raw('DATE(created_at)'))
             ->get()
-            ->groupBy('ingredient_id');
+            ->groupBy('product_id');
 
         $datasets = [];
 
-        foreach ($topIngredientIds as $ingredientId) {
-            $ingredient = $ingredients->get($ingredientId);
-            if (!$ingredient) {
+        foreach ($topProductIds as $productId) {
+            $product = $products->get($productId);
+            if (!$product) {
                 continue;
             }
 
-            $rows = collect($grouped->get($ingredientId, []))->keyBy('movement_date');
+            $rows = collect($grouped->get($productId, []))->keyBy('movement_date');
 
             $datasets[] = [
-                'label' => $ingredient->name,
-                'unit_symbol' => $ingredient->unit?->symbol,
+                'label' => $product->name,
+                'unit_symbol' => $product->unit_type ?: 'pcs',
                 'data' => $dateLabels->map(function ($date) use ($rows) {
                     return (float) optional($rows->get($date))->total_qty ?: 0;
                 })->values()->all(),
@@ -174,40 +174,40 @@ class InventoryAnalyticsController extends Controller
         ];
     }
 
-    private function topSuppliersChart(?int $branchId, Carbon $from, Carbon $to): array
+    private function topRestockedProductsChart(?int $branchId, Carbon $from, Carbon $to): array
     {
-        $rows = Purchase::query()
-            ->join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
-            ->where('purchases.tenant_id', $this->tenantId())
-            ->when($branchId, fn ($q) => $q->where('purchases.branch_id', $branchId))
-            ->whereBetween('purchases.created_at', [$from, $to])
-            ->select('suppliers.name', DB::raw('SUM(purchases.total) as total_amount'))
-            ->groupBy('suppliers.name')
-            ->orderByDesc('total_amount')
+        $rows = ProductStockMovement::query()
+            ->join('products', 'products.id', '=', 'product_stock_movements.product_id')
+            ->where('product_stock_movements.tenant_id', $this->tenantId())
+            ->where('product_stock_movements.type', 'in')
+            ->when($branchId, fn ($q) => $q->where('product_stock_movements.branch_id', $branchId))
+            ->whereBetween('product_stock_movements.created_at', [$from, $to])
+            ->select('products.name', DB::raw('SUM(product_stock_movements.quantity) as total_qty'))
+            ->groupBy('products.name')
+            ->orderByDesc('total_qty')
             ->limit(10)
             ->get();
 
         return [
             'labels' => $rows->pluck('name')->all(),
-            'data' => $rows->pluck('total_amount')->map(fn ($v) => (float) $v)->all(),
+            'data' => $rows->pluck('total_qty')->map(fn ($v) => (float) $v)->all(),
         ];
     }
 
-    private function ingredientPurchasesSummary(?int $branchId, Carbon $from, Carbon $to): array
+    private function productStockInSummary(?int $branchId, Carbon $from, Carbon $to): array
     {
-        return PurchaseItem::query()
-            ->join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
-            ->join('ingredients', 'ingredients.id', '=', 'purchase_items.ingredient_id')
-            ->leftJoin('units', 'units.id', '=', 'ingredients.unit_id')
-            ->where('purchases.tenant_id', $this->tenantId())
-            ->when($branchId, fn ($q) => $q->where('purchases.branch_id', $branchId))
-            ->whereBetween('purchases.created_at', [$from, $to])
+        return ProductStockMovement::query()
+            ->join('products', 'products.id', '=', 'product_stock_movements.product_id')
+            ->where('product_stock_movements.tenant_id', $this->tenantId())
+            ->where('product_stock_movements.type', 'in')
+            ->when($branchId, fn ($q) => $q->where('product_stock_movements.branch_id', $branchId))
+            ->whereBetween('product_stock_movements.created_at', [$from, $to])
             ->select(
-                'ingredients.name',
-                'units.symbol as unit_symbol',
-                DB::raw('SUM(purchase_items.quantity) as total_qty')
+                'products.name',
+                'products.unit_type as unit_symbol',
+                DB::raw('SUM(product_stock_movements.quantity) as total_qty')
             )
-            ->groupBy('ingredients.name', 'units.symbol')
+            ->groupBy('products.name', 'products.unit_type')
             ->orderByDesc('total_qty')
             ->limit(12)
             ->get()
@@ -220,16 +220,16 @@ class InventoryAnalyticsController extends Controller
             ->all();
     }
 
-    private function mostWastedChart(?int $branchId, Carbon $from, Carbon $to): array
+    private function mostWastedProductsChart(?int $branchId, Carbon $from, Carbon $to): array
     {
-        $rows = StockMovement::query()
-            ->join('ingredients', 'ingredients.id', '=', 'stock_movements.ingredient_id')
-            ->where('stock_movements.tenant_id', $this->tenantId())
-            ->where('stock_movements.type', 'spoil')
-            ->when($branchId, fn ($q) => $q->where('stock_movements.branch_id', $branchId))
-            ->whereBetween('stock_movements.created_at', [$from, $to])
-            ->select('ingredients.name', DB::raw('SUM(stock_movements.quantity) as total_qty'))
-            ->groupBy('ingredients.name')
+        $rows = ProductStockMovement::query()
+            ->join('products', 'products.id', '=', 'product_stock_movements.product_id')
+            ->where('product_stock_movements.tenant_id', $this->tenantId())
+            ->where('product_stock_movements.type', 'wastage')
+            ->when($branchId, fn ($q) => $q->where('product_stock_movements.branch_id', $branchId))
+            ->whereBetween('product_stock_movements.created_at', [$from, $to])
+            ->select('products.name', DB::raw('SUM(product_stock_movements.quantity) as total_qty'))
+            ->groupBy('products.name')
             ->orderByDesc('total_qty')
             ->limit(5)
             ->get();
@@ -259,103 +259,22 @@ class InventoryAnalyticsController extends Controller
             ]);
     }
 
-    private function scopeIngredientBranch($query, int $branchId): void
+    private function lowStockProducts(): Collection
     {
-        $query->where(function ($q) use ($branchId) {
-            $q->whereNull('branch_ids')
-                ->orWhereRaw('JSON_LENGTH(branch_ids) = 0')
-                ->orWhereJsonContains('branch_ids', $branchId)
-                ->orWhereJsonContains('branch_ids', (string) $branchId);
-        });
-    }
-
-    private function purchaseStatusChart(?int $branchId, Carbon $from, Carbon $to): array
-    {
-        $rows = Purchase::query()
+        return Product::query()
             ->where('tenant_id', $this->tenantId())
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->whereBetween('created_at', [$from, $to])
-            ->select('status', DB::raw('COUNT(*) as total_count'))
-            ->groupBy('status')
-            ->get()
-            ->keyBy('status');
-
-        $labels = ['pending', 'partially_received', 'received', 'cancelled'];
-
-        return [
-            'labels' => collect($labels)->map(fn ($status) => match ($status) {
-                'pending' => 'Pending',
-                'partially_received' => 'Partially Received',
-                'received' => 'Received',
-                'cancelled' => 'Cancelled',
-                default => ucfirst($status),
-            })->all(),
-            'data' => collect($labels)->map(fn ($status) => (int) optional($rows->get($status))->total_count ?: 0)->all(),
-        ];
-    }
-
-    private function stockMovementSummaryChart(?int $branchId, Carbon $from, Carbon $to): array
-    {
-        $rows = StockMovement::query()
-            ->where('tenant_id', $this->tenantId())
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->whereBetween('created_at', [$from, $to])
-            ->select('type', DB::raw('SUM(quantity) as total_qty'))
-            ->groupBy('type')
-            ->get()
-            ->keyBy('type');
-
-        $types = [
-            'spoil',
-            'transfer_out',
-            'adjust_add',
-            'adjust_subtract',
-            'in',
-            'transfer_in',
-            'waste',
-            'sample',
-            'out',
-            'return_supplier',
-        ];
-
-        return [
-            'labels' => collect($types)->map(fn ($type) => match ($type) {
-                'spoil' => 'Spoil',
-                'transfer_out' => 'Transfer Out',
-                'adjust_add' => 'Adjust Add',
-                'adjust_subtract' => 'Adjust Subtract',
-                'in' => 'In',
-                'transfer_in' => 'Transfer In',
-                'waste' => 'Waste',
-                'sample' => 'Sample',
-                'out' => 'Out',
-                'return_supplier' => 'Return Supplier',
-                default => ucfirst(str_replace('_', ' ', $type)),
-            })->all(),
-            'data' => collect($types)->map(fn ($type) => (float) optional($rows->get($type))->total_qty ?: 0)->all(),
-        ];
-    }
-
-    private function wastageSpoilageChart(?int $branchId, Carbon $from, Carbon $to): array
-    {
-        $spoil = (float) StockMovement::query()
-            ->where('tenant_id', $this->tenantId())
-            ->where('type', 'spoil')
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->whereBetween('created_at', [$from, $to])
-            ->sum('quantity');
-
-        $waste = (float) StockMovement::query()
-            ->where('tenant_id', $this->tenantId())
-            ->whereIn('type', self::WASTE_TYPES)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->whereBetween('created_at', [$from, $to])
-            ->sum('quantity');
-
-        return [
-            'labels' => ['Spoil', 'Waste'],
-            'data' => [$spoil, $waste],
-        ];
+            ->where('is_active', true)
+            ->where('reorder_level', '>', 0)
+            ->whereColumn('current_stock', '<=', 'reorder_level')
+            ->orderByRaw('(reorder_level - current_stock) DESC')
+            ->limit(12)
+            ->get(['name', 'unit_type', 'current_stock', 'reorder_level'])
+            ->map(fn ($item) => [
+                'name' => $item->name,
+                'current_stock' => round((float) $item->current_stock, 3),
+                'alert_quantity' => round((float) $item->reorder_level, 3),
+                'unit_symbol' => $item->unit_type ?: 'pcs',
+            ]);
     }
 
     private function dateLabels(Carbon $from, Carbon $to): Collection

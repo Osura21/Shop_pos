@@ -1,5 +1,5 @@
 <template>
-  <Head title="Inventory Analytics" />
+  <Head title="Stock Analytics" />
 
   <main class="analytics-dashboard">
     <!-- Dashboard-style Hero -->
@@ -10,17 +10,38 @@
       <div class="hero-main">
         <span class="hero-badge">
           <i class="bi bi-bar-chart-line"></i>
-          Inventory Overview
+          Shop Stock Overview
         </span>
 
-        <h1>Inventory Analytics</h1>
+        <h1>Stock Analytics</h1>
 
         <p class="hero-copy">
-          Real-time insights into purchases, supplier performance, stock movements,
-          low-stock risks, wastage and spoilage in one clean workspace.
+          Real-time shop stock insights across purchasing, movement, low-stock risk,
+          and loss control in one clean POS-ready workspace.
         </p>
+
+        <div class="hero-metrics">
+          <div v-for="metric in heroMetrics" :key="metric.label" class="hero-metric">
+            <span>{{ metric.label }}</span>
+            <strong>{{ metric.value }}</strong>
+          </div>
+        </div>
       </div>
 
+      <div class="hero-actions">
+        <Link :href="route('vendor.products.index')" class="soft-action">
+          <i class="bi bi-box-seam"></i>
+          <span>Products</span>
+        </Link>
+        <Link :href="route('vendor.dashboard')" class="soft-action">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </Link>
+        <Link :href="route('vendor.stock-management.index')" class="primary-action">
+          <i class="bi bi-boxes"></i>
+          <span>Stock Management</span>
+        </Link>
+      </div>
     </section>
 
     <!-- Filters -->
@@ -29,7 +50,7 @@
         <div>
           <span class="panel-kicker">Filters</span>
           <h2>Analytics Filters</h2>
-          <p>Filter inventory analytics by branch and date range.</p>
+          <p>Filter stock analytics by branch and date range.</p>
         </div>
       </div>
 
@@ -87,14 +108,98 @@
       </article>
     </section>
 
+    <section class="insight-strip">
+      <article
+        v-for="item in insightCards"
+        :key="item.label"
+        class="insight-item"
+        :class="`insight-item--${item.tone}`"
+      >
+        <div class="insight-icon">
+          <i :class="item.icon"></i>
+        </div>
+        <div class="insight-content">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </div>
+      </article>
+    </section>
+
+    <section class="content-grid content-grid--top">
+      <article class="panel quick-panel">
+        <div class="panel-head">
+          <div>
+            <span class="panel-kicker">Shortcuts</span>
+            <h2>Quick Actions</h2>
+            <p>Daily product stock operations in one place.</p>
+          </div>
+        </div>
+
+        <div class="quick-list">
+          <Link
+            v-for="action in quickActions"
+            :key="action.label"
+            :href="action.href"
+            class="quick-action"
+          >
+            <span class="quick-action__icon">
+              <i :class="action.icon"></i>
+            </span>
+            <span class="quick-action__text">
+              <strong>{{ action.label }}</strong>
+              <small>{{ action.caption }}</small>
+            </span>
+            <i class="bi bi-arrow-right-short"></i>
+          </Link>
+        </div>
+      </article>
+
+      <article class="panel alert-panel">
+        <div class="panel-head">
+          <div>
+            <span class="panel-kicker">Alerts</span>
+            <h2>Low Stock Watch</h2>
+            <p>Stock items closest to reorder level.</p>
+          </div>
+          <span class="panel-chip panel-chip--danger">
+            {{ list('low_stock_products').length }} Items
+          </span>
+        </div>
+
+        <div class="clean-list clean-list--compact">
+          <article
+            v-for="item in list('low_stock_products').slice(0, 5)"
+            :key="item.name"
+            class="list-row list-row--danger"
+          >
+            <div class="list-icon list-icon--danger">
+              <i class="bi bi-exclamation-lg"></i>
+            </div>
+
+            <div class="list-main">
+              <strong>{{ item.name }}</strong>
+              <small>Alert: {{ number(item.alert_quantity) }} {{ item.unit_symbol || '' }}</small>
+            </div>
+
+            <b>{{ number(item.current_stock) }}</b>
+          </article>
+
+          <div v-if="!list('low_stock_products').length" class="empty-list">
+            <i class="bi bi-check-circle"></i>
+            <span>No low stock items</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
     <!-- Fast Moving -->
     <section class="panel">
-      <div class="panel-head">
-        <div>
-          <span class="panel-kicker">Usage Trend</span>
-          <h2>Fast Moving Ingredients</h2>
-          <p>Ingredient usage trend over the selected period.</p>
-        </div>
+        <div class="panel-head">
+          <div>
+            <span class="panel-kicker">Usage Trend</span>
+            <h2>Fast Moving Stock Items</h2>
+            <p>Fast selling and fast moving product stock trend.</p>
+          </div>
 
         <span class="panel-chip">
           {{ fastMovingDatasetCount }} Datasets
@@ -105,7 +210,7 @@
         <canvas ref="fastMovingCanvas"></canvas>
         <div v-if="!hasDatasetData(charts.fast_moving?.datasets)" class="empty-chart">
           <i class="bi bi-check-circle"></i>
-          <span>No fast moving ingredient data</span>
+          <span>No fast moving stock data</span>
         </div>
       </div>
     </section>
@@ -115,18 +220,18 @@
       <article class="panel panel--wide">
         <div class="panel-head">
           <div>
-            <span class="panel-kicker">Suppliers</span>
-            <h2>Top Suppliers by Purchase Amount</h2>
-            <p>Suppliers ranked by total purchase amount.</p>
+            <span class="panel-kicker">Restocking</span>
+            <h2>Top Restocked Products</h2>
+            <p>Products with the highest stock-in quantity.</p>
           </div>
-          <span class="panel-chip panel-chip--blue">Purchases</span>
+          <span class="panel-chip panel-chip--blue">Restock</span>
         </div>
 
         <div class="chart-box">
           <canvas ref="topSuppliersCanvas"></canvas>
-          <div v-if="!hasArrayData(charts.top_suppliers?.data)" class="empty-chart">
+          <div v-if="!hasArrayData(charts.top_products?.data)" class="empty-chart">
             <i class="bi bi-check-circle"></i>
-            <span>No supplier data</span>
+            <span>No product restock data</span>
           </div>
         </div>
       </article>
@@ -134,15 +239,15 @@
       <article class="panel">
         <div class="panel-head">
           <div>
-            <span class="panel-kicker">Purchases</span>
-            <h2>Ingredient Purchases</h2>
-            <p>Purchased quantity by ingredient.</p>
+            <span class="panel-kicker">Stock In</span>
+            <h2>Product Stock In</h2>
+            <p>Stock-in quantity by product.</p>
           </div>
         </div>
 
         <div class="clean-list">
           <article
-            v-for="item in list('ingredient_purchases_summary')"
+            v-for="item in list('product_purchases_summary')"
             :key="item.name"
             class="list-row"
           >
@@ -152,15 +257,15 @@
 
             <div class="list-main">
               <strong>{{ item.name }}</strong>
-              <small>Purchased quantity</small>
+              <small>Stock in quantity</small>
             </div>
 
             <b>{{ number(item.quantity) }} {{ item.unit_symbol || '' }}</b>
           </article>
 
-          <div v-if="!list('ingredient_purchases_summary').length" class="empty-list">
+          <div v-if="!list('product_purchases_summary').length" class="empty-list">
             <i class="bi bi-check-circle"></i>
-            <span>No purchase summary available</span>
+            <span>No product stock-in summary available</span>
           </div>
         </div>
       </article>
@@ -171,8 +276,8 @@
         <div class="panel-head">
           <div>
             <span class="panel-kicker">Wastage</span>
-            <h2>Most Wasted Ingredients</h2>
-            <p>Ingredients with the highest wastage quantity.</p>
+            <h2>Highest Loss Items</h2>
+            <p>Products with the highest wastage quantity.</p>
           </div>
           <span class="panel-chip panel-chip--danger">Risk</span>
         </div>
@@ -190,14 +295,14 @@
         <div class="panel-head">
           <div>
             <span class="panel-kicker">Stock Alerts</span>
-            <h2>Low Stock Ingredients</h2>
+            <h2>Low Stock Items</h2>
             <p>Items currently below alert quantity.</p>
           </div>
         </div>
 
         <div class="clean-list">
           <article
-            v-for="item in list('low_stock_ingredients')"
+            v-for="item in list('low_stock_products')"
             :key="item.name"
             class="list-row list-row--danger"
           >
@@ -213,114 +318,19 @@
             <b>{{ number(item.current_stock) }} / {{ number(item.alert_quantity) }}</b>
           </article>
 
-          <div v-if="!list('low_stock_ingredients').length" class="empty-list">
+          <div v-if="!list('low_stock_products').length" class="empty-list">
             <i class="bi bi-check-circle"></i>
-            <span>No low stock ingredients</span>
+            <span>No low stock items</span>
           </div>
         </div>
       </article>
     </section>
 
-    <!-- Bottom charts -->
-    <section class="bottom-grid">
-      <article class="panel">
-        <div class="panel-head">
-          <div>
-            <span class="panel-kicker">Orders</span>
-            <h2>Purchase Order Status</h2>
-            <p>Purchase orders by status.</p>
-          </div>
-        </div>
-
-        <div class="mini-chart">
-          <canvas ref="purchaseStatusCanvas"></canvas>
-          <div v-if="!hasArrayData(charts.purchase_status?.data)" class="empty-chart">
-            No status data
-          </div>
-        </div>
-
-        <div class="chart-legend">
-          <div
-            v-for="item in purchaseStatusLegend"
-            :key="item.label"
-            class="legend-item"
-          >
-            <div class="legend-left">
-              <span class="legend-dot" :style="{ backgroundColor: item.color }"></span>
-              <span>{{ item.label }}</span>
-            </div>
-            <strong>{{ number(item.value) }}</strong>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-head">
-          <div>
-            <span class="panel-kicker">Movements</span>
-            <h2>Stock Movement Summary</h2>
-            <p>Stock movement type distribution.</p>
-          </div>
-        </div>
-
-        <div class="mini-chart">
-          <canvas ref="stockMovementCanvas"></canvas>
-          <div v-if="!hasArrayData(charts.stock_movement_summary?.data)" class="empty-chart">
-            No movement data
-          </div>
-        </div>
-
-        <div class="chart-legend">
-          <div
-            v-for="item in stockMovementLegend"
-            :key="item.label"
-            class="legend-item"
-          >
-            <div class="legend-left">
-              <span class="legend-dot" :style="{ backgroundColor: item.color }"></span>
-              <span>{{ item.label }}</span>
-            </div>
-            <strong>{{ number(item.value) }}</strong>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-head">
-          <div>
-            <span class="panel-kicker">Loss Control</span>
-            <h2>Wastage & Spoilage</h2>
-            <p>Wastage and spoilage split.</p>
-          </div>
-        </div>
-
-        <div class="mini-chart">
-          <canvas ref="wastageCanvas"></canvas>
-          <div v-if="!hasArrayData(charts.wastage_spoilage?.data)" class="empty-chart">
-            No wastage data
-          </div>
-        </div>
-
-        <div class="chart-legend">
-          <div
-            v-for="item in wastageLegend"
-            :key="item.label"
-            class="legend-item"
-          >
-            <div class="legend-left">
-              <span class="legend-dot" :style="{ backgroundColor: item.color }"></span>
-              <span>{{ item.label }}</span>
-            </div>
-            <strong>{{ number(item.value) }}</strong>
-          </div>
-        </div>
-      </article>
-    </section>
   </main>
 </template>
 
 <script setup>
-import { Head, router, usePage } from '@inertiajs/vue3'
+import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import VendorAdminLayout from '@/Layouts/VendorAdminLayout.vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { error as alertError, success as alertSuccess } from "@/Utils/modernAlert";
@@ -351,9 +361,6 @@ const form = ref({
 const fastMovingCanvas = ref(null)
 const topSuppliersCanvas = ref(null)
 const mostWastedCanvas = ref(null)
-const purchaseStatusCanvas = ref(null)
-const stockMovementCanvas = ref(null)
-const wastageCanvas = ref(null)
 
 const chartInstances = []
 
@@ -368,82 +375,133 @@ const branchOptions = computed(() => [
 
 const fastMovingDatasetCount = computed(() => safeArray(props.charts?.fast_moving?.datasets).length)
 
-const statsArray = computed(() => [
+const heroMetrics = computed(() => [
   {
-    label: 'Purchase Value',
-    formattedValue: money(statValue(['purchase_total', 'total_purchase_amount', 'total_purchases'])),
-    help: 'Total purchased amount',
-    icon: 'bi bi-cash-stack',
+    label: 'Stock In Qty',
+    value: number(statValue(['total_stock_in_qty'])),
+  },
+  {
+    label: 'Low Stock Items',
+    value: number(statValue(['low_stock_count'], list('low_stock_products').length)),
+  },
+  {
+    label: 'Stock Movements',
+    value: number(statValue(['total_movements', 'stock_movements', 'stock_movement_count', 'total_stock_movements'])),
+  },
+])
+
+const quickActions = computed(() => ([
+  {
+    label: 'Products',
+    caption: 'Manage shop products',
+    href: route('vendor.products.index'),
+    icon: 'bi bi-box-seam',
+  },
+  {
+    label: 'Dashboard',
+    caption: 'Return to main overview',
+    href: route('vendor.dashboard'),
+    icon: 'bi bi-speedometer2',
+  },
+  {
+    label: 'POS',
+    caption: 'Open shop billing screen',
+    href: route('vendor.pos.open'),
+    icon: 'bi bi-shop',
+  },
+  {
+    label: 'Stock Mgmt',
+    caption: 'Adjust product stock',
+    href: route('vendor.stock-management.index'),
+    icon: 'bi bi-boxes',
+  },
+]))
+
+const insightCards = computed(() => [
+  {
+    label: 'Waste Items',
+    value: number(safeArray(props.charts?.most_wasted?.labels).length),
+    icon: 'bi bi-trash3',
+    tone: 'danger',
+  },
+  {
+    label: 'Restocked Products',
+    value: number(safeArray(props.charts?.top_products?.labels).length),
+    icon: 'bi bi-box-arrow-in-down',
+    tone: 'blue',
+  },
+  {
+    label: 'Fast Moving Sets',
+    value: number(fastMovingDatasetCount.value),
+    icon: 'bi bi-lightning-charge',
     tone: 'amber',
   },
   {
-    label: 'Purchase Orders',
-    formattedValue: number(statValue(['purchase_orders', 'purchase_order_count', 'total_purchase_orders'])),
-    help: 'Orders in selected period',
+    label: 'Stocked Products',
+    value: number(list('product_purchases_summary').length),
+    icon: 'bi bi-clipboard-data',
+    tone: 'green',
+  },
+])
+
+const statsArray = computed(() => [
+  {
+    label: 'Stock In Qty',
+    formattedValue: number(statValue(['total_stock_in_qty'])),
+    help: 'Total product stock added',
+    icon: 'bi bi-box-arrow-in-down',
+    tone: 'amber',
+  },
+  {
+    label: 'Restocked Products',
+    formattedValue: number(statValue(['total_restocked_products'])),
+    help: 'Products restocked in selected period',
     icon: 'bi bi-receipt',
     tone: 'blue',
   },
   {
     label: 'Stock Movements',
-    formattedValue: number(statValue(['stock_movements', 'stock_movement_count', 'total_stock_movements'])),
-    help: 'Inventory movement records',
+    formattedValue: number(statValue(['total_movements', 'stock_movements', 'stock_movement_count', 'total_stock_movements'])),
+    help: 'Stock movement records',
     icon: 'bi bi-arrow-left-right',
     tone: 'green',
   },
   {
-    label: 'Wastage Value',
-    formattedValue: money(statValue(['wastage_total', 'wastage_value', 'total_wastage'])),
-    help: 'Estimated wastage value',
+    label: 'Wastage Qty',
+    formattedValue: number(statValue(['total_wastage_qty', 'wastage_total', 'wastage_value', 'total_wastage'])),
+    help: 'Total product wastage quantity',
     icon: 'bi bi-trash3',
     tone: 'danger',
   },
   {
     label: 'Low Stock',
-    formattedValue: number(statValue(['low_stock_count'], list('low_stock_ingredients').length)),
+    formattedValue: number(statValue(['low_stock_count'], list('low_stock_products').length)),
     help: 'Items below alert quantity',
     icon: 'bi bi-exclamation-triangle',
     tone: 'purple',
   },
   {
-    label: 'Ingredients Purchased',
-    formattedValue: number(list('ingredient_purchases_summary').length),
-    help: 'Ingredients with purchase records',
+    label: 'Stocked Products',
+    formattedValue: number(list('product_purchases_summary').length),
+    help: 'Products with stock-in records',
     icon: 'bi bi-boxes',
     tone: 'green',
   },
   {
     label: 'Fast Moving Sets',
     formattedValue: number(fastMovingDatasetCount.value),
-    help: 'Tracked ingredient trends',
+    help: 'Tracked stock usage trends',
     icon: 'bi bi-lightning-charge',
     tone: 'amber',
   },
   {
     label: 'Waste Items',
     formattedValue: number(safeArray(props.charts?.most_wasted?.labels).length),
-    help: 'Ingredients in wastage chart',
+    help: 'Stock items in loss chart',
     icon: 'bi bi-clipboard-x',
     tone: 'danger',
   },
 ])
-
-const purchaseStatusLegend = computed(() => legendRows(
-  props.charts.purchase_status?.labels,
-  props.charts.purchase_status?.data,
-  ['#22c55e', '#f57c00', '#2563eb', '#e11d48', '#7c3aed'],
-))
-
-const stockMovementLegend = computed(() => legendRows(
-  props.charts.stock_movement_summary?.labels,
-  props.charts.stock_movement_summary?.data,
-  ['#f57c00', '#14b8a6', '#2563eb', '#7c3aed', '#e11d48', '#475569'],
-))
-
-const wastageLegend = computed(() => legendRows(
-  props.charts.wastage_spoilage?.labels,
-  props.charts.wastage_spoilage?.data,
-  ['#e11d48', '#f57c00', '#facc15'],
-))
 
 function safeArray(value) {
   return Array.isArray(value) ? value : []
@@ -565,24 +623,6 @@ function chartOptions(formatter = number) {
   }
 }
 
-function doughnutOptions() {
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '70%',
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: '#111827',
-        titleColor: '#ffffff',
-        bodyColor: '#ffffff',
-        padding: 12,
-        cornerRadius: 12,
-      },
-    },
-  }
-}
-
 function makeLineDatasets(datasets) {
   const colors = ['#f57c00', '#2563eb', '#14b8a6', '#7c3aed', '#e11d48', '#059669']
 
@@ -637,17 +677,17 @@ async function renderCharts() {
   addChart(topSuppliersCanvas.value, {
     type: 'bar',
     data: {
-      labels: safeArray(props.charts.top_suppliers?.labels),
+      labels: safeArray(props.charts.top_products?.labels),
       datasets: [{
-        label: 'Purchase Amount',
-        data: safeArray(props.charts.top_suppliers?.data),
+        label: 'Stock In Quantity',
+        data: safeArray(props.charts.top_products?.data),
         backgroundColor: '#2563eb',
         borderRadius: 12,
         borderSkipped: false,
         maxBarThickness: 38,
       }],
     },
-    options: chartOptions(money),
+    options: chartOptions(number),
   })
 
   addChart(mostWastedCanvas.value, {
@@ -666,50 +706,6 @@ async function renderCharts() {
     options: chartOptions(number),
   })
 
-  addChart(purchaseStatusCanvas.value, {
-    type: 'doughnut',
-    data: {
-      labels: safeArray(props.charts.purchase_status?.labels),
-      datasets: [{
-        data: safeArray(props.charts.purchase_status?.data),
-        backgroundColor: ['#22c55e', '#f57c00', '#2563eb', '#e11d48', '#7c3aed'],
-        borderColor: '#ffffff',
-        borderWidth: 5,
-        hoverOffset: 8,
-      }],
-    },
-    options: doughnutOptions(),
-  })
-
-  addChart(stockMovementCanvas.value, {
-    type: 'doughnut',
-    data: {
-      labels: safeArray(props.charts.stock_movement_summary?.labels),
-      datasets: [{
-        data: safeArray(props.charts.stock_movement_summary?.data),
-        backgroundColor: ['#f57c00', '#14b8a6', '#2563eb', '#7c3aed', '#e11d48', '#475569'],
-        borderColor: '#ffffff',
-        borderWidth: 5,
-        hoverOffset: 8,
-      }],
-    },
-    options: doughnutOptions(),
-  })
-
-  addChart(wastageCanvas.value, {
-    type: 'doughnut',
-    data: {
-      labels: safeArray(props.charts.wastage_spoilage?.labels),
-      datasets: [{
-        data: safeArray(props.charts.wastage_spoilage?.data),
-        backgroundColor: ['#e11d48', '#f57c00', '#facc15'],
-        borderColor: '#ffffff',
-        borderWidth: 5,
-        hoverOffset: 8,
-      }],
-    },
-    options: doughnutOptions(),
-  })
 }
 
 onMounted(renderCharts)
@@ -839,6 +835,41 @@ watch(
   font-weight: 650;
 }
 
+.hero-metrics {
+  width: fit-content;
+  margin-top: 20px;
+  border-radius: 18px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.hero-metric {
+  display: grid;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.hero-metric span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hero-metric strong {
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 950;
+}
+
 .hero-actions {
   display: flex;
   align-items: center;
@@ -910,6 +941,129 @@ watch(
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
+}
+
+.insight-strip {
+  border-radius: 22px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.075);
+}
+
+.insight-item {
+  min-height: 94px;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+}
+
+.insight-icon,
+.quick-action__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  font-size: 18px;
+}
+
+.insight-content {
+  display: grid;
+  gap: 4px;
+}
+
+.insight-content span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.insight-content strong {
+  color: #0f172a;
+  font-size: 23px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.insight-item--amber .insight-icon { color: #f57c00; background: #fff7ed; border: 1px solid #fed7aa; }
+.insight-item--blue .insight-icon { color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; }
+.insight-item--green .insight-icon { color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; }
+.insight-item--danger .insight-icon { color: #e11d48; background: #fff1f2; border: 1px solid #fecdd3; }
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 14px;
+}
+
+.content-grid--top {
+  align-items: start;
+}
+
+.quick-list {
+  display: grid;
+  gap: 10px;
+}
+
+.quick-action {
+  min-height: 72px;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  color: #0f172a;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.quick-action:hover {
+  transform: translateY(-1px);
+  border-color: #fed7aa;
+  box-shadow: 0 14px 28px rgba(245, 124, 0, 0.1);
+}
+
+.quick-action__icon {
+  color: #f57c00;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+.quick-action__text {
+  display: grid;
+  gap: 4px;
+}
+
+.quick-action__text strong {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.quick-action__text small {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.alert-panel .panel-head {
+  margin-bottom: 12px;
+}
+
+.clean-list--compact {
+  max-height: 344px;
 }
 
 .stat-card {
@@ -1251,12 +1405,14 @@ watch(
 
 @media (max-width: 1360px) {
   .stats-grid,
-  .bottom-grid {
+  .bottom-grid,
+  .insight-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .charts-layout,
-  .filter-grid {
+  .filter-grid,
+  .content-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1282,6 +1438,10 @@ watch(
     padding: 22px;
   }
 
+  .hero-metrics {
+    width: 100%;
+  }
+
   .hero-actions {
     width: 100%;
     justify-content: stretch;
@@ -1293,7 +1453,8 @@ watch(
   }
 
   .stats-grid,
-  .bottom-grid {
+  .bottom-grid,
+  .insight-strip {
     grid-template-columns: 1fr;
   }
 

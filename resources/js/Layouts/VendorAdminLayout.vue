@@ -333,6 +333,14 @@
                             'admin-sidebar__submenu--open':
                                 !collapsed && openMenu === 'inventory',
                         }">
+                            <Link v-if="can('inventory.view')" :href="route('vendor.inventory-analytics.index')"
+                                class="admin-sidebar__subitem" :class="{
+                                    'admin-sidebar__subitem--active':
+                                        isInventoryAnalytics,
+                                }">
+                                Analytics
+                            </Link>
+
                             <Link v-if="can('products.view')" :href="route('vendor.stock-management.index')"
                                 class="admin-sidebar__subitem" :class="{
                                     'admin-sidebar__subitem--active':
@@ -907,6 +915,11 @@
 
                         <div class="admin-sidebar__submenu"
                             :class="{ 'admin-sidebar__submenu--open': openMenu === 'inventory' }">
+                            <Link v-if="can('inventory.view')" :href="route('vendor.inventory-analytics.index')"
+                                class="admin-sidebar__subitem"
+                                :class="{ 'admin-sidebar__subitem--active': isInventoryAnalytics }">
+                                Analytics
+                            </Link>
 
                             <Link v-if="can('products.view')" :href="route('vendor.stock-management.index')"
                                 class="admin-sidebar__subitem"
@@ -1164,7 +1177,7 @@
                         </div>
 
                         <div class="admin-topbar__right">
-                            <Link v-if="can('pos-kitchen.view')" :href="route('vendor.pos.kitchen.index')"
+                            <!-- <Link v-if="can('pos-kitchen.view')" :href="route('vendor.pos.kitchen.index')"
                                 class="admin-topbar__icon-btn admin-topbar__icon-btn--pos"
                                 aria-label="Kitchen Viewer"
                                 @mouseenter="showTopbarTooltip('kitchen')"
@@ -1176,7 +1189,7 @@
                                     :class="{ 'admin-topbar__hover-label--visible': topbarTooltip === 'kitchen' }">
                                     Kitchen Viewer
                                 </span>
-                            </Link>
+                            </Link> -->
                             <Link v-if="can('pos.view')" :href="route('vendor.pos.open')"
                                 class="admin-topbar__icon-btn admin-topbar__icon-btn--pos" aria-label="POS Viewer"
                                 @mouseenter="showTopbarTooltip('pos')" @mouseleave="hideTopbarTooltip"
@@ -1870,6 +1883,7 @@ const flyoutMenus = {
 
     inventory: {
         items: [
+            { label: "Analytics", view: "inventory.view", href: route('vendor.inventory-analytics.index'), active: () => isInventoryAnalytics.value },
             { label: "Stock Management", view: "products.view", href: route('vendor.stock-management.index'), active: () => isStockManagement.value },
             { label: "Units", view: "units.view", href: route('vendor.units.index'), active: () => isUnits.value },
             { label: "Suppliers", view: "suppliers.view", href: route('vendor.suppliers.index'), active: () => isSuppliers.value },
