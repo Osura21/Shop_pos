@@ -475,11 +475,11 @@
         class="summary-action summary-action--cash"
         :disabled="!hasOrderItems || actionLoading.openPayment"
         :class="{ 'summary-action--disabled': !hasOrderItems || actionLoading.openPayment }"
-        title="Cash payment (F11)"
+        title="Cash payment (F12)"
         @click="openFinalizePayment('cash')"
     >
         <i class="bi bi-cash-stack"></i>
-        <span>{{ actionLoading.openPayment ? 'Opening...' : 'Cash F11' }}</span>
+        <span>{{ actionLoading.openPayment ? 'Opening...' : 'Cash F12' }}</span>
     </button>
 
     <button
@@ -1498,10 +1498,10 @@ promotionDiscountTotal() {
     const target = event.target
     const isTyping = target && ['input', 'textarea', 'select'].includes(String(target.tagName || '').toLowerCase())
 
-    if (isTyping && !['f9', 'f10', 'f11'].includes(key)) return
+    if (isTyping && !['f9', 'f10', 'f12'].includes(key)) return
 
     const shortcuts = {
-        f11: 'cash',
+        f12: 'cash',
         f10: 'card',
         f9: 'credit',
     }
