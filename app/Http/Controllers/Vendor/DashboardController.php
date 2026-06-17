@@ -50,14 +50,16 @@ class DashboardController extends Controller
             ->whereBetween('issued_at', [$previousMonthStart, $previousMonthEnd])
             ->sum('total');
 
-        $ordersThisMonth = (int) PosKitchenTicket::query()
+        $receiptsThisMonth = (int) PosInvoice::query()
             ->where('tenant_id', $tenantId)
-            ->whereBetween('created_at', [$monthStart, $today])
+            ->where('status', 'issued')
+            ->whereBetween('issued_at', [$monthStart, $today])
             ->count();
 
-        $pendingOrders = (int) PosKitchenTicket::query()
+        $receiptsToday = (int) PosInvoice::query()
             ->where('tenant_id', $tenantId)
-            ->where('status', 'pending')
+            ->where('status', 'issued')
+            ->whereDate('issued_at', $today->toDateString())
             ->count();
 
         $productsCount = (int) Product::query()
@@ -90,17 +92,17 @@ class DashboardController extends Controller
                     'tone' => 'amber',
                 ],
                 [
-                    'title' => 'Orders',
-                    'value' => $ordersThisMonth,
-                    'permission' => 'sales-orders.view',
-                    'subtitle' => $pendingOrders . ' pending',
-                    'icon' => 'ShoppingCart',
+                    'title' => 'Receipts',
+                    'value' => $receiptsThisMonth,
+                    'permission' => 'sales-invoices.view',
+                    'subtitle' => $receiptsToday . ' today',
+                    'icon' => 'ClipboardList',
                     'tone' => 'blue',
                 ],
                 [
                     'title' => 'Revenue',
                     'value' => $monthlyRevenue,
-                    'permission' => 'purchases.view',
+                    'permission' => 'sales-invoices.view',
                     'subtitle' => $this->percentageChange($monthlyRevenue, $previousMonthlyRevenue) . ' vs last month',
                     'icon' => 'WalletCards',
                     'tone' => 'green',
@@ -118,12 +120,15 @@ class DashboardController extends Controller
             'summary' => [
                 'branches' => Branch::query()->where('tenant_id', $tenantId)->count(),
                 'customers' => Customer::query()->where('tenant_id', $tenantId)->count(),
+                'sales_this_month' => $monthlyRevenue,
+                'receipts_this_month' => $receiptsThisMonth,
+                'active_staff' => $activeStaffCount,
                 'low_stock' => Ingredient::query()
                     ->where('tenant_id', $tenantId)
                     ->where('alert_quantity', '>', 0)
                     ->whereColumn('current_stock', '<=', 'alert_quantity')
                     ->count(),
-                'average_order_value' => $ordersThisMonth > 0 ? round($monthlyRevenue / $ordersThisMonth, 2) : 0,
+                'average_order_value' => $receiptsThisMonth > 0 ? round($monthlyRevenue / $receiptsThisMonth, 2) : 0,
             ],
             'charts' => [
                 'revenue' => $this->revenueSeries($tenantId),
@@ -158,10 +163,11 @@ class DashboardController extends Controller
         $from = now()->copy()->subDays(6)->startOfDay();
         $to = now()->copy()->endOfDay();
 
-        $rows = PosKitchenTicket::query()
+        $rows = PosInvoice::query()
             ->where('tenant_id', $tenantId)
-            ->whereBetween('created_at', [$from, $to])
-            ->selectRaw('DATE(created_at) as day, COUNT(*) as total')
+            ->where('status', 'issued')
+            ->whereBetween('issued_at', [$from, $to])
+            ->selectRaw('DATE(issued_at) as day, COUNT(*) as total')
             ->groupBy('day')
             ->pluck('total', 'day');
 
@@ -230,18 +236,19 @@ class DashboardController extends Controller
 
     private function recentOrders(int $tenantId)
     {
-        return PosKitchenTicket::query()
+        return PosInvoice::query()
             ->where('tenant_id', $tenantId)
-            ->latest('created_at')
+            ->where('status', 'issued')
+            ->latest('issued_at')
             ->limit(6)
-            ->get(['id', 'customer_name', 'channel', 'status', 'grand_total', 'created_at'])
-            ->map(fn ($order) => [
-                'id' => $order->id,
-                'customer' => $order->customer_name ?: 'Walk-In Customer',
-                'channel' => $this->prettyLabel($order->channel ?: 'takeaway'),
-                'status' => $this->prettyLabel($order->status),
-                'amount' => (float) $order->grand_total,
-                'date' => $order->created_at?->diffForHumans() ?: '-',
+            ->get(['id', 'invoice_no', 'buyer_name', 'status', 'total', 'issued_at'])
+            ->map(fn ($invoice) => [
+                'id' => $invoice->id,
+                'customer' => $invoice->buyer_name ?: 'Walk-In Customer',
+                'channel' => $invoice->invoice_no ?: 'Receipt',
+                'status' => $this->prettyLabel($invoice->status ?: 'issued'),
+                'amount' => (float) $invoice->total,
+                'date' => $invoice->issued_at?->diffForHumans() ?: '-',
             ]);
     }
 

@@ -233,13 +233,13 @@
                             'admin-sidebar__submenu--open':
                                 !collapsed && openMenu === 'menus',
                         }">
-                            <Link v-if="can('online-menus.view')" :href="route('vendor.online-menus.index')"
+                            <!-- <Link v-if="can('online-menus.view')" :href="route('vendor.online-menus.index')"
                                 class="admin-sidebar__subitem" :class="{
                                     'admin-sidebar__subitem--active':
                                         isOnlineMenus,
                                 }">
                                 Online menus
-                            </Link>
+                            </Link> -->
 
                             <Link v-if="can('categories.view')" :href="route('vendor.categories.index')"
                                 class="admin-sidebar__subitem" :class="{

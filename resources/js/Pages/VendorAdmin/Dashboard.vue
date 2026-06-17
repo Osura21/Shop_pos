@@ -5,10 +5,8 @@ import { Head, Link } from "@inertiajs/vue3";
 import VendorAdminLayout from "@/Layouts/VendorAdminLayout.vue";
 import { usePermission } from "@/composables/usePermission";
 import {
-    AlertTriangle,
     ArrowRight,
     BarChart3,
-    Boxes,
     CheckCircle2,
     ClipboardList,
     Package,
@@ -93,10 +91,11 @@ const iconMap = {
 };
 
 const quickActions = [
-    { label: "Add Product", caption: "Create a new menu item", href: route('vendor.products.create'), icon: Plus },
     { label: "Open POS", caption: "Start counter billing", href: route('vendor.pos.open'), icon: ShoppingCart },
-    { label: "View Orders", caption: "Manage kitchen tickets", href: route('vendor.sales.orders.index'), icon: ClipboardList },
-    { label: "Stock Movements", caption: "Track inventory flow", href: route('vendor.stock-movements.index'), icon: Boxes },
+    { label: "New Product", caption: "Add an item for billing", href: route('vendor.products.create'), icon: Plus },
+    { label: "Receipts", caption: "Review completed sales", href: route('vendor.sales.invoices.index'), icon: WalletCards },
+    { label: "Customers", caption: "Open customer records", href: route('vendor.customers.index'), icon: Users },
+    { label: "Orders", caption: "Check current order flow", href: route('vendor.sales.orders.index'), icon: ClipboardList },
 ];
 
 const insights = computed(() => [
@@ -115,23 +114,23 @@ const insights = computed(() => [
         tone: "purple",
     },
     {
-        label: "Low Stock",
-        value: formatNumber(summary.value?.low_stock || 0),
-        permission: 'stock-movements.view',
-        icon: AlertTriangle,
-        tone: "danger",
+        label: "Active Staff",
+        value: formatNumber(summary.value?.active_staff || 0),
+        permission: 'users.view',
+        icon: ClipboardList,
+        tone: "blue",
     },
     {
-        label: "Avg Order",
+        label: "Avg Bill",
         value: money(summary.value?.average_order_value || 0),
-        permission: 'sales-orders.view',
+        permission: 'sales-invoices.view',
         icon: TrendingUp,
         tone: "green",
     },
 ]);
 
-const heroRevenue = computed(() => money(summary.value?.revenue || summary.value?.total_revenue || 0));
-const heroOrders = computed(() => formatNumber(summary.value?.orders || summary.value?.total_orders || 0));
+const heroRevenue = computed(() => money(summary.value?.sales_this_month || 0));
+const heroOrders = computed(() => formatNumber(summary.value?.receipts_this_month || 0));
 
 function money(value) {
     return `${currencyCode.value} ${Number(value || 0).toLocaleString(undefined, {
@@ -397,25 +396,35 @@ watch(charts, renderCharts, { deep: true });
             <div class="hero-main">
                 <span class="hero-badge">
                     <Sparkles :size="15" />
-                    Store Overview
+                    Shop POS Overview
                 </span>
 
                 <h1>Dashboard</h1>
                 <p class="hero-copy">
-                    Live sales, kitchen activity, stock signals, and customer movement in one clean workspace.
+                    Live billing, receipts, customers, and product sales in one clean counter-ready workspace.
                 </p>
 
-             
+                <div class="hero-metrics">
+                    <div class="hero-metric">
+                        <span>Sales This Month</span>
+                        <strong>{{ heroRevenue }}</strong>
+                    </div>
+                    <div class="hero-divider"></div>
+                    <div class="hero-metric">
+                        <span>Receipts This Month</span>
+                        <strong>{{ heroOrders }}</strong>
+                    </div>
+                </div>
             </div>
 
             <div class="hero-actions">
-                <Link v-if="can('inventory-analytics.view')" :href="route('vendor.inventory-analytics.index')" class="soft-action">
+                <Link v-if="can('sales-invoices.view')" :href="route('vendor.sales.invoices.index')" class="soft-action">
                     <BarChart3 :size="17" />
-                    <span>View Analytics</span>
+                    <span>View Receipts</span>
                 </Link>
-                <Link v-if="can('products.create')" :href="route('vendor.products.create')" class="primary-action">
-                    <Plus :size="17" />
-                    <span>Add Product</span>
+                <Link v-if="can('pos.view')" :href="route('vendor.pos.open')" class="primary-action">
+                    <ShoppingCart :size="17" />
+                    <span>Open POS</span>
                 </Link>
             </div>
         </section>
@@ -457,8 +466,8 @@ watch(charts, renderCharts, { deep: true });
         </section>
         <section v-else-if="can('branches.view') ||
             can('customers.view') ||
-            can('stock-movements.view') ||
-            can('sales-orders.view')
+            can('users.view') ||
+            can('sales-invoices.view')
         " class="insight-strip">
 
             <article v-for="item in insights" :key="item.label" class="insight-item" :class="[
@@ -485,7 +494,7 @@ watch(charts, renderCharts, { deep: true });
                     <div>
                         <span class="panel-kicker">Performance</span>
                         <h2>Revenue Trend</h2>
-                        <p>Last 7 days sales movement</p>
+                        <p>Last 7 days billing movement</p>
                     </div>
                     <span class="panel-chip">Revenue</span>
                 </div>
@@ -503,17 +512,17 @@ watch(charts, renderCharts, { deep: true });
                 <div class="panel-head">
                     <div>
                         <span class="panel-kicker">Activity</span>
-                        <h2>Daily Orders</h2>
-                        <p>Last 7 days order count</p>
+                        <h2>Daily Receipts</h2>
+                        <p>Last 7 days completed bills</p>
                     </div>
-                    <span class="panel-chip panel-chip--blue">Orders</span>
+                    <span class="panel-chip panel-chip--blue">Receipts</span>
                 </div>
 
                 <div class="chart-box">
                     <canvas ref="ordersCanvas"></canvas>
                     <div v-if="!hasChartData(charts?.orders)" class="empty-chart">
                         <CheckCircle2 :size="24" />
-                        <span>No orders yet</span>
+                        <span>No receipts yet</span>
                     </div>
                 </div>
             </article>
@@ -530,18 +539,18 @@ watch(charts, renderCharts, { deep: true });
             <article v-if="can('dashboard.recent-orders.view')" class="panel orders-panel">
                 <div class="panel-head">
                     <div>
-                        <span class="panel-kicker">Kitchen Flow</span>
-                        <h2>Recent Orders</h2>
-                        <p>Latest kitchen tickets and sales</p>
+                        <span class="panel-kicker">Counter Activity</span>
+                        <h2>Recent Sales</h2>
+                        <p>Latest issued receipts and customer billing</p>
                     </div>
-                    <Link :href="route('vendor.sales.orders.index')" class="text-link">
+                    <Link :href="route('vendor.sales.invoices.index')" class="text-link">
                         View all <ArrowRight :size="15" />
                     </Link>
                 </div>
 
                 <div class="orders-table">
                     <div class="orders-table__head">
-                        <span>Order</span>
+                        <span>Receipt</span>
                         <span>Customer</span>
                         <span>Status</span>
                         <span>Amount</span>
@@ -564,7 +573,7 @@ watch(charts, renderCharts, { deep: true });
 
                     <div v-if="!recentOrders.length" class="empty-list empty-list--table">
                         <CheckCircle2 :size="22" />
-                        <span>No orders found</span>
+                        <span>No sales found</span>
                     </div>
                 </div>
             </article>
@@ -575,7 +584,7 @@ watch(charts, renderCharts, { deep: true });
                         <div>
                             <span class="panel-kicker">Shortcuts</span>
                             <h2>Quick Actions</h2>
-                            <p>Daily operations in one tap</p>
+                            <p>Fast access for counter work</p>
                         </div>
                     </div>
 
@@ -603,7 +612,7 @@ watch(charts, renderCharts, { deep: true });
                         <div>
                             <span class="panel-kicker">Sales Ranking</span>
                             <h2>Top Products</h2>
-                            <p>Best sellers from the last 30 days</p>
+                            <p>Best selling shop items from the last 30 days</p>
                         </div>
                     </div>
 
@@ -626,71 +635,6 @@ watch(charts, renderCharts, { deep: true });
             </aside>
         </section>
 
-      <section v-if="loading" class="bottom-grid">
-    <article class="panel skeleton-panel skeleton-panel--short"></article>
-    <article class="panel skeleton-panel skeleton-panel--short"></article>
-</section>
-      <section v-else class="bottom-grid">
-    <article v-if="can('dashboard.order-status.view')" class="panel">
-        <div class="panel-head">
-            <div>
-                <h2>Order Status</h2>
-                <p>Last 30 days</p>
-            </div>
-        </div>
-
-        <div class="mini-chart">
-            <canvas ref="statusesCanvas"></canvas>
-            <div v-if="!hasChartData(charts?.statuses)" class="empty-chart">
-                No status data
-            </div>
-        </div>
-
-        <div v-if="statusLegend.length" class="chart-legend">
-            <div v-for="item in statusLegend" :key="item.label" class="legend-item">
-                <div class="legend-left">
-                    <span class="legend-dot" :style="{ backgroundColor: item.color }"></span>
-                    <span class="legend-label">{{ item.label }}</span>
-                </div>
-
-                <div class="legend-right">
-                    <strong>{{ formatNumber(item.value) }}</strong>
-                    <small>{{ item.percentage }}%</small>
-                </div>
-            </div>
-        </div>
-    </article>
-
-    <article v-if="can('dashboard.order-types.view')" class="panel">
-        <div class="panel-head">
-            <div>
-                <h2>Order Types</h2>
-                <p>Last 30 days</p>
-            </div>
-        </div>
-
-        <div class="mini-chart">
-            <canvas ref="channelsCanvas"></canvas>
-            <div v-if="!hasChartData(charts?.channels)" class="empty-chart">
-                No type data
-            </div>
-        </div>
-
-        <div v-if="channelLegend.length" class="chart-legend">
-            <div v-for="item in channelLegend" :key="item.label" class="legend-item">
-                <div class="legend-left">
-                    <span class="legend-dot" :style="{ backgroundColor: item.color }"></span>
-                    <span class="legend-label">{{ item.label }}</span>
-                </div>
-
-                <div class="legend-right">
-                    <strong>{{ formatNumber(item.value) }}</strong>
-                    <small>{{ item.percentage }}%</small>
-                </div>
-            </div>
-        </div>
-    </article>
-</section>
     </main>
 </template>
 
