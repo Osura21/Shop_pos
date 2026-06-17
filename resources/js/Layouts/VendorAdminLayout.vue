@@ -248,6 +248,13 @@
                                 }">
                                 Categories
                             </Link>
+                            <Link v-if="can('products.view')" :href="route('vendor.brands.index')"
+                                class="admin-sidebar__subitem" :class="{
+                                    'admin-sidebar__subitem--active':
+                                        isBrands,
+                                }">
+                                Brands
+                            </Link>
                             <!-- <Link v-if="can('options.view')" :href="route('vendor.options.index')" class="admin-sidebar__subitem"
                                 :class="{
                                     'admin-sidebar__subitem--active': isOptions,
@@ -842,6 +849,12 @@
                                 class="admin-sidebar__subitem"
                                 :class="{ 'admin-sidebar__subitem--active': isCategories }">
                                 Categories
+                            </Link>
+
+                            <Link v-if="can('products.view')" :href="route('vendor.brands.index')"
+                                class="admin-sidebar__subitem"
+                                :class="{ 'admin-sidebar__subitem--active': isBrands }">
+                                Brands
                             </Link>
 
                             <Link v-if="can('options.view')" :href="route('vendor.options.index')" class="admin-sidebar__subitem"
@@ -1868,6 +1881,7 @@ const flyoutMenus = {
         items: [
             { label: "Online Menus", view: "online-menus.view", href: route('vendor.online-menus.index'), active: () => isOnlineMenus.value },
             { label: "Categories", view: "categories.view", href: route('vendor.categories.index'), active: () => isCategories.value },
+            { label: "Brands", view: "products.view", href: route('vendor.brands.index'), active: () => isBrands.value },
             { label: "Options", view: "options.view", href: route('vendor.options.index'), active: () => isOptions.value },
             { label: "Products", view: "products.view", href: route('vendor.products.index'), active: () => isProducts.value },
         ],
@@ -2119,6 +2133,7 @@ const isOnlineMenus = computed(() =>
     pageStartsWithRoute('vendor.online-menus.index'),
 );
 const isCategories = computed(() => pageStartsWithRoute('vendor.categories.index'));
+const isBrands = computed(() => pageStartsWithRoute('vendor.brands.index'));
 const isProducts = computed(() => pageStartsWithRoute('vendor.products.index'));
 const isOptions = computed(() => pageStartsWithRoute('vendor.options.index'));
 const isUnits = computed(() => pageStartsWithRoute('vendor.units.index'));
@@ -2371,6 +2386,7 @@ const isMenusMenu = computed(
         isMenus.value ||
         isOnlineMenus.value ||
         isCategories.value ||
+        isBrands.value ||
         isProducts.value ||
         isOptions.value ||
         isTaxes.value,

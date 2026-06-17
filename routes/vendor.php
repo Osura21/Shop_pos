@@ -11,6 +11,7 @@ use App\Http\Controllers\Vendor\RoleController;
 use App\Http\Controllers\Vendor\MenuController;
 use App\Http\Controllers\Vendor\OnlineMenuController;
 use App\Http\Controllers\Vendor\CategoryController;
+use App\Http\Controllers\Vendor\BrandController;
 use App\Http\Controllers\Vendor\UnitController;
 use App\Http\Controllers\Vendor\SupplierController;
 use App\Http\Controllers\Vendor\IngredientController;
@@ -149,6 +150,14 @@ Route::prefix('vendor-admin')->name('vendor.')->group(function () {
                 Route::post('/', [CategoryController::class, 'store'])->name('store');
                 Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
                 Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+            });
+        Route::prefix('brands')
+            ->name('brands.')
+            ->group(function () {
+                Route::get('/', [BrandController::class, 'index'])->name('index');
+                Route::post('/', [BrandController::class, 'store'])->name('store');
+                Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
+                Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
             });
         Route::prefix('units')
             ->name('units.')

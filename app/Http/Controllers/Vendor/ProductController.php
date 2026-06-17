@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Brand;
 use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
@@ -125,6 +126,7 @@ class ProductController extends Controller
         return Inertia::render('VendorAdmin/Menu/Product/CreateUpdate', [
             'product' => null,
             'categories' => $this->categoryOptions(),
+            'brands' => $this->brandOptions(),
             'taxes' => $this->taxes(),
             'ingredients' => $this->ingredients(),
             'optionTypes' => self::OPTION_TYPES,
@@ -200,6 +202,7 @@ class ProductController extends Controller
         return Inertia::render('VendorAdmin/Menu/Product/CreateUpdate', [
             'product' => $this->mapProductForForm($product),
             'categories' => $this->categoryOptions(),
+            'brands' => $this->brandOptions(),
             'taxes' => $this->taxes(),
             'ingredients' => $this->ingredients(),
             'optionTypes' => self::OPTION_TYPES,
@@ -751,6 +754,21 @@ class ProductController extends Controller
 
             $this->appendCategoryOptions($items, $item->id, $depth + 1, $result);
         }
+    }
+
+    private function brandOptions(): Collection
+    {
+        return Brand::query()
+            ->where('tenant_id', $this->tenantId())
+            ->where('is_active', true)
+            ->select('id', 'name')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($brand) => [
+                'id' => $brand->name,
+                'name' => $brand->name,
+            ]);
     }
 
    private function taxes()

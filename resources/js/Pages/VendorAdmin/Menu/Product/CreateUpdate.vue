@@ -66,8 +66,8 @@
 
                 <div class="form-grid__half">
                   <label class="field-label">Brand</label>
-                  <input v-model="form.brand" type="text" class="form-control fancy-input formControl"
-                    placeholder="Brand">
+                  <SelectInput id="brand" v-model="form.brand" :options="props.brands" valueKey="id" labelKey="name"
+                    placeholder="Select Brand" />
                   <div v-if="form.errors.brand" class="error-text">{{ form.errors.brand }}</div>
                 </div>
 
@@ -607,6 +607,7 @@ const page = usePage()
 const props = defineProps({
   product: { type: Object, default: null },
   categories: { type: Array, default: () => [] },
+  brands: { type: Array, default: () => [] },
   taxes: { type: Array, default: () => [] },
   ingredients: { type: Array, default: () => [] },
   optionTypes: { type: Object, default: () => ({}) },
