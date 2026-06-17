@@ -1,14 +1,14 @@
 <template>
-  <Head title="Invoices" />
+  <Head title="Receipts" />
 
   <div class="page-container">
     <div class="card-modern">
       <div class="card-modern-header">
         <div class="header-content">
           <div class="header-title-group">
-            <h1 class="header-title">Invoices</h1>
+            <h1 class="header-title">Receipts</h1>
             <p class="header-subtitle">
-              View and manage issued sales invoices with branch, buyer, payment and tax details.
+              Shop POS receipt history with branch, customer, payment and total details.
             </p>
           </div>
         </div>
@@ -21,22 +21,17 @@
           :url="datatableUrl"
           :columns="columns"
           :columnDefs="columnDefs"
-          :order="[[10, 'desc']]"
-          searchPlaceholder="Search by invoice no, seller, buyer, branch or status..."
+          :order="[[6, 'desc']]"
+          searchPlaceholder="Search by receipt no, customer, branch or status..."
         >
           <template #header>
             <tr>
-              <th>Invoice No</th>
+              <th>Receipt No</th>
               <th>Branch</th>
-              <th>Seller</th>
-              <th>Buyer</th>
-              <th>Type</th>
+              <th>Customer</th>
               <th>Status</th>
-              <th>PMS</th>
-              <th>Purpose</th>
-              <th>Kind</th>
               <th>Total</th>
-              <th>Issued At</th>
+              <th>Date</th>
               <th class="text-end">Actions</th>
             </tr>
           </template>
@@ -51,8 +46,6 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import VendorAdminLayout from '@/Layouts/VendorAdminLayout.vue'
 import DataTable from '@/Components/Datatable.vue'
-import { error as alertError } from '@/Utils/modernAlert'
-
 defineOptions({ layout: VendorAdminLayout })
 
 const tableId = 'salesInvoicesTable'
@@ -84,17 +77,6 @@ function openDownload(id) {
   window.open(route('vendor.sales.invoices.download', id), '_blank')
 }
 
-async function retryPmsPosting(id) {
-  if (!id) return
-
-  try {
-    await window.axios.post(route('vendor.pms.room-charge.retry', id))
-    window.location.reload()
-  } catch (error) {
-    alertError(error?.response?.data?.message || 'Unable to retry PMS posting.')
-  }
-}
-
 const columns = computed(() => ([
   {
     data: 'invoice_no',
@@ -102,7 +84,7 @@ const columns = computed(() => ([
     render: (data, type, row) => `
       <div>
         <div class="fw-bold text-dark">${escapeHtml(data || '-')}</div>
-        <div class="text-muted x-small">INV #${escapeHtml(row?.id)}</div>
+        <div class="text-muted x-small">Receipt #${escapeHtml(row?.id)}</div>
       </div>
     `,
   },
@@ -118,13 +100,6 @@ const columns = computed(() => ([
     `,
   },
   {
-    data: 'seller_display',
-    name: 'seller_name',
-    render: (data) => `
-      <span class="fw-semibold text-dark">${escapeHtml(data || '-')}</span>
-    `,
-  },
-  {
     data: 'buyer_display',
     name: 'buyer_name',
     render: (data) => `
@@ -132,28 +107,8 @@ const columns = computed(() => ([
     `,
   },
   {
-    data: 'type_badge',
-    name: 'type',
-    render: (data) => data || '-',
-  },
-  {
     data: 'status_badge',
     name: 'status',
-    render: (data) => data || '-',
-  },
-  {
-    data: 'pms_posting_badge',
-    name: 'pms_posting_status',
-    render: (data) => data || '-',
-  },
-  {
-    data: 'purpose_badge',
-    name: 'purpose',
-    render: (data) => data || '-',
-  },
-  {
-    data: 'kind_badge',
-    name: 'kind',
     render: (data) => data || '-',
   },
   {
@@ -185,19 +140,13 @@ const columns = computed(() => ([
         <button type="button" class="btn-circle js-download-invoice" data-id="${escapeHtml(data)}" title="Download invoice">
           <i class="bi bi-download"></i>
         </button>
-
-        ${row?.pms_posting_status === 'failed' || row?.pms_posting_status === 'pending' ? `
-          <button type="button" class="btn-circle js-retry-pms" data-id="${escapeHtml(data)}" title="Retry PMS posting">
-            <i class="bi bi-arrow-clockwise"></i>
-          </button>
-        ` : ''}
       </div>
     `,
   },
 ]))
 
 const columnDefs = [
-  { targets: -1, width: '140px' },
+  { targets: -1, width: '110px' },
   { targets: '_all', className: 'align-middle' },
 ]
 
@@ -217,12 +166,6 @@ function handleTableClick(event) {
   const downloadButton = event.target.closest(`#${tableId} .js-download-invoice`)
   if (downloadButton) {
     openDownload(downloadButton.dataset.id)
-    return
-  }
-
-  const retryButton = event.target.closest(`#${tableId} .js-retry-pms`)
-  if (retryButton) {
-    retryPmsPosting(retryButton.dataset.id)
   }
 }
 

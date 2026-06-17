@@ -1,10 +1,10 @@
 <template>
-  <Head :title="`Show Invoice - ${invoice.invoice_no}`" />
+  <Head :title="`Receipt - ${invoice.invoice_no}`" />
 
   <div class="page-shell">
     <div class="page-header">
       <div>
-        <h1>Show Invoice</h1>
+        <h1>Receipt</h1>
         <p>{{ invoice.invoice_no }}</p>
       </div>
 
@@ -34,7 +34,7 @@
           <p>{{ invoice.branch?.phone || '' }}</p>
         </div>
 
-        <div class="invoice-title">INVOICE</div>
+        <div class="invoice-title">RECEIPT</div>
       </div>
 
       <div class="divider"></div>
@@ -46,22 +46,8 @@
         </div>
 
         <div class="info-item">
-          <label>Invoice Date</label>
+          <label>Receipt Date</label>
           <strong>{{ formatDate(invoice.issued_at) }}</strong>
-        </div>
-
-        <div class="info-item">
-          <label>Invoice Type</label>
-          <strong>
-            <span class="badge badge--orange">{{ pretty(invoice.type) }}</span>
-          </strong>
-        </div>
-
-        <div class="info-item">
-          <label>Purpose</label>
-          <strong>
-            <span class="badge badge--success">{{ pretty(invoice.purpose) }}</span>
-          </strong>
         </div>
 
         <div class="info-item">
@@ -74,15 +60,25 @@
         </div>
 
         <div class="info-item">
-          <label>Kind</label>
-          <strong>
-            <span class="badge badge--info">{{ pretty(invoice.kind) }}</span>
-          </strong>
+          <label>Customer</label>
+          <strong>{{ buyerName }}</strong>
         </div>
 
         <div class="info-item">
           <label>Currency</label>
           <strong>{{ currency }}</strong>
+        </div>
+
+        <div class="info-item">
+          <label>Branch</label>
+          <strong>{{ branchName }}</strong>
+        </div>
+
+        <div class="info-item">
+          <label>Shop</label>
+          <strong>
+            {{ invoice.seller_name || branchName }}
+          </strong>
         </div>
 
         <div class="info-item">
@@ -93,7 +89,7 @@
 
       <div class="parties-grid">
         <div class="party-box">
-          <div class="party-label">Seller</div>
+          <div class="party-label">Shop</div>
           <div class="party-name">{{ invoice.seller_name || branchName }}</div>
           <div class="party-line">{{ branchName }}</div>
           <div class="party-line">{{ invoice.branch?.email || '-' }}</div>
@@ -101,14 +97,14 @@
         </div>
 
         <div class="party-box">
-          <div class="party-label">Billing Address</div>
+          <div class="party-label">Customer</div>
           <div class="party-name">{{ buyerName }}</div>
           <div class="party-line">{{ invoice.customer?.email || '-' }}</div>
           <div class="party-line">{{ invoice.customer?.phone || '-' }}</div>
         </div>
 
         <div class="qr-box">
-          QR
+          POS
         </div>
       </div>
 
@@ -210,7 +206,7 @@
       <div class="divider"></div>
 
       <div class="footer-note">
-        <strong>Invoice UUID:</strong>
+        <strong>Receipt UUID:</strong>
         <span>{{ invoice.uuid || '-' }}</span>
       </div>
     </div>

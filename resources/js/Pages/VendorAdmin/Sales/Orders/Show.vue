@@ -1,10 +1,10 @@
 <template>
-  <Head :title="`Show Order - ${referenceNo}`" />
+  <Head :title="`Order Details - ${referenceNo}`" />
 
   <div class="page-shell">
     <div class="page-header">
       <div>
-        <h1>Show Order</h1>
+        <h1>Order Details</h1>
         <p>{{ referenceNo }}</p>
       </div>
 
@@ -12,6 +12,32 @@
         <i class="bi bi-arrow-left"></i>
         Back to Orders
       </button>
+    </div>
+
+    <div class="show-hero">
+      <article class="hero-stat">
+        <span>Customer</span>
+        <strong>{{ customerName }}</strong>
+        <small>Order #{{ order.id }}</small>
+      </article>
+
+      <article class="hero-stat">
+        <span>Payment</span>
+        <strong>{{ pretty(order.payment_status || 'unpaid') }}</strong>
+        <small>{{ payments.length }} payment record(s)</small>
+      </article>
+
+      <article class="hero-stat">
+        <span>Total</span>
+        <strong>{{ currency }} {{ money(order.grand_total) }}</strong>
+        <small>{{ order.register?.name || 'No register' }}</small>
+      </article>
+
+      <article class="hero-stat">
+        <span>Created</span>
+        <strong>{{ formatDate(order.created_at) }}</strong>
+        <small>{{ order.created_by_name || 'System' }}</small>
+      </article>
     </div>
 
     <div class="show-layout">
@@ -36,24 +62,6 @@
             </div>
 
             <div class="info-item">
-              <label>Status</label>
-              <span>
-                <span class="badge" :class="statusClass(order.status)">
-                  {{ pretty(order.status || 'pending') }}
-                </span>
-              </span>
-            </div>
-
-            <div class="info-item">
-              <label>Type</label>
-              <span>
-                <span class="badge badge--orange">
-                  {{ pretty(order.channel || 'pos') }}
-                </span>
-              </span>
-            </div>
-
-            <div class="info-item">
               <label>Payment Status</label>
               <span>
                 <span class="badge" :class="paymentClass(order.payment_status)">
@@ -63,18 +71,8 @@
             </div>
 
             <div class="info-item">
-              <label>Guest Count</label>
-              <span>{{ order.guest_count || 1 }}</span>
-            </div>
-
-            <div class="info-item">
               <label>Created By</label>
               <span>{{ order.created_by_name || 'System' }}</span>
-            </div>
-
-            <div class="info-item">
-              <label>Waiter</label>
-              <span>{{ order.waiter_name || '-' }}</span>
             </div>
 
             <div class="info-item">
@@ -141,7 +139,6 @@
               <thead>
                 <tr>
                   <th>Product</th>
-                  <th>Status</th>
                   <th>Unit Price</th>
                   <th>Quantity</th>
                   <th>Subtotal</th>
@@ -167,12 +164,6 @@
                     </div>
                   </td>
 
-                  <td>
-                    <span class="badge" :class="statusClass(order.status)">
-                      {{ pretty(order.status || 'pending') }}
-                    </span>
-                  </td>
-
                   <td>{{ currency }} {{ money(item.unit_price) }}</td>
                   <td>{{ trimQty(item.qty) }}</td>
                   <td>{{ currency }} {{ money(item.line_subtotal) }}</td>
@@ -183,7 +174,7 @@
                 </tr>
 
                 <tr v-if="!order.items || !order.items.length">
-                  <td colspan="9" class="empty-cell">No products available.</td>
+                  <td colspan="8" class="empty-cell">No products available.</td>
                 </tr>
               </tbody>
             </table>
@@ -429,6 +420,43 @@ export default {
   margin-bottom: 16px;
 }
 
+.show-hero {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.hero-stat {
+  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+  border: 1px solid #f7ddba;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
+}
+
+.hero-stat span {
+  color: #9a6b34;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hero-stat strong {
+  color: #1f2937;
+  font-size: 19px;
+  line-height: 1.25;
+}
+
+.hero-stat small {
+  color: #6b7280;
+  font-size: 12px;
+}
+
 .page-header h1 {
   margin: 0;
   font-size: 18px;
@@ -512,7 +540,7 @@ export default {
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 18px 16px;
 }
 
@@ -527,9 +555,11 @@ export default {
 }
 
 .info-item label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #667085;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .info-item strong,
@@ -561,7 +591,7 @@ export default {
 .data-table th {
   font-weight: 800;
   color: #344054;
-  background: #fff;
+  background: #fffaf3;
   white-space: nowrap;
 }
 
@@ -693,6 +723,10 @@ export default {
 }
 
 @media (max-width: 1200px) {
+  .show-hero {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .show-layout {
     grid-template-columns: 1fr;
   }
@@ -703,6 +737,10 @@ export default {
 }
 
 @media (max-width: 760px) {
+  .show-hero {
+    grid-template-columns: 1fr;
+  }
+
   .page-header {
     flex-direction: column;
     align-items: stretch;

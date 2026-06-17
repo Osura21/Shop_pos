@@ -8,12 +8,8 @@
           <div class="header-title-group">
             <h1 class="header-title">Orders</h1>
             <p class="header-subtitle">
-              Centralized sales order history with branch, customer, payment and status details.
+              Shop POS order history with customer, register, payment and sales details.
             </p>
-            <div v-if="pmsAutoSyncing" class="pms-sync-status">
-              <i class="bi bi-arrow-repeat"></i>
-              <span>Syncing PMS payment status...</span>
-            </div>
           </div>
         </div>
       </div>
@@ -25,17 +21,14 @@
           :url="datatableUrl"
           :columns="columns"
           :columnDefs="columnDefs"
-          :order="[[7, 'desc']]"
+          :order="[[5, 'desc']]"
           searchPlaceholder="Search by customer, reference, branch or status..."
-          @ready="syncPmsPaymentStatuses"
         >
           <template #header>
             <tr>
               <th>Customer</th>
               <th>Reference No</th>
               <th>Branch</th>
-              <th>Type</th>
-              <th>Status</th>
               <th>Payment</th>
               <th>Total</th>
               <th>Created</th>
@@ -183,8 +176,6 @@ const props = defineProps({
 const tableId = 'salesOrdersTable'
 const dtRef = ref(null)
 const rowCache = new Map()
-const pmsAutoSyncing = ref(false)
-const pmsAutoSynced = ref(false)
 
 const datatableUrl = computed(() => route('vendor.sales.orders.getdata'))
 
@@ -328,27 +319,6 @@ function submitCancelOrder() {
   })
 }
 
-async function syncPmsPaymentStatuses() {
-  if (pmsAutoSyncing.value || pmsAutoSynced.value) return
-
-  pmsAutoSyncing.value = true
-  pmsAutoSynced.value = true
-
-  try {
-    const { data } = await window.axios.post(route('vendor.sales.orders.sync-pms-payment-statuses'), {
-      limit: 25,
-    })
-
-    if ((data?.checked || 0) > 0) {
-      dtRef.value?.reloadDatatable?.()
-    }
-  } catch (error) {
-    // Keep the orders page usable even if PMS is temporarily unavailable.
-  } finally {
-    pmsAutoSyncing.value = false
-  }
-}
-
 function openActionMenu(row, element) {
   const rect = element.getBoundingClientRect()
   const width = 190
@@ -400,16 +370,6 @@ const columns = computed(() => ([
         <div class="text-muted x-small">${escapeHtml(row?.register_name || 'No register')}</div>
       </div>
     `,
-  },
-  {
-    data: 'type_badge',
-    name: 'channel',
-    render: (data) => data || '-',
-  },
-  {
-    data: 'status_badge',
-    name: 'status',
-    render: (data) => data || '-',
   },
   {
     data: 'payment_badge',
@@ -529,16 +489,26 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--slate-50) !important;
 }
 
+:deep(tbody tr) {
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+:deep(tbody tr:hover) {
+  background: #fffaf3;
+}
+
 :deep(.order-avatar) {
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  background: #fff7ed;
+  background: linear-gradient(135deg, #fff3e0 0%, #fff8ef 100%);
+  border: 1px solid #fed7aa;
   color: #f97316;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 .pms-sync-status {
@@ -571,12 +541,35 @@ onUnmounted(() => {
   align-items: center;
   min-height: 30px;
   padding: 0 0.75rem;
-  border-radius: 999px;
+  border-radius: 10px;
+  background: #fff8ef;
+  border: 1px solid #fde3bd;
   text-wrap: nowrap;
   color: #334155;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+}
+
+:deep(.btn-circle) {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbe5f0;
+  background: #ffffff;
+  color: #64748b;
+  transition: all 0.18s ease;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+:deep(.btn-circle:hover) {
+  border-color: #fdba74;
+  color: #ea580c;
+  background: #fff7ed;
+  transform: translateY(-1px);
 }
 
 :deep(.btn-more) {
