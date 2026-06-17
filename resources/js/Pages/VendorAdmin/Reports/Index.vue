@@ -10,9 +10,9 @@
             Reports Center
           </div>
 
-          <h1>Business Reports</h1>
+          <h1>Shop POS Reports</h1>
           <p>
-            Clear operational, financial, inventory, gift card, loyalty, and system reporting in one professional workspace.
+            Sales, cash, and product stock reporting for your current shop POS in one focused workspace.
           </p>
         </div>
 
@@ -28,7 +28,7 @@
           <input
             v-model="search"
             type="search"
-            placeholder="Search reports by name, section, permission, or description..."
+            placeholder="Search shop POS reports..."
           />
         </div>
       </section>
@@ -76,7 +76,7 @@
         <component :is="EmptyIcon" :size="46" />
         <h3>No reports available</h3>
         <p>
-          No report matches this role’s permissions or the current search term.
+          No report matches this role's permissions or the current search term.
           Assign the required report permissions to display reports here.
         </p>
       </section>

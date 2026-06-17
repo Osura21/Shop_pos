@@ -78,17 +78,17 @@ private function definition(string $report): ?array
 
     return null;
 }
-   private function sections(): array
+private function sections(): array
 {
+    // Shop POS only: keep the report center focused on sales, register cash, and product stock.
     return [
         [
             'key' => 'restaurant-sales',
-            'title' => 'Restaurant Sales Reports',
+            'title' => 'Shop POS Sales Reports',
             'permission' => 'reports.restaurant-sales.view',
             'items' => [
                 $this->card('sales', 'Sales Report', 'A detailed breakdown of sales performance within a selected time range.', 'ReceiptText'),
-                $this->card('upcoming-orders', 'Upcoming Orders Report', 'Displays scheduled orders that are set to be prepared or served at a future time.', 'CalendarClock'),
-                $this->card('products-purchase', 'Products Purchase Report', 'Analyze product procurement performance across different periods.', 'Package'),
+                $this->card('products-purchase', 'Stock Purchases Report', 'Shows stocked-in product quantities and values across the selected period.', 'Package'),
                 $this->card('sales-by-creator', 'Sales By Creator Report', 'Shows total sales grouped by the user who created each order.', 'UserRoundCog'),
                 $this->card('sales-by-cashier', 'Sales By Cashier Report', 'Summarizes total sales handled by each cashier, excluding canceled and refunded orders.', 'MonitorCog'),
                 $this->card('tax', 'Tax Report', 'Summarizes collected taxes by order status, type, and payment over a selected period.', 'BadgeDollarSign'),
@@ -129,123 +129,11 @@ private function definition(string $report): ?array
 
         [
             'key' => 'inventory',
-            'title' => 'Inventory Reports',
+            'title' => 'Product Stock Reports',
             'permission' => 'reports.inventory.view',
             'items' => [
-                $this->card('ingredient-usage', 'Ingredient Usage Report', 'Tracks total quantity of each ingredient used based on sold products during a selected period.', 'Utensils'),
-                $this->card('low-stock-alerts', 'Low Stock Alerts', 'Identifies ingredients that are nearing depletion or already finished.', 'TriangleAlert'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-overview',
-            'title' => 'Loyalty Overview Reports',
-            'permission' => 'reports.loyalty-overview.view',
-            'items' => [
-                $this->card('loyalty-program-summary', 'Loyalty Program Summary', 'Overview of each loyalty program with customer count and points lifecycle totals.', 'ClipboardList'),
-                $this->card('total-earned-points', 'Total Earned Points', 'Total loyalty points earned within the selected period.', 'CircleDollarSign'),
-                $this->card('total-redeemed-points', 'Total Redeemed Points', 'Total loyalty points redeemed within the selected period.', 'BadgeDollarSign'),
-                $this->card('total-expired-points', 'Total Expired Points', 'Total loyalty points that expired without redemption.', 'ClockAlert'),
-                $this->card('system-points-balance', 'System Points Balance', 'Current points balance across active loyalty customers.', 'Wallet'),
-                $this->card('redemption-rate', 'Redemption Rate', 'Ratio of redeemed points to earned points per program.', 'PieChart'),
-                $this->card('average-points-program', 'Average Points per Program', 'Average points balance for customers in each program.', 'Calculator'),
-                $this->card('points-lifecycle-timeline', 'Points Lifecycle Timeline', 'Daily earned vs redeemed vs expired points across loyalty programs.', 'ChartNoAxesCombined'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-customers',
-            'title' => 'Loyalty Customer Reports',
-            'permission' => 'reports.loyalty-customers.view',
-            'items' => [
-                $this->card('last-loyalty-activity', 'Last Loyalty Activity', 'Latest loyalty activity per customer with last earn/redeem timestamps.', 'Activity'),
-                $this->card('inactive-loyalty-customers', 'Inactive Loyalty Customers', 'Customers with no recent loyalty activity and inactivity duration.', 'UserRoundX'),
-                $this->card('customers-no-redemptions', 'Customers with No Redemptions', 'Customers who have never redeemed loyalty points.', 'Hand'),
-                $this->card('top-customers-points', 'Top Customers by Points', 'Customers ranked by lifetime points and current balance.', 'Trophy'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-tiers',
-            'title' => 'Loyalty Tier Reports',
-            'permission' => 'reports.loyalty-tiers.view',
-            'items' => [
-                $this->card('customers-tier-distribution', 'Customers by Tier Distribution', 'How loyalty customers are distributed across tiers.', 'UsersRound'),
-                $this->card('redemption-rate-tier', 'Redemption Rate per Tier', 'Earned vs redeemed points segmented by tier.', 'PieChart'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-rewards',
-            'title' => 'Loyalty Rewards Reports',
-            'permission' => 'reports.loyalty-rewards.view',
-            'items' => [
-                $this->card('most-redeemed-rewards', 'Most Redeemed Rewards', 'Rewards with the highest redemption count.', 'Trophy'),
-                $this->card('least-used-rewards', 'Least Used Rewards', 'Rewards with minimal redemption counts.', 'TrendingDown'),
-                $this->card('never-redeemed-rewards', 'Never Redeemed Rewards', 'Rewards that were never redeemed.', 'CircleOff'),
-                $this->card('rewards-by-type', 'Rewards by Type', 'Rewards grouped by type with redemption totals.', 'BoxSelect'),
-                $this->card('rewards-by-tier', 'Rewards by Tier', 'Rewards available per loyalty tier.', 'BadgePlus'),
-                $this->card('rewards-by-program', 'Rewards by Program', 'Rewards grouped by loyalty program.', 'LayoutGrid'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-gifts',
-            'title' => 'Loyalty Gifts Reports',
-            'permission' => 'reports.loyalty-gifts.view',
-            'items' => [
-                $this->card('available-gifts', 'Available Gifts', 'Gifts that are available for use.', 'Gift'),
-                $this->card('used-gifts', 'Used Gifts', 'Gifts that have been redeemed.', 'TicketCheck'),
-                $this->card('expired-gifts', 'Expired Gifts', 'Gifts that expired unused.', 'ClockAlert'),
-                $this->card('gift-usage-rate', 'Gift Usage Rate', 'Usage rate of issued gifts.', 'PieChart'),
-                $this->card('unused-gifts-customer', 'Unused Gifts per Customer', 'Unused gifts grouped by customer.', 'UserRoundHelp'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-redemptions',
-            'title' => 'Loyalty Redemptions Reports',
-            'permission' => 'reports.loyalty-redemptions.view',
-            'items' => [
-                $this->card('redemptions-by-status', 'Redemptions by Status', 'Redemptions grouped by status.', 'ListChecks'),
-                $this->card('redemptions-by-program', 'Redemptions by Program', 'Redemptions grouped by loyalty program.', 'LayoutGrid'),
-                $this->card('average-points-redemption', 'Average Points per Redemption', 'Average points spent per redemption.', 'Calculator'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-promotions',
-            'title' => 'Loyalty Promotions Reports',
-            'permission' => 'reports.loyalty-promotions.view',
-            'items' => [
-                $this->card('active-promotions', 'Active Promotions', 'Currently active promotions.', 'Zap'),
-                $this->card('expired-promotions', 'Expired Promotions', 'Promotions that ended.', 'ClockAlert'),
-                $this->card('promotion-usage', 'Promotion Usage', 'Usage count per promotion.', 'ChartColumn'),
-                $this->card('highest-impact-promotions', 'Highest Impact Promotions', 'Promotions with highest points generated.', 'Trophy'),
-                $this->card('bonus-vs-multiplier-comparison', 'Bonus vs Multiplier Comparison', 'Compares bonus and multiplier promotions.', 'Route'),
-                $this->card('category-boost-promotions', 'Category Boost Promotions', 'Promotions boosting specific categories.', 'LayoutGrid'),
-                $this->card('new-member-promotions', 'New Member Promotions', 'Promotions for new loyalty members.', 'UserPlus'),
-            ],
-        ],
-
-        [
-            'key' => 'loyalty-financial-roi',
-            'title' => 'Loyalty Financial & ROI Reports',
-            'permission' => 'reports.loyalty-financial-roi.view',
-            'items' => [
-                $this->card('loyalty-average-order-value', 'Average Order Value (Loyalty Customers)', 'Average order value for loyalty customers.', 'ReceiptText'),
-                $this->card('loyalty-customer-revenue', 'Revenue from Loyalty Customers', 'Revenue generated by loyalty customers.', 'WalletCards'),
-                $this->card('revenue-before-after-loyalty', 'Revenue Before vs After Loyalty', 'Revenue comparison for loyalty vs non-loyalty orders.', 'ArrowLeftRight'),
-                $this->card('free-items-cost', 'Free Items Cost', 'Cost of free items issued.', 'Package'),
-            ],
-        ],
-
-        [
-            'key' => 'system',
-            'title' => 'System Reports',
-            'permission' => 'reports.system.view',
-            'items' => [
-                $this->card('categorized-products', 'Categorized Products Report', 'Shows each category with its total product count for reviewing product distribution.', 'Folders'),
+                $this->card('ingredient-usage', 'Product Stock Analysis Report', 'Detailed stock analysis for products including current stock, reorder level, stock in, stock out, and stock value.', 'Package'),
+                $this->card('low-stock-alerts', 'Low Product Stock Report', 'Identifies products that are at or below their reorder level.', 'TriangleAlert'),
             ],
         ],
     ];
@@ -290,7 +178,6 @@ private function definition(string $report): ?array
     {
         return match ($report) {
             'sales', 'sales-by-cashier', 'sales-by-creator' => $this->salesRows($report, $filters),
-            'upcoming-orders' => $this->upcomingOrders($filters),
             'products-purchase' => $this->productPurchaseRows($filters),
             'tax', 'product-tax' => $this->taxRows($report, $filters),
             'branch-performance' => $this->branchPerformanceRows($filters),
@@ -299,9 +186,8 @@ private function definition(string $report): ?array
             'discounts-vouchers' => $this->discountRows($filters),
             'register-summary' => $this->registerSummaryRows($filters),
             'cash-movement' => $this->cashMovementRows($filters),
-            'ingredient-usage' => $this->ingredientUsageRows($filters),
-            'low-stock-alerts' => $this->lowStockRows(),
-            'categorized-products' => $this->categorizedProductRows(),
+            'ingredient-usage' => $this->productStockAnalysisRows($filters),
+            'low-stock-alerts' => $this->lowStockProductRows(),
             default => $this->catalogRows($report, $filters),
         };
     }
@@ -364,19 +250,21 @@ private function definition(string $report): ?array
 
     private function productPurchaseRows(array $filters): array
     {
-        if (! $this->tableExists('purchase_items') || ! $this->tableExists('purchases')) {
+        if (! $this->tableExists('product_stock_movements') || ! $this->tableExists('products')) {
             return [];
         }
 
-        $query = DB::table('purchase_items as i')
-            ->join('purchases as p', 'p.id', '=', 'i.purchase_id')
-            ->leftJoin('ingredients as g', 'g.id', '=', 'i.ingredient_id')
-            ->where('p.tenant_id', $this->tenantId())
-            ->selectRaw('MIN(DATE(p.created_at)) as start_date, MAX(DATE(p.created_at)) as end_date, COALESCE(g.name, "Item") as product, SUM(i.quantity) as quantity, SUM(i.line_total) as total_base, SUM(COALESCE(i.secondary_line_total, 0)) as total_secondary')
+        $query = DB::table('product_stock_movements as m')
+            ->join('products as p', 'p.id', '=', 'm.product_id')
+            ->where('m.tenant_id', $this->tenantId())
+            ->where('m.type', 'in')
+            ->selectRaw('MIN(DATE(m.created_at)) as start_date, MAX(DATE(m.created_at)) as end_date, COALESCE(p.name, "Product") as product, COALESCE(p.sku, "-") as sku, SUM(m.quantity) as quantity')
+            ->selectRaw('SUM(m.quantity * COALESCE(p.cost_price, 0)) as total_base')
             ->groupBy('product')
             ->orderByDesc('total_base');
 
-        $this->dateRange($query, 'p.created_at', $filters);
+        $this->dateRange($query, 'm.created_at', $filters);
+        $this->branchFilter($query, 'm.branch_id', $filters);
 
         return $query->limit(1000)->get()->map(fn ($row) => $this->formatRow((array) $row))->all();
     }
@@ -540,55 +428,64 @@ private function definition(string $report): ?array
         return $query->limit(1000)->get()->map(fn ($row) => $this->formatRow((array) $row))->all();
     }
 
-    private function ingredientUsageRows(array $filters): array
+    private function productStockAnalysisRows(array $filters): array
     {
-        if (! $this->tableExists('stock_movements')) {
+        if (! $this->tableExists('products')) {
             return [];
         }
 
-        $query = DB::table('stock_movements as s')
-            ->leftJoin('ingredients as i', 'i.id', '=', 's.ingredient_id')
-            ->where('s.tenant_id', $this->tenantId())
-            ->whereIn('s.type', ['out', 'used', 'sale', 'consume', 'consumption'])
-            ->selectRaw('MIN(DATE(s.created_at)) as start_date, MAX(DATE(s.created_at)) as end_date, COALESCE(i.name, "Ingredient") as ingredient, ROUND(SUM(s.quantity), 3) as total_used')
-            ->groupBy('ingredient')
-            ->orderByDesc(DB::raw('SUM(s.quantity)'));
+        $movementTableExists = $this->tableExists('product_stock_movements');
 
-        $this->dateRange($query, 's.created_at', $filters);
+        $query = DB::table('products as p')
+            ->where('p.tenant_id', $this->tenantId())
+            ->selectRaw('COALESCE(p.name, "Product") as product, COALESCE(p.sku, "-") as sku, COALESCE(p.brand, "-") as brand, COALESCE(p.unit_type, "pcs") as unit_type')
+            ->selectRaw('ROUND(COALESCE(p.current_stock, 0), 3) as current_stock')
+            ->selectRaw('ROUND(COALESCE(p.reorder_level, 0), 3) as reorder_level')
+            ->selectRaw('ROUND(COALESCE(p.cost_price, 0), 3) as cost_price_base')
+            ->selectRaw('ROUND(COALESCE(p.base_price, 0), 3) as selling_price_base')
+            ->selectRaw('ROUND(COALESCE(p.current_stock, 0) * COALESCE(p.cost_price, 0), 3) as stock_value_base')
+            ->selectRaw('ROUND(COALESCE(p.current_stock, 0) * COALESCE(p.base_price, 0), 3) as stock_retail_base')
+            ->selectRaw('CASE WHEN COALESCE(p.reorder_level, 0) > 0 AND COALESCE(p.current_stock, 0) <= COALESCE(p.reorder_level, 0) THEN "Low" ELSE "Healthy" END as stock_status');
+
+        if ($movementTableExists) {
+            $query
+                ->selectSub(function ($sub) use ($filters) {
+                    $sub->from('product_stock_movements as m')
+                        ->selectRaw('ROUND(COALESCE(SUM(m.quantity), 0), 3)')
+                        ->whereColumn('m.product_id', 'p.id')
+                        ->where('m.tenant_id', $this->tenantId())
+                        ->where('m.type', 'in');
+                    $this->dateRange($sub, 'm.created_at', $filters);
+                    $this->branchFilter($sub, 'm.branch_id', $filters);
+                }, 'stock_in')
+                ->selectSub(function ($sub) use ($filters) {
+                    $sub->from('product_stock_movements as m')
+                        ->selectRaw('ROUND(COALESCE(SUM(m.quantity), 0), 3)')
+                        ->whereColumn('m.product_id', 'p.id')
+                        ->where('m.tenant_id', $this->tenantId())
+                        ->whereIn('m.type', ['out', 'sale', 'sold', 'adjust_subtract', 'transfer_out', 'wastage']);
+                    $this->dateRange($sub, 'm.created_at', $filters);
+                    $this->branchFilter($sub, 'm.branch_id', $filters);
+                }, 'stock_out');
+        }
+
+        $query->orderByRaw('COALESCE(p.current_stock, 0) ASC')->orderBy('p.name');
 
         return $query->limit(1000)->get()->map(fn ($row) => $this->formatRow((array) $row))->all();
     }
 
-    private function lowStockRows(): array
+    private function lowStockProductRows(): array
     {
-        if (! $this->tableExists('ingredients')) {
+        if (! $this->tableExists('products')) {
             return [];
         }
 
-        return DB::table('ingredients')
+        return DB::table('products')
             ->where('tenant_id', $this->tenantId())
-            ->whereColumn('current_stock', '<=', 'alert_quantity')
-            ->selectRaw('name as ingredient, ROUND(current_stock, 3) as current_stock, ROUND(alert_quantity, 3) as alert_quantity')
+            ->where('reorder_level', '>', 0)
+            ->whereColumn('current_stock', '<=', 'reorder_level')
+            ->selectRaw('name as product, COALESCE(sku, "-") as sku, COALESCE(brand, "-") as brand, COALESCE(unit_type, "pcs") as unit_type, ROUND(current_stock, 3) as current_stock, ROUND(reorder_level, 3) as reorder_level, ROUND(reorder_level - current_stock, 3) as shortage_qty')
             ->orderBy('current_stock')
-            ->limit(1000)
-            ->get()
-            ->map(fn ($row) => $this->formatRow((array) $row))
-            ->all();
-    }
-
-    private function categorizedProductRows(): array
-    {
-        if (! $this->tableExists('categories') || ! $this->tableExists('products') || ! $this->tableExists('category_product')) {
-            return [];
-        }
-
-        return DB::table('categories as c')
-            ->leftJoin('category_product as cp', 'cp.category_id', '=', 'c.id')
-            ->leftJoin('products as p', 'p.id', '=', 'cp.product_id')
-            ->where('c.tenant_id', $this->tenantId())
-            ->selectRaw('c.name as category, COUNT(p.id) as products_count')
-            ->groupBy('c.id', 'c.name')
-            ->orderByDesc('products_count')
             ->limit(1000)
             ->get()
             ->map(fn ($row) => $this->formatRow((array) $row))

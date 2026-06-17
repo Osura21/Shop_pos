@@ -31,7 +31,7 @@
         <div class="filter-panel__top">
           <div>
             <h2>Report Filters</h2>
-            <p>Filter the report by period, branch, currency, and search terms.</p>
+            <p>Filter the shop POS report by period, branch, currency, and search terms.</p>
           </div>
 
            <div v-if="canAnyExport" ref="exportDropdownRef" class="export-dropdown">
